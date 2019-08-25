@@ -70,10 +70,12 @@ export default new Router({
         path: 'estado',
         name: 'CadastrarEstado',
         component: RegisterState,
+        props: true
       }, {
         path: 'cidade',
         name: 'CadastrarCidade',
         component: RegisterCity,
+        props: true
       }]
     },
     {
