@@ -82,7 +82,8 @@ export default new Router({
       path: 'cadastro-pessoas',
       name: 'CadastroPessoas',
       component: RegisterPeople,
-      children: [{
+      children: [
+      {
         path: 'funcionarios',
         name: 'ConsultarFuncionarios',
         component: ConsultEmployee
@@ -96,22 +97,25 @@ export default new Router({
       path: 'clientes',
       name: 'ConsultarClientes',
       component: ConsultCustomer,
-    },
-    {
+      },
+      {
       path: 'funcionario',
       name: 'CadastrarFuncionario',
       component: RegisterEmployee,
-    },
-    {
+      props: true
+      },
+      {
       path: 'fornecedor',
       name: 'CadastrarFornecedor',
       component: RegisterProvider,
-    },
-    {
+      props: true
+      },
+      {
       path: 'cliente',
       name: 'CadastrarCliente',
       component: RegisterCustomer,
-    }]
+      props: true
+      }]
   }],
   }],
 })

@@ -22,34 +22,15 @@
             </router-link>
           </b-col>
         </b-row>
-        <b-row class="mt-3" v-if="(listOfStates.length > 0)">
-          <b-col>
-             <table class="table m-b-2 bg-fff">
-                  <thead>
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">UF</th>
-                    <th scope="col">País</th>
-                    <th scope="col">Ações</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="(state, index) in listOfStates" :key="index">
-                    <td>{{ state.id }}</td>
-                    <td>{{ state.nameState }}</td>
-                    <td>{{ state.uf }}</td>
-                    <td>{{ state.nameCountry }}</td>
-                    <td>
-                      <router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'edit', selectedState: state }}">
-                        <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
-                      </router-link> 
-                    </td>
-                    </tr>
-                    </tbody>
-                  </table>
-          </b-col>
-        </b-row>
+        <div class="mt-3" v-if="listOfStates.length > 0">
+          <b-table hover striped bordered fixed :items="listOfStates" :fields="fields">
+            <template slot="actions" slot-scope="data">
+                <router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'edit', selectedState: data.item }}">
+                <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
+              </router-link>
+            </template>
+          </b-table>
+        </div>
         <div class="d-flex justify-content-start m-3 mt-5">
           <router-link :to="{ name: 'Cadastros'}">
             <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
@@ -101,7 +82,14 @@ export default {
         { id: '025', nameState: 'São Paulo', uf:'SP', idCountry: '01', nameCountry: 'Brasil'},
         { id: '026', nameState: 'Sergipe', uf:'SE', idCountry: '01', nameCountry: 'Brasil'},
         { id: '027', nameState: 'Tocantins', uf:'TO', idCountry: '01', nameCountry: 'Brasil'},
-      ],   
+      ],
+      fields: [
+        { key: 'id', label: 'Código', sortable: true},
+        { key: 'nameState', label: 'Nome', sortable: true },
+        { key: 'uf', label: 'UF', sortable: true },
+        { key: 'nameCountry', label: 'País', sortable: true },
+        { key: 'actions', label: 'Ações' }
+      ]
     }
   },
   methods: {

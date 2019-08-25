@@ -22,32 +22,15 @@
             </router-link>
           </b-col>
         </b-row>
-        <b-row class="mt-3" v-if="(listOfCities.length > 0)">
-          <b-col>
-             <table class="table m-b-2 bg-fff">
-                  <thead>
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">Cidade</th>
-                    <th scope="col">Estado</th>
-                    <th scope="col">Ações</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="(city, index) in listOfCities" :key="index">
-                    <td>{{ city.id }}</td>
-                    <td>{{ city.nameCity}}</td>
-                    <td>{{ city.uf }}</td>
-                    <td>
-                      <router-link :to="{ name: 'CadastrarCidade', params: { actionMode:'edit', selectedCity: city }}">
-                        <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
-                      </router-link>
-                    </td>
-                    </tr>
-                    </tbody>
-                  </table>
-          </b-col>
-        </b-row>
+        <div class="mt-3" v-if="listOfCities.length > 0">
+          <b-table hover striped bordered fixed :items="listOfCities" :fields="fields">
+            <template slot="actions" slot-scope="data">
+                <router-link :to="{ name: 'CadastrarCidade', params: { actionMode:'edit', selectedCity: data.item }}">
+                <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
+              </router-link>
+            </template>
+          </b-table>
+        </div>
         <div class="d-flex justify-content-start m-3 mt-5">
           <router-link :to="{ name: 'Cadastros'}">
             <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
@@ -78,39 +61,11 @@ export default {
         { id: '04', nameCity: 'Londrina', ufID: '15', uf:'PR'},
         { id: '05', nameCity: 'Maringa', ufID: '15', uf:'PR'},
       ],
-      ufSelected: null,
-      ufBrazilianStates: [
-        { value: null, text: 'Selecione a UF' },
-        { value: 'AC', text: 'AC' },
-        { value: 'AL', text: 'AL' },
-        { value: 'AP', text: 'AP' },
-        { value: 'AM', text: 'AM' },
-        { value: 'BA', text: 'BA' },
-        { value: 'CE', text: 'CE' },
-        { value: 'DF', text: 'DF' },
-        { value: 'ES', text: 'ES' },
-        { value: 'GO', text: 'GO' },
-        { value: 'MA', text: 'MA' },
-        { value: 'MT', text: 'MT' },
-        { value: 'MS', text: 'MS' },
-        { value: 'MG', text: 'MG' },
-        { value: 'PA', text: 'PA' },
-        { value: 'PB', text: 'PB' },
-        { value: 'PR', text: 'PR' },
-        { value: 'PE', text: 'PE' },
-        { value: 'PI', text: 'PI' },
-        { value: 'RJ', text: 'RJ' },
-        { value: 'RN', text: 'RN' },
-        { value: 'RS', text: 'RS' },
-        { value: 'RO', text: 'RO' },
-        { value: 'RR', text: 'RR' },
-        { value: 'SC', text: 'SC' },
-        { value: 'SP', text: 'SP' },
-        { value: 'SE', text: 'SE' },
-        { value: 'TO', text: 'TO' },
-        { value: 'XX', text: 'XX' },
-      ],
-
+      fields: [
+        { key: 'id', label: 'Código', sortable: true},
+        { key: 'nameCity', label: 'Nome', sortable: true },
+        { key: 'actions', label: 'Ações' }
+      ]
     }
   },
 

@@ -68,7 +68,11 @@ export default {
     }
   },
   mounted() {
-    if(this.selectedCountry) this.country = this.selectedCountry    
+    if(this.selectedCountry) {
+      console.log('this.selectedCountry')
+      console.log(this.selectedCountry)
+      this.country = this.selectedCountry    
+    }
   },
   methods: {
     backOnePage() {
@@ -97,14 +101,3 @@ export default {
 }
 
 </script>
-
-<style scoped>
-  .form-panel {
-    flex: 1;
-    background: #FFF;
-    margin: 0px 10px;
-    padding: 20px;
-    border: 1px solid #AAA;
-    border-radius: 5px;
-  }
-</style>

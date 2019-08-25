@@ -16,16 +16,14 @@
               <label>Nome*</label>
               <b-form-input id="city-name" class="mb-3" v-model="city.nameCity" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
               <label>UF*</label>
-              <b-row>
-                <b-col cols="11">
-                  <b-form-select class="mb-3" v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
-                </b-col>
-                <b-col cols="1">
+              <b-input-group>
+               <b-form-select class="mb-3" v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
+                <b-input-group-append>
                   <router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'save' }}">
                     <b-button variant="primary"><i class="fas fa-university fa-lg"></i></b-button>
                   </router-link>
-                </b-col>
-              </b-row>
+                </b-input-group-append>
+              </b-input-group>
           </b-form-group>
         </b-form>
         <b-row>
@@ -152,14 +150,3 @@ export default {
 }
 
 </script>
-
-<style scoped>
-  .form-panel {
-    flex: 1;
-    background: #FFF;
-    margin: 0px 10px;
-    padding: 20px;
-    border: 1px solid #AAA;
-    border-radius: 5px;
-  }
-</style>
