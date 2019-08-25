@@ -6,7 +6,11 @@
 
 <script>
 export default {
-	name: 'Content'
+	name: 'Content',
+	watch: {
+		$route(to, from){
+		}
+	}
 }
 </script>
 

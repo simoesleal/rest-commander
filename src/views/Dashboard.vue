@@ -13,6 +13,9 @@ export default {
 	components: {
 		'page-title': PageTitle
 	},
+	watch: {
+		$route(to, from){}
+	}
 }
 </script>
 
