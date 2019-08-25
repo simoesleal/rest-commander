@@ -66,4 +66,14 @@ export default {
 	.btn-voltar {
     color: #428bca;
   }
+
+	.form-panel {
+    flex: 1;
+    background: #FFF;
+    margin: 0px 10px;
+    padding: 20px;
+    border: 1px solid #AAA;
+    border-radius: 5px;
+		box-shadow: 1px 1px 3px grey;
+  }
 </style>

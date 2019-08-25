@@ -22,30 +22,15 @@
             </router-link>
           </b-col>
         </b-row>
-        <b-row class="mt-3 mx-auto" v-if="(listOfCountries.length > 0)">
-          <b-col justify>
-             <table class="table m-b-2 bg-fff">
-                  <thead>
-                  <tr>
-                    <th scope="col">ID</th>
-                    <th scope="col">País</th>
-                    <th scope="col">Ações</th>
-                  </tr>
-                  </thead>
-                  <tbody>
-                  <tr v-for="(pais, index) in listOfCountries" :key="index">
-                    <td>{{ pais.id }}</td>
-                    <td>{{ pais.nomePais }}</td>
-                    <td>
-                      <router-link :to="{ name: 'CadastrarPais', params: { actionMode:'edit', selectedCountry: pais }}">
-                        <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
-                      </router-link>                   
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
-          </b-col>
-        </b-row>
+        <div class="mt-3" v-if="listOfCountries.length > 0">
+          <b-table hover striped bordered fixed :items="listOfCountries" :fields="fields">
+            <template slot="actions" slot-scope="data">
+                <router-link :to="{ name: 'CadastrarPais', params: { actionMode:'edit', selectedCountry: data.item }}">
+                <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
+              </router-link>
+            </template>
+          </b-table>
+        </div>
         <div class="d-flex justify-content-start m-3 mt-5">
           <router-link :to="{ name: 'Cadastros'}">
             <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
@@ -79,8 +64,11 @@ export default {
         { id: '08', nomePais: 'México'},
       ],
       listOfCountries: [],
-      idPais: '',
-      nomePais: '',
+      fields: [
+        { key: 'id', label: 'Código', sortable: true},
+        { key: 'nomePais', label: 'Nome', sortable: true },
+        { key: 'actions', label: 'Ações' }
+      ]
     }
   },
 /*   watch: {
