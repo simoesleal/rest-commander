@@ -62,4 +62,8 @@ export default {
 				"content content"
 				"footer footer"
 	}
+
+	.btn-voltar {
+    color: #428bca;
+  }
 </style>

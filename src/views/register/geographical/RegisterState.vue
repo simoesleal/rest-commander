@@ -1,17 +1,58 @@
 <template>
   <div>
-    <template>
+    <template  v-if="this.$route.path === '/cadastros-geografico/estado'">
       <b-container>
         <b-row class="mt-2">
-          <b-col cols="9">
-            <page-title icon="fas fa-university" main="Cadastrar Estado"></page-title>        
+          <b-col cols="12" md="9">
+            <page-title icon="fas fa-flag" main="Cadastrar Estado"></page-title>       
           </b-col>
+        </b-row>
+        <b-form class="form-panel">
+          <b-form-group
+            id="informacoes-basicas"
+            description="*Campos obrigatórios">
+              <label>Código*</label>
+              <b-form-input id="state-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="state.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
+              <label>Nome*</label>
+              <b-form-input id="state-name" class="mb-3" v-model="state.nameState" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
+              <label>UF*</label>
+              <b-form-select class="mb-3" v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
+              <label>Pais*</label>
+              <b-row>
+                <b-col cols="11">
+                  <b-form-select v-model="countrySelected" :options="countryList"></b-form-select>
+                </b-col>
+                <b-col cols="1">
+                  <router-link :to="{ name: 'CadastrarPais', params: { actionMode:'save' }}">
+                    <b-button variant="primary"><i class="fas fa-flag fa-lg"></i></b-button>
+                  </router-link>
+                </b-col>
+              </b-row>
+          </b-form-group>
+        </b-form>
+        <b-row>
+          <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
+            <div @click="backOnePage">
+                <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
+                <div class="text-uppercase font-300">Voltar</div>
+            </div>
+          </b-col>
+          <template v-if="actionMode==='save'">
+            <b-col class="d-flex justify-content-end m-3 mt-5">
+              <b-button variant="outline-primary" @click="saveRecord">Salvar</b-button>
+            </b-col>            
+          </template>
+          <template v-else>
+            <b-col class="d-flex justify-content-end m-3 mt-5">
+              <b-button class="mr-3" variant="outline-info" @click="alterRecord">Salvar Alteração</b-button>
+              <b-button variant="outline-danger" @click="deleteRecord">Excluir</b-button>
+            </b-col>
+          </template>
         </b-row>
       </b-container>
     </template>
   </div>
 </template>
-
 
 <script>
 import PageTitle from '../../../components/template/PageTitle'
@@ -21,80 +62,22 @@ export default {
   components: {
 		'page-title': PageTitle
 	},
+  props: {
+    actionMode: String,
+    selectedState: Object,
+  },
   data() {
     return {
-      estadosDB: [
-        { id: '01', nomeEstado: 'Acre', uf:'AC', idPais: '01', nomePais: 'Brasil'},
-        { id: '02', nomeEstado: 'Alagoas', uf:'AL', idPais: '01', nomePais: 'Brasil'},
-        { id: '03', nomeEstado: 'Amapá', uf:'AP', idPais: '01', nomePais: 'Brasil'},
-        { id: '04', nomeEstado: 'Amazonas', uf:'AM', idPais: '01', nomePais: 'Brasil'},
-        { id: '05', nomeEstado: 'Bahia', uf:'BA', idPais: '01', nomePais: 'Brasil'},
-        { id: '06', nomeEstado: 'Ceará', uf:'CE', idPais: '01', nomePais: 'Brasil'},
-        { id: '07', nomeEstado: 'Distrito Federal', uf:'DF', idPais: '01', nomePais: 'Brasil'},
-        { id: '08', nomeEstado: 'Espírito Santo', uf:'ES', idPais: '01', nomePais: 'Brasil'},
-        { id: '09', nomeEstado: 'Goiás', uf:'GO', idPais: '01', nomePais: 'Brasil'},
-        { id: '010', nomeEstado: 'Maranhão', uf:'MA', idPais: '01', nomePais: 'Brasil'},
-        { id: '011', nomeEstado: 'Mato Grosso', uf:'MT', idPais: '01', nomePais: 'Brasil'},
-        { id: '012', nomeEstado: 'Mato Grosso do Sul', uf:'MS', idPais: '01', nomePais: 'Brasil'},
-        { id: '013', nomeEstado: 'Minas Gerais', uf:'MG', idPais: '01', nomePais: 'Brasil'},
-        { id: '014', nomeEstado: 'Pará', uf:'PA', idPais: '01', nomePais: 'Brasil'},
-        { id: '015', nomeEstado: 'Paraíba', uf:'PB', idPais: '01', nomePais: 'Brasil'},
-        { id: '016', nomeEstado: 'Paraná', uf:'PR', idPais: '01', nomePais: 'Brasil'},
-        { id: '017', nomeEstado: 'Pernambuco', uf:'PE', idPais: '01', nomePais: 'Brasil'},
-        { id: '018', nomeEstado: 'Piauí', uf:'PI', idPais: '01', nomePais: 'Brasil'},
-        { id: '019', nomeEstado: 'Rio de Janeiro', uf:'RJ', idPais: '01', nomePais: 'Brasil'},
-        { id: '020', nomeEstado: 'Rio Grande do Norte', uf:'RN', idPais: '01', nomePais: 'Brasil'},
-        { id: '021', nomeEstado: 'Rio Grande do Sul', uf:'RS', idPais: '01', nomePais: 'Brasil'},
-        { id: '022', nomeEstado: 'Rondônia', uf:'RO', idPais: '01', nomePais: 'Brasil'},
-        { id: '023', nomeEstado: 'Roraima', uf:'RR', idPais: '01', nomePais: 'Brasil'},
-        { id: '024', nomeEstado: 'Santa Catarina', uf:'SC', idPais: '01', nomePais: 'Brasil'},
-        { id: '025', nomeEstado: 'São Paulo', uf:'SP', idPais: '01', nomePais: 'Brasil'},
-        { id: '026', nomeEstado: 'Sergipe', uf:'SE', idPais: '01', nomePais: 'Brasil'},
-        { id: '027', nomeEstado: 'Tocantins', uf:'TO', idPais: '01', nomePais: 'Brasil'},
-      ],
-      listaEstado: [],
-      idEstado: '',
-      nomeEstado: '',
-      ufEstado: '',
-      idPais: '',
-      nomePais: '',
-      alertAlteradoComSucesso: false,
-      alertCriadoComSucesso: false,
-      alertDeletadoComSucesso: false, 
-      listPais: [],
-      estadoSelected: null,
-      estadosBrasileiros: [
-        { value: null, text: 'Selecione um Estado', disabled: true },
-        { value: 'Acre', text: 'Acre' },
-        { value: 'Alagoas', text: 'Alagoas' },
-        { value: 'Amapá', text: 'Amapá' },
-        { value: 'Amazonas', text: 'Amazonas' },
-        { value: 'Bahia', text: 'Bahia' },
-        { value: 'Ceará', text: 'Ceará' },
-        { value: 'Distrito Federal', text: 'Distrito Federal' },
-        { value: 'Espírito Santo', text: 'Espírito Santo' },
-        { value: 'Goiás', text: 'Goiás' },
-        { value: 'Maranhão', text: 'Maranhão' },
-        { value: 'Mato Grosso', text: 'Mato Grosso' },
-        { value: 'Mato Grosso do Sul', text: 'Mato Grosso do Sul' },
-        { value: 'Minas Gerais', text: 'Minas Gerais' },
-        { value: 'Pará', text: 'Pará' },
-        { value: 'Paraíba', text: 'Paraíba' },
-        { value: 'Paraná', text: 'Paraná' },
-        { value: 'Pernambuco', text: 'Pernambuco' },
-        { value: 'Piauí', text: 'Piauí' },
-        { value: 'Rio de Janeiro', text: 'Rio de Janeiro' },
-        { value: 'Rio Grande do Norte', text: 'Rio Grande do Norte' },
-        { value: 'Rio Grande do Sul', text: 'Rio Grande do Sul' },
-        { value: 'Rondônia', text: 'Rondônia' },
-        { value: 'Roraima', text: 'Roraima' },
-        { value: 'Santa Catarina', text: 'Santa Catarina' },
-        { value: 'São Paulo', text: 'São Paulo' },
-        { value: 'Sergipe', text: 'Sergipe' },
-        { value: 'Tocantins', text: 'Tocantins' },
-      ],
+      state: {
+        id: 0,
+        nameState: '',
+        uf: '',
+        idCountry: '',
+        nameCountry: ''
+      },
       ufSelected: null,
-      ufEstados: [
+      countrySelected: null,
+      ufBrazilianStates: [
         { value: null, text: 'Selecione a UF' },
         { value: 'AC', text: 'AC' },
         { value: 'AL', text: 'AL' },
@@ -123,111 +106,72 @@ export default {
         { value: 'SP', text: 'SP' },
         { value: 'SE', text: 'SE' },
         { value: 'TO', text: 'TO' },
+        { value: 'XX', text: 'XX' },
       ],
-      countrySelected: null,
-      countryList: [{ value: null, text: 'Selecione o País' }, { value: 'BR', text: 'Brasil' }]
+      countryList: [
+        { value: null, text: 'Selecione o País' }, 
+        { value: 'Brasil', text: 'Brasil' },
+        { value: 'Argentina', text: 'Argentina' },
+        { value: 'Paraguai', text: 'Paraguai' },
+        { value: 'Chile', text: 'Chile' }
+      ]
+    }
+  },
+
+  computed: {
+    setInputFieldDisabled() { 
+      if(this.actionMode === 'edit') { return true } else { return false } 
+    }
+  },
+
+  mounted() {
+    if(this.selectedState) {
+      this.state = this.selectedState
+      this.ufSelected = this.state.uf
+      this.countrySelected = this.state.nameCountry
     }
   },
 
   methods: {
-    getEstados() {
-      this.listaEstado = this.estadosDB
+    backOnePage() {
+      this.$router.back()
     },
 
-    novoEstado() {
-      this.showModalNovoEstado()
+    saveRecord() {
+      console.log('saveRecord')
     },
 
-    salvarEstado() {
-      if (this.idEstado.length <= 0) {
-        alert('O campo ID do Estado é obrigátorio!')
-      } else if (this.estadoSelected === null) {
-        alert('O campo Nome do Estado é obrigátorio!')
-      } else if (this.ufSelected === null ) {
-          alert('O campo UF do Estado é obrigatório!')        
-      } else if (this.countrySelected === null ) {
-          alert('O campo Pais do Estado é obrigatório!')
-      } else {
-        console.log(this.estadoSelected)
-        const parametros = {
-          id: this.idEstado,
-          nomeEstado: this.estadoSelected,
-          uf: this.ufSelected,
-          nomePais: this.countrySelected
-        }
-        console.log(parametros)
-        this.listaEstado.push(parametros)
-        console.log(this.listaEstado)
-        this.hideModalNovoEstado()
-        this.alertCriadoComSucesso = true
-      }
-      },
-
-    alterarEstado() {
-      if (this.idEstado.length <= 0) {
-        alert('O campo ID do Estado é obrigátorio!')
-      } else if (this.estadoSelected === null) {
-        alert('O campo Nome do Estado é obrigátorio!')
-      } else if (this.ufSelected === null ) {
-          alert('O campo UF do Estado é obrigatório!')        
-      } else if (this.countrySelected === null ) {
-          alert('O campo Pais do Estado é obrigatório!')
-      } else {
-        const parametros = {
-          id: this.idEstado,
-          nomeEstado: this.nomeEstado,
-          ufEstado: this.ufSelected,
-          paisEstado: this.countrySelected
-        }
-        let index = this.listaEstado.findIndex(i => i.id === this.idEstado)
-        this.listaEstado[index] = parametros
-        this.hideModalAlterarEstado()
-        this.alertAlteradoComSucesso = true
-      }
-      
+    alterRecord() {
+      console.log('alterRecord')
     },
 
-    deletarEstado() {
-      let index = this.listaEstado.findIndex(i => i.id === this.idEstado)
-      this.listaEstado.splice(index, 1)
-      this.alertDeletadoComSucesso = true 
+    deleteRecord() {
+      console.log('deleteRecord')      
     },
 
-    showModalNovoEstado() {
-      this.$root.$emit('bv::show::modal', 'adicionar-estado', '#btnShow')      
-    },
-    hideModalNovoEstado() {
-      this.$root.$emit('bv::hide::modal', 'adicionar-estado', '#btnShow')
-      this.limparDadosReativos()
-    },
-    showModalAlterarEstado(estado) {
-      console.log('estado')
-      console.log(estado)
-      this.idEstado = estado.id
-      this.nomeEstado = estado.nomeEstado
-      this.ufSelected = estado.uf
-      this.countrySelected = estado.nomePais
-      this.$root.$emit('bv::show::modal', 'alterar-estado', '#btnShow')      
-    },
-    hideModalAlterarEstado() {
-      this.$root.$emit('bv::hide::modal', 'alterar-estado', '#btnShow')
-      this.limparDadosReativos()
-    },
-    limparDadosReativos() {
-      this.idEstado = '',
-      this.nomeEstado = '',
-      this.ufEstado = '',
-      this.idPais = '',
-      this.nomePais = '',
-      this.alertAlteradoComSucesso = false,
-      this.alertCriadoComSucesso = false
-      this.alertDeletadoComSucesso = false 
+    clearReactiveData(){
+      this.state.id = 0,
+      this.state.nameState = ''
+      this.state.uf = ''
+      this.state.idCountry = ''
+      this.state.nameCountry = ''
+      this.ufSelected = null
+      this.countrySelected = null
+      this.actionMode = ''
+      this.isFieldActive = false
     },
   }
 }
 
 </script>
 
-<style>
-
+<style scoped>
+  .form-panel {
+    flex: 1;
+    background: #FFF;
+    margin: 0px 10px;
+    padding: 20px;
+    border: 1px solid #AAA;
+    border-radius: 5px;
+  }
 </style>

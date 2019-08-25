@@ -3,7 +3,7 @@
     <template  v-if="this.$route.path === '/cadastros-geografico/pais'">
       <b-container>
         <b-row class="mt-2">
-          <b-col cols="9">
+          <b-col cols="12" md="9">
             <page-title icon="fas fa-flag" main="Cadastrar País"></page-title>       
           </b-col>
         </b-row>
@@ -18,7 +18,7 @@
           </b-form-group>
         </b-form>
         <b-row>
-          <b-col class="d-flex justify-content-start m-3 mt-5 btn-voltar">
+          <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
             <div @click="backOnePage">
                 <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
                 <div class="text-uppercase font-300">Voltar</div>
@@ -67,7 +67,7 @@ export default {
       if(this.actionMode === 'edit') { return true } else { return false } 
     }
   },
-  created() {
+  mounted() {
     if(this.selectedCountry) this.country = this.selectedCountry    
   },
   methods: {
@@ -99,10 +99,6 @@ export default {
 </script>
 
 <style scoped>
-  .btn-voltar {
-    color: #428bca;
-  }
-
   .form-panel {
     flex: 1;
     background: #FFF;

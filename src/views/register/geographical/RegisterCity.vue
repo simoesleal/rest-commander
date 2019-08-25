@@ -3,9 +3,49 @@
     <template>
       <b-container>
         <b-row class="mt-2">
-          <b-col cols="9">
-            <page-title icon="fas fa-city" main="Cadastrar Cidade"></page-title>           
+          <b-col cols="12" md="9">
+            <page-title icon="fas fa-city" main="Cadastrar Cidade"></page-title>          
           </b-col>
+        </b-row>
+        <b-form class="form-panel">
+          <b-form-group
+            id="informacoes-basicas"
+            description="*Campos obrigatórios">
+              <label>Código*</label>
+              <b-form-input id="city-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="city.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
+              <label>Nome*</label>
+              <b-form-input id="city-name" class="mb-3" v-model="city.nameCity" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
+              <label>UF*</label>
+              <b-row>
+                <b-col cols="11">
+                  <b-form-select class="mb-3" v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
+                </b-col>
+                <b-col cols="1">
+                  <router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'save' }}">
+                    <b-button variant="primary"><i class="fas fa-university fa-lg"></i></b-button>
+                  </router-link>
+                </b-col>
+              </b-row>
+          </b-form-group>
+        </b-form>
+        <b-row>
+          <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
+            <div @click="backOnePage">
+                <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
+                <div class="text-uppercase font-300">Voltar</div>
+            </div>
+          </b-col>
+          <template v-if="actionMode==='save'">
+            <b-col class="d-flex justify-content-end m-3 mt-5">
+              <b-button variant="outline-primary" @click="saveRecord">Salvar</b-button>
+            </b-col>            
+          </template>
+          <template v-else>
+            <b-col class="d-flex justify-content-end m-3 mt-5">
+              <b-button class="mr-3" variant="outline-info" @click="alterRecord">Salvar Alteração</b-button>
+              <b-button variant="outline-danger" @click="deleteRecord">Excluir</b-button>
+            </b-col>
+          </template>
         </b-row>
       </b-container>
     </template>
@@ -21,22 +61,21 @@ export default {
   components: {
 		'page-title': PageTitle
 	},
+  props: {
+    actionMode: String,
+    selectedCity: Object,
+  },
   data() {
     return {
-      cidadesDB: [
-        { id: '01', nomeCidade: 'Foz do IGuaçu', ufID: '15', uf:'PR'},
-        ],
-      listaCidade: [],
-      idCidade: '',
-      nomeCidade: '',
-      ufEstado: '',
-      ufID: '',
-      alertAlteradoComSucesso: false,
-      alertCriadoComSucesso: false,
-      alertDeletadoComSucesso: false,
+      city: {
+        id: 0,
+        nameCity: '',
+        ufID: 0,
+        uf: ''
+      },
       ufSelected: null,
-      ufEstados: [
-        { value: null, text: 'Selecione a UF', disabled: "true" },
+      ufBrazilianStates: [
+        { value: null, text: 'Selecione a UF' },
         { value: 'AC', text: 'AC' },
         { value: 'AL', text: 'AL' },
         { value: 'AP', text: 'AP' },
@@ -64,94 +103,63 @@ export default {
         { value: 'SP', text: 'SP' },
         { value: 'SE', text: 'SE' },
         { value: 'TO', text: 'TO' },
+        { value: 'XX', text: 'XX' },
       ],
+    }
+  },
+  computed: {
+    setInputFieldDisabled() { 
+      if(this.actionMode === 'edit') { return true } else { return false } 
+    }
+  },
 
+  mounted() {
+    if(this.selectedCity) {
+      this.city = this.selectedCity
+      this.ufSelected = this.city.uf
     }
   },
 
   methods: {
-    getCidades() {
-      this.listaCidade = this.cidadesDB
+    backOnePage() {
+      this.$router.back()
     },
 
-    novaCidade() {
-      this.showModalNovaCidade()
+    saveRecord() {
+      console.log('saveRecord')
     },
 
-    salvarCidade() {
-      if (this.idCidade.length <= 0) {
-        alert('O campo ID da Cidade é obrigátorio!')
-      } else if (this.nomeCidade.length <= 0) {
-        alert('O campo Nome do Cidade é obrigátorio!')
-      } else if (this.ufSelected === null ) {
-          alert('O campo UF da Cidade é obrigatório!')        
-      } else {
-        const parametros = {
-          id: this.idCidade ,
-          nomeCidade: this.nomeCidade,
-          uf: this.ufSelected,
-        }
-        this.listaCidade.push(parametros)
-        this.hideModalNovaCidade()
-        this.alertCriadoComSucesso = true
-      }
-      },
-
-    alterarCidade() {
-      if (this.nomeCidade.length <= 0) {
-        alert('O campo nome da Cidade é obrigátorio')
-      } else if (this.ufSelected === null) {
-          alert('O campo UF da Cidade é obrigatório!')        
-      } else {
-        const parametros = {
-          id: this.idCidade ,
-          nomeCidade: this.nomeCidade,
-          uf: this.ufSelected,
-        }
-        let index = this.listaCidade.findIndex(i => i.id === this.idCidade)
-        this.listaCidade[index] = parametros
-        this.hideModalAlterarCidade()
-        this.alertAlteradoComSucesso = true
-      }      
+    alterRecord() {
+      console.log('alterRecord')
     },
 
-    deletarCidade() {
-        let index = this.listaCidade.findIndex(i => i.id === this.idCidade)
-        this.listaCidade.splice(index, 1)
-        this.alertDeletadoComSucesso = true   
+    deleteRecord() {
+      console.log('deleteRecord')      
     },
 
-    showModalNovaCidade() {
-      this.$root.$emit('bv::show::modal', 'adicionar-cidade', '#btnShow')      
-    },
-    hideModalNovaCidade() {
-      this.$root.$emit('bv::hide::modal', 'adicionar-cidade', '#btnShow')
-      this.limparDadosReativos()
-    },
-    showModalAlterarCidade(cidade) {
-      this.idCidade = cidade.id
-      this.nomeCidade = cidade.nomeCidade
-      this.ufSelected = cidade.uf
-      this.$root.$emit('bv::show::modal', 'alterar-cidade', '#btnShow')      
-    },
-    hideModalAlterarCidade() {
-      this.$root.$emit('bv::hide::modal', 'alterar-cidade', '#btnShow')
-      this.limparDadosReativos()
-    },
-    limparDadosReativos() {
-      this.idCidade = '',
-      this.nomeCidade = '',
-      this.ufEstado = '',
-      this.ufID = '',
-      this.alertAlteradoComSucesso = false,
-      this.alertCriadoComSucesso = false,
-      this.alertDeletadoComSucesso = false
+    clearReactiveData(){
+      this.state.id = 0,
+      this.state.nameState = ''
+      this.state.uf = ''
+      this.state.idCountry = ''
+      this.state.nameCountry = ''
+      this.ufSelected = null
+      this.countrySelected = null
+      this.actionMode = ''
+      this.isFieldActive = false
     },
   }
 }
 
 </script>
 
-<style>
-
+<style scoped>
+  .form-panel {
+    flex: 1;
+    background: #FFF;
+    margin: 0px 10px;
+    padding: 20px;
+    border: 1px solid #AAA;
+    border-radius: 5px;
+  }
 </style>

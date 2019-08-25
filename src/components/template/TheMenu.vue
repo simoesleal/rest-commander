@@ -35,6 +35,9 @@ export default {
 	methods: {
 		onNodeSelect(node) {
 			this.$router.push({name: node.data.url})
+			if(this.$mq === 'xs' || this.$mq === 'sm') {
+				this.$store.commit('toggleMenu', false)
+			}
 		}
 	},
 	mounted() {
