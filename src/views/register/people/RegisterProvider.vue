@@ -236,8 +236,6 @@ export default {
 	mounted() {
     if(this.selectedProvider) {
       this.provider = this.selectedProvider
-			console.log('this.provider')
-			console.log(this.provider)
     }
   },
 

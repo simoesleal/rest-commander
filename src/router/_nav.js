@@ -1,6 +1,7 @@
 const treeData = [{
 	text: 'Cadastros',
 	state: { expanded: false }, 
+	data: { icon: 'fas fa-cog', url:'Financeiro' },
 	children: [
 		{ text: 'Geográfico',
 			data: { icon: 'fas fa-globe-americas', url:'Cadastros' },
@@ -48,8 +49,224 @@ const treeData = [{
 					url: 'ConsultarClientes'	} 
 				},
 			]
+		},
+		{ text: 'Estrutural',
+			data: { icon: 'fas fa-shapes', url:'CadastrosEstruturais' },
+			children: [
+				{
+					text: 'Mesa',
+					data: { 
+					icon: 'fab fa-buromobelexperte',
+					url: 'ConsultarMesas'	}
+				},
+				{
+					text: 'Funcao',
+					data: { 
+					icon: 'fab fa-black-tie',
+					url: 'ConsultarFuncoes'	}
+				},
+				{
+					text: 'NCM',
+					data: { 
+					icon: 'fab fa-creative-commons-nc',
+					url: 'ConsultarNCM'	}
+				},
+				{
+					text: 'CEST',
+					data: { 
+					icon: 'fab fa-creative-commons-nc',
+					url: 'ConsultarCEST'	}
+				},
+				{
+					text: 'CST PIS/COFINS',
+					data: { 
+					icon: 'fab fa-creative-commons-nc',
+					url: 'ConsultarCstPisCofins'	}
+				},
+				{
+					text: 'CST/CSOSN',
+					data: { 
+					icon: 'fab fa-creative-commons-nc',
+					url: 'ConsultarCstCsosn'	}
+				},
+				{
+					text: 'CFOP',
+					data: { 
+					icon: 'fab fa-creative-commons-nc',
+					url: 'ConsultarCfop'	}
+				},
+				{
+					text: 'Moeda',
+					data: { 
+					icon: 'fas fa-money-bill-alt',
+					url: 'ConsultarMoeda'	}
+				},
+				{
+					text: 'Cotacao',
+					data: { 
+					icon: 'fas fa-money-bill-alt',
+					url: 'ConsultarCotacao'	}
+				}
+			]
+		},
+		{ text: 'Financeiro',
+			data: { icon: 'fas fa-coins', url:'CadastrosFinanceiro' },
+			children: [
+				{
+					text: 'Conta Bancaria',
+					data: { 
+					icon: 'fas fa-piggy-bank',
+					url: 'ConsultarContasBancarias'	}
+				},
+				{
+					text: 'Grupo de Custo',
+					data: { 
+					icon: 'fas fa-layer-group',
+					url: 'ConsultarGruposDeCusto'	}
+				},
+				{
+					text: 'Fomras de Pagamento',
+					data: { 
+					icon: 'fas fa-money-check-alt',
+					url: 'ConsultarFormasDePagamento'	}
+				},
+			]
+		},
+		{ text: 'Estoque',
+			data: { icon: 'fas fa-boxes', url:'CadastrosEstoque' },
+			children: [
+			{
+				text: 'Insumos',
+				data: { 
+				icon: 'fas fa-bread-slice',
+				url: 'ConsultarInsumos'	}
+			},
+			{
+				text: 'Grupo de insumo',
+				data: { 
+				icon: 'fas fa-bread-slice',
+				url: 'ConsultarGrupoDeInsumos'	}
+			},
+			{
+				text: 'Produtos',
+				data: { 
+				icon: 'fas fa-hamburger',
+				url: 'ConsultarProdutos'	}
+			},
+			{
+				text: 'Grupo de produtos',
+				data: { 
+				icon: 'fas fa-hamburger',
+				url: 'ConsultarGrupoDeProdutos'	}
+			},			
+			]
+		},
+	]
+},
+{
+	text: 'PDV',
+	state: { expanded: false },
+	data: { icon: 'fas fa-cash-register', url:'Pdv' },
+	children: [
+		{
+			text: 'Mesas',
+			data: { 
+			icon: 'fab fa-buromobelexperte',
+			url: 'listagemDeMesas'	}
+		},
+		{
+			text: 'Caixa',
+			data: { 
+			icon: 'fas fa-cash-register',
+			url: 'LancamentoCaixa'	}
+		},
+		{
+			text: 'Novo Pedido',
+			data: { 
+			icon: 'far fa-edit',
+			url: 'LancamentoDePedido'	}
 		}
 	]
-}]
+},
+{
+	text: 'Financeiro',
+	state: { expanded: false },
+	data: { icon: 'fas fa-coins', url:'Financeiro' },
+	children: [
+		{
+			text: 'Contas à Pagar',
+			data: { 
+			icon: 'fas fa-file-invoice',
+			url: 'ContasPagar' },
+			children: [
+				{
+					text: 'Duplicatas a Pagar',
+					data: { 
+					icon: 'fas fa-file',
+					url: 'consultarDuplicataPagar'	}
+				},
+				{
+					text: 'Alterar Duplicata',
+					data: { 
+					icon: 'fas fa-file',
+					url: 'alterarDuplicataPagar'	}
+				}
+			]
+		},
+		{
+			text: 'Contas à Receber',
+			data: { 
+			icon: 'fas fa-file-invoice-dollar',
+			url: 'ContasReceber'},
+			children: [
+				{
+					text: 'Duplicatas a Receber',
+					data: { 
+					icon: 'fas fa-file',
+					url: 'consultarDuplicataReceber'	}
+				},
+				{
+					text: 'Criar Parcelamento',
+					data: { 
+					icon: 'fas fa-calculator',
+					url: 'criarParcelamentoReceber'	}
+				}
+			]
+		},
+		{
+			text: 'Relatórios',
+			data: { 
+			icon: 'far fa-file-pdf',
+			url: 'relatorios'	}
+		}
+	]
+},
+{
+	text: 'Estoque',
+	state: { expanded: false },
+	data: { icon: 'fas fa-warehouse', url:'Estoque' },
+	children: [
+		{
+			text: 'Movimentações de Estoque',
+			data: { 
+			icon: 'fas fa-people-carry',
+			url: 'movimentarEstoque'	}
+		},
+		{
+			text: 'Fechamento Mensal',
+			data: { 
+			icon: 'far fa-calendar-times	',
+			url: 'fechamentoEstoqueMensal'	}
+		},
+		{
+			text: 'Relatórios',
+			data: { 
+			icon: 'far fa-file-pdf',
+			url: 'relatorios'	}
+		}
+	]
+},
+
+]
 
 export default treeData

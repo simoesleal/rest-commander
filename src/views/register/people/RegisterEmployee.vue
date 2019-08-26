@@ -236,8 +236,6 @@ export default {
 	mounted() {
     if(this.selectedEmployee) {
       this.employee = this.selectedEmployee
-			console.log('this.employee')
-			console.log(this.employee)
     }
   },
 

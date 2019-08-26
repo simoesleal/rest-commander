@@ -8,23 +8,45 @@ import Router from 'vue-router'
 const Dashboard = () => import(/* webpackChunkName: "main" */ '../views/Dashboard')
 const TheContent = () => import(/* webpackChunkName: "main" */ '../components/template/TheContent')
 
-// Cadastros
-const RegisterGeography = () => import(/* webpackChunkName: "main" */ '../views/register/geographical/RegisterGeography')
-const RegisterCountry = () => import(/* webpackChunkName: "main" */ '../views/register/geographical/RegisterCountry')
-const RegisterState = () => import(/* webpackChunkName: "main" */ '../views/register/geographical/RegisterState')
-const RegisterCity = () => import(/* webpackChunkName: "main" */ '../views/register/geographical/RegisterCity')
-const ConsultCountry = () => import(/* webpackChunkName: "main" */ '../views/register/geographical/ConsultCountry')
-const ConsultState = () => import(/* webpackChunkName: "main" */ '../views/register/geographical/ConsultState')
-const ConsultCity = () => import(/* webpackChunkName: "main" */ '../views/register/geographical/ConsultCity')
+// Cadastros Geograficos
+const RegisterGeography = () => import(/* webpackChunkName: "register-geograpgy" */ '../views/register/geographical/RegisterGeography')
+const RegisterCountry = () => import(/* webpackChunkName: "register-geograpgy" */ '../views/register/geographical/RegisterCountry')
+const RegisterState = () => import(/* webpackChunkName: "register-geograpgy" */ '../views/register/geographical/RegisterState')
+const RegisterCity = () => import(/* webpackChunkName: "register-geograpgy" */ '../views/register/geographical/RegisterCity')
+const ConsultCountry = () => import(/* webpackChunkName: "register-geograpgy" */ '../views/register/geographical/ConsultCountry')
+const ConsultState = () => import(/* webpackChunkName: "register-geograpgy" */ '../views/register/geographical/ConsultState')
+const ConsultCity = () => import(/* webpackChunkName: "register-geograpgy" */ '../views/register/geographical/ConsultCity')
 
+// Cadastros de Pessoas
+const RegisterPeople = () => import(/* webpackChunkName: "register-people" */ '../views/register/people/RegisterPeople')
+const ConsultEmployee = () => import(/* webpackChunkName: "register-people" */ '../views/register/people/ConsultEmployee')
+const ConsultProvider = () => import(/* webpackChunkName: "register-people" */ '../views/register/people/ConsultProvider')
+const ConsultCustomer = () => import(/* webpackChunkName: "register-people" */ '../views/register/people/ConsultCustomer')
+const RegisterEmployee = () => import(/* webpackChunkName: "register-people" */ '../views/register/people/RegisterEmployee')
+const RegisterProvider = () => import(/* webpackChunkName: "register-people" */ '../views/register/people/RegisterProvider')
+const RegisterCustomer = () => import(/* webpackChunkName: "register-people" */ '../views/register/people/RegisterCustomer')
 
-const RegisterPeople = () => import(/* webpackChunkName: "main" */ '../views/register/people/RegisterPeople')
-const ConsultEmployee = () => import(/* webpackChunkName: "main" */ '../views/register/people/ConsultEmployee')
-const ConsultProvider = () => import(/* webpackChunkName: "main" */ '../views/register/people/ConsultProvider')
-const ConsultCustomer = () => import(/* webpackChunkName: "main" */ '../views/register/people/ConsultCustomer')
-const RegisterEmployee = () => import(/* webpackChunkName: "main" */ '../views/register/people/RegisterEmployee')
-const RegisterProvider = () => import(/* webpackChunkName: "main" */ '../views/register/people/RegisterProvider')
-const RegisterCustomer = () => import(/* webpackChunkName: "main" */ '../views/register/people/RegisterCustomer')
+// Cadastros de Estrutura
+const RegisterStructure = () => import(/* webpackChunkName: "register-people" */ '../views/register/structural/RegisterStructure')
+const ConsultTables = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultTables')
+const ConsultRoles = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultRoles')
+const ConsultNcm = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultNcm')
+const ConsultCest = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCest')
+const ConsultCstPisCofins = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCstPisCofins')
+const ConsultCstCsosn = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCstCsosn')
+const ConsultCfop = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCfop')
+const ConsultQuotation = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultQuotation')
+const ConsultCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCoin')
+const RegisterCest = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCest')
+const RegisterCfop = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCfop')
+const RegisterCstCsosn = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCstCsosn')
+const RegisterCstPisCofins = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCstPisCofins')
+const RegisterNcm = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterNcm')
+const RegisterQuotation = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterQuotation')
+const RegisterRoles = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterRoles')
+const RegisterTable = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterTable')
+const RegisterCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCoin')
+
 
 Vue.use(Router)
 
@@ -116,6 +138,113 @@ export default new Router({
       component: RegisterCustomer,
       props: true
       }]
-  }],
+    },
+    {
+      path: 'cadastro-estrutural',
+      name: 'CadastrosEstruturais',
+      component: RegisterStructure,
+      children: [
+      {
+        path: 'mesas',
+        name: 'ConsultarMesas',
+        component: ConsultTables
+      },
+      {
+        path: 'funcoes',
+        name: 'ConsultarFuncoes',
+        component: ConsultRoles
+      },
+      {
+        path: 'ncms',
+        name: 'ConsultarNCM',
+        component: ConsultNcm
+      },
+      {
+        path: 'cestes',
+        name: 'ConsultarCEST',
+        component: ConsultCest
+      },
+      {
+        path: 'cst-pis-cofins-consulta',
+        name: 'ConsultarCstPisCofins',
+        component: ConsultCstPisCofins
+      },
+      {
+        path: 'cst-csosn-consulta',
+        name: 'ConsultarCstCsosn',
+        component: ConsultCstCsosn
+      },
+      {
+        path: 'cfops',
+        name: 'ConsultarCfop',
+        component: ConsultCfop
+      },
+      {
+        path: 'cotacoes',
+        name: 'ConsultarCotacao',
+        component: ConsultQuotation
+      },
+      {
+        path: 'moedas',
+        name: 'ConsultarMoeda',
+        component: ConsultCoin
+      },
+      {
+        path: 'cest',
+        name: 'CadastrarCest',
+        component: RegisterCest,
+        props: true
+      },
+      {
+        path: 'cfop',
+        name: 'CadastrarCfop',
+        component: RegisterCfop,
+        props: true
+      },
+      {
+        path: 'cst-csosn-registro',
+        name: 'CadastrarCstCsosn',
+        component: RegisterCstCsosn,
+        props: true
+      },
+      {
+        path: 'cst-pis-cofins-registro',
+        name: 'CadastrarCstPisCofins',
+        component: RegisterCstPisCofins,
+        props: true
+      },
+      {
+        path: 'ncm',
+        name: 'CadastrarNcm',
+        component: RegisterNcm,
+        props: true
+      },
+      {
+        path: 'cotacao',
+        name: 'CadastrarCotacao',
+        component: RegisterQuotation,
+        props: true
+      },
+      {
+        path: 'funcao',
+        name: 'CadastrarFuncao',
+        component: RegisterRoles,
+        props: true
+      },
+      {
+        path: 'mesa',
+        name: 'CadastrarMesa',
+        component: RegisterTable,
+        props: true
+      },
+      {
+        path: 'moeda',
+        name: 'CadastrarMoeda',
+        component: RegisterCoin,
+        props: true
+      }
+      ]
+    }
+  ],
   }],
 })
