@@ -232,8 +232,6 @@ export default {
 	mounted() {
     if(this.selectedCustomer) {
       this.customer = this.selectedCustomer
-			console.log('this.provider')
-			console.log(this.customer)
     }
   },
 

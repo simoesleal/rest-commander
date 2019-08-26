@@ -4,7 +4,7 @@
       <b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
-            <page-title icon="fas fa-city" main="Consultar Cidade"></page-title>           
+            <page-title icon="fas fa-city" main="Consultar Cidades"></page-title>           
           </b-col>
         </b-row>
         <b-row class="justify-content-md-center mt-3">
