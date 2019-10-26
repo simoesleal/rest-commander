@@ -157,31 +157,31 @@ export default new Router({
         name: 'ConsultarFuncoes',
         component: ConsultRoles
       },
-      {
+      /* {
         path: 'ncms',
         name: 'ConsultarNCM',
         component: ConsultNcm
-      },
-      {
+      }, */
+     /*  {
         path: 'cestes',
         name: 'ConsultarCEST',
         component: ConsultCest
-      },
-      {
+      }, */
+      /* {
         path: 'cst-pis-cofins-consulta',
         name: 'ConsultarCstPisCofins',
         component: ConsultCstPisCofins
-      },
-      {
+      }, */
+      /* {
         path: 'cst-csosn-consulta',
         name: 'ConsultarCstCsosn',
         component: ConsultCstCsosn
-      },
-      {
+      }, */
+     /*  {
         path: 'cfops',
         name: 'ConsultarCfop',
         component: ConsultCfop
-      },
+      }, */
       {
         path: 'cotacoes',
         name: 'ConsultarCotacao',
@@ -192,36 +192,36 @@ export default new Router({
         name: 'ConsultarMoeda',
         component: ConsultCoin
       },
-      {
+      /* {
         path: 'cest',
         name: 'CadastrarCest',
         component: RegisterCest,
         props: true
-      },
-      {
+      }, */
+      /* {
         path: 'cfop',
         name: 'CadastrarCfop',
         component: RegisterCfop,
         props: true
-      },
-      {
+      }, */
+      /* {
         path: 'cst-csosn-registro',
         name: 'CadastrarCstCsosn',
         component: RegisterCstCsosn,
         props: true
-      },
-      {
+      }, */
+      /* {
         path: 'cst-pis-cofins-registro',
         name: 'CadastrarCstPisCofins',
         component: RegisterCstPisCofins,
         props: true
-      },
-      {
+      } */,
+      /* {
         path: 'ncm',
         name: 'CadastrarNcm',
         component: RegisterNcm,
         props: true
-      },
+      }, */
       {
         path: 'cotacao',
         name: 'CadastrarCotacao',

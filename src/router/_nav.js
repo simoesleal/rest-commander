@@ -65,36 +65,36 @@ const treeData = [{
 					icon: 'fab fa-black-tie',
 					url: 'ConsultarFuncoes'	}
 				},
-				{
+				/* {
 					text: 'NCM',
 					data: { 
 					icon: 'fab fa-creative-commons-nc',
 					url: 'ConsultarNCM'	}
-				},
-				{
+				}, */
+				/* {
 					text: 'CEST',
 					data: { 
 					icon: 'fab fa-creative-commons-nc',
 					url: 'ConsultarCEST'	}
-				},
-				{
+				}, */
+				/* {
 					text: 'CST PIS/COFINS',
 					data: { 
 					icon: 'fab fa-creative-commons-nc',
 					url: 'ConsultarCstPisCofins'	}
-				},
-				{
+				}, */
+				/* {
 					text: 'CST/CSOSN',
 					data: { 
 					icon: 'fab fa-creative-commons-nc',
 					url: 'ConsultarCstCsosn'	}
-				},
-				{
+				}, */
+				/* {
 					text: 'CFOP',
 					data: { 
 					icon: 'fab fa-creative-commons-nc',
 					url: 'ConsultarCfop'	}
-				},
+				}, */
 				{
 					text: 'Moeda',
 					data: { 
@@ -135,7 +135,7 @@ const treeData = [{
 		{ text: 'Estoque',
 			data: { icon: 'fas fa-boxes', url:'CadastrosEstoque' },
 			children: [
-			{
+			/* {
 				text: 'Insumos',
 				data: { 
 				icon: 'fas fa-bread-slice',
@@ -146,7 +146,7 @@ const treeData = [{
 				data: { 
 				icon: 'fas fa-bread-slice',
 				url: 'ConsultarGrupoDeInsumos'	}
-			},
+			}, */
 			{
 				text: 'Produtos',
 				data: { 
