@@ -47,6 +47,9 @@ const RegisterRoles = () => import(/* webpackChunkName: "register-structure" */ 
 const RegisterTable = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterTable')
 const RegisterCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCoin')
 
+const Tables = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/Tables')
+const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
+
 
 Vue.use(Router)
 
@@ -244,6 +247,16 @@ export default new Router({
         props: true
       }
       ]
+    },
+    {
+      path: 'mesas',
+      name: 'Mesas',
+      component: Tables,
+    },
+    {
+      path: 'novo-pedido',
+      name: 'NovoPedido',
+      component: NewOrder,
     }
   ],
   }],

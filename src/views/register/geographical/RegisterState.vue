@@ -13,19 +13,41 @@
             description="*Campos obrigatórios">
               <label>Código*</label>
               <b-form-input id="state-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="state.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
-              <label>Nome*</label>
-              <b-form-input id="state-name" class="mb-3" v-model="state.nameState" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
+              <label>Estado*</label>
+              <b-form-input id="state-name" class="mb-3" v-model="state.nome" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
               <label>UF*</label>
-              <b-form-select class="mb-3" v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
-              <label>Pais*</label>              
-              <b-input-group>
-                <b-form-select v-model="countrySelected" :options="countryList"></b-form-select>
-                <b-input-group-append>
-                  <router-link :to="{ name: 'CadastrarPais', params: { actionMode:'save' }}">
-                    <b-button variant="primary"><i class="fas fa-flag fa-lg"></i></b-button>
+              <b-form-input id="state-uf" class="mb-3" v-model="state.uf" required type="text" placeholder="Exemplo: PR"></b-form-input>   
+             <!--  <v-select
+                class="mb-3" 
+                v-model="ufSelected"
+                :required="!ufSelected" 
+                label="text" 
+                :options="ufBrazilianStates">
+                  <template slot="no-options">Desculpe, não há opções correspondentes!</template>        
+              </v-select> -->
+              <label>Pais*</label>
+              <b-row>
+                <b-col cols="11">
+                  <v-select
+                    class="mb-3" 
+                    v-model="countrySelected"
+                    :required="!countrySelected" 
+                    label="text" 
+                    :options="countryList">
+                    <template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
+                      <router-link :to="{ name: 'CadastrarPais', params: { actionMode:'save' }}">
+                        <b-button variant="primary"><i class="fas fa-flag"></i></b-button>
+                      </router-link>
+                    </template>
+                  </v-select>
+                </b-col>  
+                <b-col cols="1" class="btn-new-register">
+                  <router-link :to="{ name: 'ConsultarPais', params: { actionMode:'save' }}">
+                   <b-button variant="primary"><i class="fas fa-flag fa-sm"></i></b-button>
                   </router-link>
-                </b-input-group-append>
-              </b-input-group>
+                </b-col>  
+              </b-row>        
+                
           </b-form-group>
         </b-form>
         <b-row>
@@ -53,12 +75,12 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
-
 export default {
   name: 'CrudEstado',
   components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
 	},
   props: {
     actionMode: String,
@@ -68,51 +90,13 @@ export default {
     return {
       state: {
         id: 0,
-        nameState: '',
+        nome: '',
         uf: '',
-        idCountry: '',
-        nameCountry: ''
+        paisId: 0,
+        paisNome: ''
       },
-      ufSelected: null,
       countrySelected: null,
-      ufBrazilianStates: [
-        { value: null, text: 'Selecione a UF' },
-        { value: 'AC', text: 'AC' },
-        { value: 'AL', text: 'AL' },
-        { value: 'AP', text: 'AP' },
-        { value: 'AM', text: 'AM' },
-        { value: 'BA', text: 'BA' },
-        { value: 'CE', text: 'CE' },
-        { value: 'DF', text: 'DF' },
-        { value: 'ES', text: 'ES' },
-        { value: 'GO', text: 'GO' },
-        { value: 'MA', text: 'MA' },
-        { value: 'MT', text: 'MT' },
-        { value: 'MS', text: 'MS' },
-        { value: 'MG', text: 'MG' },
-        { value: 'PA', text: 'PA' },
-        { value: 'PB', text: 'PB' },
-        { value: 'PR', text: 'PR' },
-        { value: 'PE', text: 'PE' },
-        { value: 'PI', text: 'PI' },
-        { value: 'RJ', text: 'RJ' },
-        { value: 'RN', text: 'RN' },
-        { value: 'RS', text: 'RS' },
-        { value: 'RO', text: 'RO' },
-        { value: 'RR', text: 'RR' },
-        { value: 'SC', text: 'SC' },
-        { value: 'SP', text: 'SP' },
-        { value: 'SE', text: 'SE' },
-        { value: 'TO', text: 'TO' },
-        { value: 'XX', text: 'XX' },
-      ],
-      countryList: [
-        { value: null, text: 'Selecione o País' }, 
-        { value: 'Brasil', text: 'Brasil' },
-        { value: 'Argentina', text: 'Argentina' },
-        { value: 'Paraguai', text: 'Paraguai' },
-        { value: 'Chile', text: 'Chile' }
-      ]
+      countryList: [],
     }
   },
 
@@ -123,10 +107,20 @@ export default {
   },
 
   mounted() {
-    if(this.selectedState) {
-      this.state = this.selectedState
-      this.ufSelected = this.state.uf
-      this.countrySelected = this.state.nameCountry
+    if(this.selectedState && this.selectedState.item) {
+      this.state = this.selectedState.item
+      this.countrySelected = {value: this.state.paisId, text: `${this.state.paisNome}`}
+    } else {
+      this.getInfos()
+    }
+  },
+
+  watch: {
+    countrySelected() {
+      if (this.countrySelected) this.state.paisId = this.countrySelected.value
+      if (this.countrySelected === null) {
+        this.getInfos()
+      }
     }
   },
 
@@ -135,30 +129,85 @@ export default {
       this.$router.back()
     },
 
-    saveRecord() {
-      console.log('saveRecord')
+    async getInfos() {
+			let response, countryList
+			try {
+				response = await RestConnection.get('paises/consultar/pais')
+				countryList = response.data.conteudo			 
+				for (let i = 0; i < countryList.length; i++) {
+					this.countryList.push({value: countryList[i].id, text: `${countryList[i].sigla} - ${countryList[i].nomePt}`})
+				}
+			} catch (error) {
+				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes.")
+        this.backOnePage()
+			}
+		},
+
+    async saveRecord() {
+      let response
+      let parameters = {
+        name: this.state.nome,
+        uf: this.state.uf,
+        ibge: 0,
+        pais: this.state.paisId
+      }
+      try {
+        response = await RestConnection.post('estados/cadastrar/estado/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Salvar este Estado.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    alterRecord() {
-      console.log('alterRecord')
+    async alterRecord() {
+      let response
+      let parameters = {
+        id: this.state.id,
+        name: this.state.nome,
+        uf: this.state.uf,
+        ibge: 0,
+        pais: this.state.paisId
+      }
+      try {
+        response = await RestConnection.put('estados/atualizar/estado/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Atualizar este Estado.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    deleteRecord() {
-      console.log('deleteRecord')      
-    },
-
-    clearReactiveData(){
-      this.state.id = 0,
-      this.state.nameState = ''
-      this.state.uf = ''
-      this.state.idCountry = ''
-      this.state.nameCountry = ''
-      this.ufSelected = null
-      this.countrySelected = null
-      this.actionMode = ''
-      this.isFieldActive = false
-    },
-  }
+    async deleteRecord() {
+      let response
+      try {
+          response = await RestConnection.delete('estados/deletar/estado/' + this.state.id)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Deletar este estado.')
+            }
+        }
+      alert(response.data.mensagem)
+      this.backOnePage()    
+    }
+  },
 }
 
 </script>
+
+<style scoped>
+  .btn-new-register {
+    position: relative;
+    margin-left:-30px;
+  }
+</style>

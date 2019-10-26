@@ -9,7 +9,7 @@
               <label>Código*</label>
               <b-form-input id="quotation-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="table.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>Número da Mesa</label>
-							<b-form-input id="quotation" class="mb-3" v-model="table.tableNumber" required type="text" placeholder="Exemplo: 01"></b-form-input>
+							<b-form-input id="quotation" class="mb-3" v-model="table.numero" required type="text" placeholder="Exemplo: 01"></b-form-input>
           </b-form-group>
         </b-form>
 				<b-row>
@@ -36,6 +36,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -51,7 +52,7 @@ export default {
     return {
       table: {
         id: 0,
-        tableNumber: '',
+        numero: '',
       },
     }
   },
@@ -70,21 +71,58 @@ export default {
       this.$router.back()
     },
 
-    saveRecord() {
-      console.log('saveRecord')
+    async saveRecord() {
+      let response
+      let parameters = {
+        number: this.table.numero
+      }
+      try {
+        response = await RestConnection.post('mesas/cadastrar/mesa/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Salvar esta Mesa.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    alterRecord() {
-      console.log('alterRecord')
+    async alterRecord() {
+      let response
+      let parameters = {
+        id: this.table.id,
+        number: this.table.numero
+      }
+      try {
+        response = await RestConnection.put('mesas/atualizar/mesa/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível Atualizar esta Mesa.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    deleteRecord() {
-      console.log('deleteRecord')      
+    async deleteRecord() {
+      let response
+      try {
+          response = await RestConnection.delete('mesas/deletar/mesa/' + this.table.id)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Deletar esta mesa.')
+            }
+        }
+      alert(response.data.mensagem)
+      this.backOnePage()    
+      }   
     },
-
-    clearReactiveData(){
-    },
-  }
 }
 </script>
 

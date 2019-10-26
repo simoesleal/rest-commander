@@ -10,9 +10,9 @@
         <b-row class="mt-3">
           <b-col cols="12" md="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: Caixa"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: Caixa"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getRoles"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,35 +54,54 @@ export default {
 	data() {
 		return {
 			listOfRoles: [],
-			rolesDBReturn: [
-				{
-					id: '01',
-					description: 'Administrador',
-				},
-				{
-					id: '02',
-					description: 'Caixa',
-				},
-				{
-					id: '03',
-					description: 'Garçom',
-				},
-			],
+      searchItem: '',
 			fields: [
 				{
 					key: 'id', label: 'Código', sortable: true
 				},
 				{
-					key: 'description', label: 'Função', sortable: true
+					key: 'nome', label: 'Função', sortable: true
 				},
 				{ key: 'actions', label: 'Ações' }
 			]
 		}
 	},
 	methods: {
-		getRoles() {
-			this.listOfRoles = this.rolesDBReturn
-		}
+    getItem () {
+      if (this.searchItem.length === 0) {
+        this.getOccupationList()
+      } else {
+        this.getOccupationByName(this.searchItem)
+      }
+    },
+
+    async getOccupationList () {
+      let response
+      try {
+        response = await RestConnection.get('funcoes/consultar/funcao')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Funções.")
+          }
+      }
+      this.listOfRoles = response.data.conteudo
+    },
+
+    async getOccupationByName (searchItem) {
+      let response
+      try {
+          response = await RestConnection.get('funcoes/consultar/funcao/descricao/' + searchItem)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Nenhum Função com este nome encontrado.')
+            }
+        }
+        this.listOfRoles = response.data.conteudo
+      }
 	}
 
 }

@@ -10,9 +10,9 @@
         <b-row class="mt-3">
           <b-col cols="12" md="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: Bitcoin"></b-form-input>
+              <b-form-input :disabled="true" placeholder="Exemplo: Bitcoin"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getQuotation"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getQuotationList"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,50 +54,37 @@ export default {
 	data() {
 		return {
 			listOfQuotation: [],
-			quotationDBReturn: [
-				{
-					id: '01',
-					coin: 'dolar',
-					symbol: "U$",
-					currentQuotation: '4.00',
-          dataOfCreation: '2019-08-25 10:00:00',
-				},
-				{
-					id: '02',
-					coin: 'peso',
-					symbol: "P$",
-					currentQuotation: '0.21',
-          dataOfCreation: '2019-08-23 10:00:00',
-				},
-				{
-					id: '03',
-					coin: 'bitcoin',
-					symbol: "₿",
-					currentQuotation: '43296.07',
-          dataOfCreation: '2019-08-25 20:00:00',
-				},
-			],
 			fields: [
 				{
 					key: 'id', label: 'Código', sortable: true
 				},
 				{
-					key: 'currentQuotation', label: 'Cotação', sortable: true
+					key: 'cotacao', label: 'Cotação', sortable: true
 				},			
 				{
-					key: 'symbol', label: '$$', sortable: true
+					key: 'simbolo', label: '$$', sortable: true
 				},			
 				{
-					key: 'coin', label: 'Moeda', sortable: true
+					key: 'nomeMoeda', label: 'Moeda', sortable: true
 				},			
 				{ key: 'actions', label: 'Ações' }
 			]
 		}
 	},
 	methods: {
-		getQuotation() {
-			this.listOfQuotation = this.quotationDBReturn
-		}
+		async getQuotationList () {
+      let response
+      try {
+        response = await RestConnection.get('cotacoes/consultar/')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Cotações.")
+          }
+      }
+      this.listOfQuotation = response.data.conteudo
+    },
 	}
 
 }

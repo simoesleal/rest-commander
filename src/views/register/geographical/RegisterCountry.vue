@@ -13,8 +13,10 @@
             description="*Campos obrigatórios">
               <label>Código*</label>
               <b-form-input id="country-id" class="mb-2" :disabled="setInputFieldDisabled" v-model="country.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
-              <label>Nome*</label>
-              <b-form-input id="country-name" class="mb-3" v-model="country.nomePais" required type="text" placeholder="Exemplo: Brasil"></b-form-input>
+              <label>País*</label>
+              <b-form-input id="country-name" class="mb-3" v-model="country.nomePt" required type="text" placeholder="Exemplo: Brasil"></b-form-input>
+              <label>Sigla*</label>
+              <b-form-input id="country-sigla" class="mb-3" v-model="country.sigla" required type="text" placeholder="Exemplo: BR"></b-form-input>
           </b-form-group>
         </b-form>
         <b-row>
@@ -33,6 +35,8 @@
             <b-col class="d-flex justify-content-end m-3 mt-5">
               <b-button class="mr-3" variant="outline-info" @click="alterRecord">Salvar Alteração</b-button>
               <b-button variant="outline-danger" @click="deleteRecord">Excluir</b-button>
+              <next-vue-button
+              />
             </b-col>
           </template>
         </b-row>
@@ -43,12 +47,15 @@
 
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
+import NextVueButton from 'next-vue-button'
 
 export default {
   name: 'CrudPais',
   components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
+    'next-vue-button': NextVueButton
 	},
   props: {
     actionMode: String,
@@ -58,7 +65,8 @@ export default {
     return {
       country: {
         id: 0,
-        nomePais: ''
+        nomePt: '',
+        sigla: '',
       }
     }
   },
@@ -77,24 +85,60 @@ export default {
       this.$router.back()
     },
 
-    saveRecord() {
-      console.log('saveRecord')
+    async saveRecord() {
+      let response
+      let parameters = {
+        name: this.country.nomePt,
+        initials: this.country.sigla
+      }
+      try {
+        response = await RestConnection.post('paises/cadastrar/pais/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Salvar este país.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    alterRecord() {
-      console.log('alterRecord')
+    async alterRecord() {
+      let response
+      let parameters = {
+        id: this.country.id,
+        name: this.country.nomePt,
+        initials: this.country.sigla
+      }
+      try {
+        response = await RestConnection.put('paises/atualizar/pais/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível Atualizar este país.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    deleteRecord() {
-      console.log('deleteRecord')      
-    },
-
-    clearReactiveData(){
-      this.country.id = 0,
-      this.country.nome = ''
-      this.actionMode = ''
-      this.isFieldActive = false
-    },
+    async deleteRecord() {
+      let response
+      try {
+          response = await RestConnection.delete('paises/deletar/pais/' + this.country.id)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Deletar este país.')
+            }
+        }
+        this.listOfCountries = response.data.conteudo   
+      alert(response.data.mensagem)
+      this.backOnePage()    
+    }
   }
 }
 

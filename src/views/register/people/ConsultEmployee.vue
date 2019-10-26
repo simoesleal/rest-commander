@@ -10,9 +10,9 @@
         <b-row class="justify-content-md-center mt-3">
           <b-col cols="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: Ana"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: Ana"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getEmployees"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,23 +54,10 @@ export default {
   data() {
     return {
       listOfEmployees: [],
-      employeesReturnDB: [
-        {
-          id: '01',
-          name: 'Antonio Simões Leal Neto',
-          cpf: '093.511.909-43',
-          status: 'ativo',        
-        },
-        {
-          id: '02',
-          name: 'Gustavo Machado Simões Leal',
-          cpf: '093.511.909-42',
-          status: 'inativo',        
-        }
-      ],
+      searchItem: '',
       fields: [
         { key: 'id', label: 'Código', sortable: true},
-        { key: 'name', label: 'Nome', sortable: true },
+        { key: 'nome', label: 'Nome', sortable: true },
         { key: 'cpf', label: 'CPF' },
         { key: 'status', label: 'Situação' },
         { key: 'actions', label: 'Ações' }
@@ -78,11 +66,43 @@ export default {
   },
 
   methods: {
-    getEmployees() {
-      this.listOfEmployees = this.employeesReturnDB
-    }
-  }
 
+    getItem () {
+      if (this.searchItem.length === 0) {
+        this.getEmployeeList()
+      } else {
+        this.getEmployeeByName(this.searchItem)
+      }
+    },
+
+    async getEmployeeList () {
+      let response
+      try {
+        response = await RestConnection.get('funcionarios/consultar/funcionario')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Funcionários.")
+          }
+      }
+      this.listOfEmployees = response.data.conteudo
+    },
+
+    async getEmployeeByName (searchItem) {
+      let response
+      try {
+          response = await RestConnection.get('funcionarios/consultar/funcionario/nome/' + searchItem)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Nenhum Funcionário com este nome encontrado.')
+            }
+        }
+        this.listOfEmployees = response.data.conteudo
+      }
+  }
 }
 </script>
 

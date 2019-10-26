@@ -10,9 +10,9 @@
         <b-row class="mt-3">
           <b-col cols="12" md="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: Brasil"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: Brasil"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getCountries"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -31,12 +31,14 @@
             </template>
           </b-table>
         </div>
-        <div class="d-flex justify-content-start m-3 mt-5">
-          <router-link :to="{ name: 'Cadastros'}">
-            <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
-            <div class="text-uppercase font-300">Voltar</div>
-          </router-link>
-        </div>
+        <b-row>
+           <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
+            <div @click="backOnePage">
+                <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
+                <div class="text-uppercase font-300">Voltar</div>
+            </div>
+          </b-col>
+        </b-row>
       </b-container>
     </template>
   </div>
@@ -44,6 +46,7 @@
 
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,20 +56,12 @@ export default {
 	},
   data() {
     return {
-      countriesDBReturn: [
-        { id: '01', nomePais: 'Brasil'},
-        { id: '02', nomePais: 'Argentina'},
-        { id: '03', nomePais: 'Paraguai'},
-        { id: '04', nomePais: 'Chile'},
-        { id: '05', nomePais: 'Peru'},
-        { id: '06', nomePais: 'Costa Rica'},
-        { id: '07', nomePais: 'Bolivia'},
-        { id: '08', nomePais: 'México'},
-      ],
       listOfCountries: [],
+      searchItem: '',
       fields: [
         { key: 'id', label: 'Código', sortable: true},
-        { key: 'nomePais', label: 'Nome', sortable: true },
+        { key: 'nomePt', label: 'País', sortable: true },
+        { key: 'sigla', label: 'Sigla', sortable: true },
         { key: 'actions', label: 'Ações' }
       ]
     }
@@ -75,8 +70,44 @@ export default {
 		$route(to, from){}
 	}, */
   methods: {
-    getCountries() {
-      this.listOfCountries = this.countriesDBReturn
+    backOnePage () {
+      this.$router.back()
+    },
+
+    getItem () {
+      if (this.searchItem.length === 0) {
+        this.getCountries()
+      } else {
+        this.getCountriesByName(this.searchItem)
+      }
+    },
+
+    async getCountries () {
+      let response
+      try {
+        response = await RestConnection.get('paises/consultar/pais')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível buscar a lista de Países.')
+          }
+      }
+      this.listOfCountries = response.data.conteudo
+    },
+
+    async getCountriesByName (searchItem) {
+      let response
+      try {
+          response = await RestConnection.get('paises/consultar/pais/descricao/' + searchItem)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Nenhum País com este nome encontrado.')
+            }
+        }
+        this.listOfCountries = response.data.conteudo 
     }
   }
 }

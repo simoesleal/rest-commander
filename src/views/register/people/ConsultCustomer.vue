@@ -10,9 +10,9 @@
         <b-row class="justify-content-md-center mt-3">
           <b-col cols="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: Geni Machado"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: Geni Machado"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getCustomers"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -25,7 +25,7 @@
         <div class="mt-3" v-if="listOfCustomers.length > 0">
           <b-table hover fixed striped bordered :items="listOfCustomers" :fields="fields">
             <template slot="actions" slot-scope="data">
-                <router-link :to="{ name: 'CadastrarCliente', params: { actionMode:'edit', selectedEmployee: data.item }}">
+                <router-link :to="{ name: 'CadastrarCliente', params: { actionMode:'edit', selectedCustomer: data.item }}">
                 <b-button variant="outline-info" class="mt-2 mx-auto"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
               </router-link>
             </template>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,26 +54,54 @@ export default {
 	data() {
 		return {
 			listOfCustomers: [],
-			customersReturnDB: [
-				{
-					id: '01',
-					name: 'Antonio Neto',
-					phone: '+55 (45) 98404-5443'
-				}
-			],
+			searchItem: '',
 			fields: [
         { key: 'id', label: 'Código', sortable: true},
-        { key: 'name', label: 'Nome do Cliente' },
-        { key: 'phone', label: 'Telefone' },
+        { key: 'nome', label: 'Nome do Cliente' },
+        { key: 'sobrenome', label: 'Nome do Cliente' },
+        { key: 'telefone', label: 'Telefone' },
+        { key: 'celular', label: 'Celular' },
         { key: 'actions', label: 'Ações' }
       ]
 		}
 	},
 
 	methods: {
-    getCustomers() {
-      this.listOfCustomers = this.customersReturnDB
-    }
+    getItem () {
+      if (this.searchItem.length === 0) {
+        this.getCustomerList()
+      } else {
+        this.getCustomerByName(this.searchItem)
+      }
+    },
+
+    async getCustomerList () {
+      let response
+      try {
+        response = await RestConnection.get('clientes/consultar/cliente')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Clientes.")
+          }
+      }
+      this.listOfCustomers = response.data.conteudo
+    },
+
+    async getCustomerByName (searchItem) {
+      let response
+      try {
+          response = await RestConnection.get('clientes/consultar/cliente/nome/' + searchItem)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Nenhum Cliente com este nome encontrado.')
+            }
+        }
+        this.listOfCustomers = response.data.conteudo
+      }
   }
 
 }

@@ -10,9 +10,9 @@
         <b-row class="justify-content-md-center mt-3">
           <b-col cols="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: Foz do Iguaçu"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: Foz do Iguaçu"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getCities"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -44,6 +44,7 @@
 
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -54,25 +55,53 @@ export default {
   data() {
     return {
       listOfCities: [],
-      citiesReturnDB: [
-        { id: '01', nameCity: 'Foz do Iguaçu', ufID: '15', uf:'PR'},
-        { id: '02', nameCity: 'Curitiba', ufID: '15', uf:'PR'},
-        { id: '03', nameCity: 'Cascavel', ufID: '15', uf:'PR'},
-        { id: '04', nameCity: 'Londrina', ufID: '15', uf:'PR'},
-        { id: '05', nameCity: 'Maringa', ufID: '15', uf:'PR'},
-      ],
+      searchItem: '',
       fields: [
         { key: 'id', label: 'Código', sortable: true},
-        { key: 'nameCity', label: 'Nome', sortable: true },
+        { key: 'nomeCidade', label: 'Nome', sortable: true },
+        { key: 'uf', label: 'UF', sortable: true },
+        { key: 'nomeEstado', label: 'Estado', sortable: true },
         { key: 'actions', label: 'Ações' }
       ]
     }
   },
 
   methods: {
-    getCities() {
-      this.listOfCities = this.citiesReturnDB
+    getItem () {
+      if (this.searchItem.length === 0) {
+        this.getCities()
+      } else {
+        this.getCitiesByName(this.searchItem)
+      }
     },
+
+    async getCities () {
+      let response
+      try {
+        response = await RestConnection.get('cidades/consultar/cidade')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Cidades.")
+          }
+      }
+      this.listOfCities = response.data.conteudo
+    },
+
+    async getCitiesByName (searchItem) {
+      let response
+      try {
+          response = await RestConnection.get('cidades/consultar/cidade/descricao/' + searchItem)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Nenhuma Coidade com este nome encontrado.')
+            }
+        }
+        this.listOfCities = response.data.conteudo
+      }
   }
 }
 

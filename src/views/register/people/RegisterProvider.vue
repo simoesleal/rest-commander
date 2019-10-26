@@ -5,12 +5,12 @@
 			<b-form-group
 				id="informacoes-basicas"
 				description="*Campos obrigatórios">
-					<label>Código*</label>
-					<b-form-input id="provider-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="provider.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
+					<!-- <label>Código*</label>
+					<b-form-input id="provider-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="provider.id" required type="number" placeholder="Exemplo: 01"></b-form-input> -->
 					<b-form-row>
 						<b-col cols="12" sm="8">
 							<label>CPF/CNPJ</label>
-							<b-form-input id="provider-docs" class="mb-3" v-model="provider.docs" required type="text" placeholder="Exemplo: 11.111.111/1111-11"></b-form-input>
+							<b-form-input id="provider-cpfCnpj" class="mb-3" v-model="provider.cpfCnpj" required type="text" placeholder="Exemplo: 11.111.111/1111-11"></b-form-input>
 						</b-col>
 							<b-col cols="12" sm="4">
 							<label>Tipo de Fornecedor</label>
@@ -43,20 +43,20 @@
 				<b-form-row>
 					<b-col cols="12" sm="6">
 						<label>Telefone</label>
-						<b-form-input id="provider-phone" class="mb-3" v-model="provider.contact.phone" required type="number" placeholder="Exemplo: +55 (45) 3025-1144"></b-form-input>
+						<b-form-input id="provider-phone" class="mb-3" v-model="provider.telefone" required type="number" placeholder="Exemplo: +55 (45) 3025-1144"></b-form-input>
 					</b-col>
 					<b-col cols="12" sm="6">
 						<label>Celular</label>
-						<b-form-input id="provider-cellphone" class="mb-3" v-model="provider.contact.cellphone" required type="number" placeholder="Exemplo: +55 (45) 98404-5443"></b-form-input>
+						<b-form-input id="provider-cellphone" class="mb-3" v-model="provider.celular" required type="number" placeholder="Exemplo: +55 (45) 98404-5443"></b-form-input>
 					</b-col>
 				</b-form-row>										
 				<b-form-row>
 					<label>E-mail</label>
-					<b-form-input id="provider-email" class="mb-3" v-model="provider.contact.email" type="email" placeholder="Exemplo: simoeslealneto@gmail.com"></b-form-input>
+					<b-form-input id="provider-email" class="mb-3" v-model="provider.email" type="email" placeholder="Exemplo: simoeslealneto@gmail.com"></b-form-input>
 				</b-form-row>				
 				<b-form-row>
 					<label>Site</label>
-					<b-form-input id="provider-site" class="mb-3" v-model="provider.contact.homePage" type="text" placeholder="Exemplo: www.restcontroller.tech"></b-form-input>
+					<b-form-input id="provider-site" class="mb-3" v-model="provider.homePage" type="text" placeholder="Exemplo: www.restcontroller.tech"></b-form-input>
 				</b-form-row>				
 			</b-form-group>
     </b-form>
@@ -66,54 +66,93 @@
 				id="informacoes-endereco"
 				description="*Campos obrigatórios">
 					<label>Endereço</label>
-					<b-form-input id="provider-street" class="mb-3" v-model="provider.logradouro.street" type="text" placeholder="Exemplo: Rua dos Bobos"></b-form-input>
+					<b-form-input id="provider-street" class="mb-3" v-model="provider.rua" type="text" placeholder="Exemplo: Rua dos Bobos"></b-form-input>
 					<b-form-row>
-						<b-col>
+						<b-col cols="12" sm="6">
 							<label>Número</label>
-							<b-form-input id="provider-number" class="mb-3" v-model="provider.logradouro.number" type="text" placeholder="Exemplo: 0000"></b-form-input>
+							<b-form-input id="provider-number" class="mb-3" v-model="provider.numero" type="text" placeholder="Exemplo: 0000"></b-form-input>
 						</b-col>
-						<b-col>
+						<b-col cols="12" sm="6">
 							<label>Bairro</label>
-							<b-form-input id="provider-district" class="mb-3" v-model="provider.logradouro.district" type="text" placeholder="Exemplo: Jardim Esmero"></b-form-input>
+							<b-form-input id="provider-district" class="mb-3" v-model="provider.bairro" type="text" placeholder="Exemplo: Jardim Esmero"></b-form-input>
 						</b-col>
 					</b-form-row>
 					<b-form-row>
-						<b-col>
+						<b-col cols="12" sm="6">
 							<label>CEP</label>
-							<b-form-input id="provider-cep" class="mb-3" v-model="provider.logradouro.cep" type="text" placeholder="Exemplo: 00000-000"></b-form-input>
+							<b-form-input id="provider-cep" class="mb-3" v-model="provider.cep" type="text" placeholder="Exemplo: 00000-000"></b-form-input>
 						</b-col>
-						<b-col>
+						<b-col cols="12" sm="6">
 							<label>Complemento</label>
-							<b-form-input id="provider-complement" class="mb-3" v-model="provider.logradouro.complement" type="text" placeholder="Exemplo: Casa"></b-form-input>
+							<b-form-input id="provider-complement" class="mb-3" v-model="provider.complemento" type="text" placeholder="Exemplo: Casa"></b-form-input>
 						</b-col>
 					</b-form-row>
 					<label>País</label>
-					<b-input-group>
-						<b-form-select v-model="countrySelected" :options="countryList"></b-form-select>
-						<b-input-group-append>
-							<router-link :to="{ name: 'CadastrarPais', params: { actionMode:'save' }}">
-								<b-button variant="primary"><i class="fas fa-flag"></i></b-button>
+					<b-row>
+						<b-col cols="11">
+							<v-select
+								class="mb-3" 
+								v-model="countrySelected"
+								:required="!countrySelected" 
+								label="text" 
+								:options="countryList">
+								<template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
+									<router-link :to="{ name: 'CadastrarPais', params: { actionMode:'save' }}">
+										<b-button variant="primary"><i class="fas fa-flag"></i></b-button>
+									</router-link>
+								</template>
+							</v-select>
+						</b-col>  
+						<b-col cols="1" class="btn-new-register">
+							<router-link :to="{ name: 'ConsultarPais', params: { actionMode:'save' }}">
+								<b-button variant="primary"><i class="fas fa-flag fa-sm"></i></b-button>
 							</router-link>
-						</b-input-group-append>
-					</b-input-group>
+						</b-col>  
+					</b-row>
 					<label>Estado</label>
-					<b-input-group>
-						<b-form-select v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
-						<b-input-group-append>
-							<router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'save' }}">
-								<b-button variant="primary"><i class="fas fa-university"></i></b-button>
+					<b-row>
+						<b-col cols="11">
+							<v-select
+								class="mb-3" 
+								v-model="ufSelected"
+								:required="!ufSelected" 
+								label="text" 
+								:options="ufBrazilianStates">
+								<template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
+									<router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'save' }}">
+										<b-button variant="primary"><i class="fas fa-university"></i></b-button>
+									</router-link>
+								</template>
+							</v-select>
+						</b-col>  
+						<b-col cols="1" class="btn-new-register">
+							<router-link :to="{ name: 'ConsultarEstado', params: { actionMode:'save' }}">
+								<b-button variant="primary"><i class="fas fa-university fa-sm"></i></b-button>
 							</router-link>
-						</b-input-group-append>
-					</b-input-group>
+						</b-col>  
+					</b-row>
 					<label>Cidade</label>
-					<b-input-group>
-						<b-form-input id="provider-city" class="mb-3" v-model="provider.logradouro.city" type="text" placeholder="Exemplo: Foz do Iguaçu"></b-form-input>
-						<b-input-group-append>
-							<router-link :to="{ name: 'CadastrarCidade', params: { actionMode:'save' }}">
-								<b-button variant="primary"><i class="fas fa-city"></i></b-button>
+					<b-row>
+						<b-col cols="11">
+							<v-select
+								class="mb-3" 
+								v-model="citySelected"
+								:required="!citySelected" 
+								label="text" 
+								:options="citiesList">
+								<template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
+									<router-link :to="{ name: 'CadastrarCidade', params: { actionMode:'save' }}">
+										<b-button variant="primary"><i class="fas fa-city"></i></b-button>
+									</router-link>
+								</template>
+							</v-select>
+						</b-col>  
+						<b-col cols="1" class="btn-new-register">
+							<router-link :to="{ name: 'ConsultarCidade', params: { actionMode:'save' }}">
+								<b-button variant="primary"><i class="fas fa-city fa-sm"></i></b-button>
 							</router-link>
-						</b-input-group-append>
-					</b-input-group>
+						</b-col>  
+					</b-row>
 			</b-form-group>		
 		</b-form>
 
@@ -141,6 +180,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -156,70 +196,36 @@ export default {
 		return {
 			provider: {
 				id: 0,
+				idEndereco: 0,
 				status: false,
 				typeProvider: '',
-				docs: '',
+				cpfCnpj: '',
 				nomeFantasia: '',
 				razaoSocial: '',
 				inscEstadual: '',
 				inscMunicipal: '',
-				logradouro: {
-					cep: '',
-					street: '',
-					number: '',
-					district: '',
-					complement: '',
-					country: '',
-					uf: '',
-					city: '',
-				},
-				contact: {
-					phone: '',
-					cellphone: '',
-					email: '',
-					homePage: '',
-				}
+				cep: '',
+				rua: '',
+				numero: '',
+				bairro: '',
+				complemento: '',
+				nomeFuncao: '',
+				pais: '',
+				estado: '',
+				cidade: '',
+				email: '',
+				telefone: '',
+				celular: '',
+				homePage: '',
 			},
 			ufSelected: '',
 			countrySelected: '',
-			ufBrazilianStates: [
-        { value: null, text: 'Selecione a UF' },
-        { value: 'AC', text: 'AC' },
-        { value: 'AL', text: 'AL' },
-        { value: 'AP', text: 'AP' },
-        { value: 'AM', text: 'AM' },
-        { value: 'BA', text: 'BA' },
-        { value: 'CE', text: 'CE' },
-        { value: 'DF', text: 'DF' },
-        { value: 'ES', text: 'ES' },
-        { value: 'GO', text: 'GO' },
-        { value: 'MA', text: 'MA' },
-        { value: 'MT', text: 'MT' },
-        { value: 'MS', text: 'MS' },
-        { value: 'MG', text: 'MG' },
-        { value: 'PA', text: 'PA' },
-        { value: 'PB', text: 'PB' },
-        { value: 'PR', text: 'PR' },
-        { value: 'PE', text: 'PE' },
-        { value: 'PI', text: 'PI' },
-        { value: 'RJ', text: 'RJ' },
-        { value: 'RN', text: 'RN' },
-        { value: 'RS', text: 'RS' },
-        { value: 'RO', text: 'RO' },
-        { value: 'RR', text: 'RR' },
-        { value: 'SC', text: 'SC' },
-        { value: 'SP', text: 'SP' },
-        { value: 'SE', text: 'SE' },
-        { value: 'TO', text: 'TO' },
-        { value: 'XX', text: 'XX' },
-      ],
-      countryList: [
-        { value: null, text: 'Selecione o País' }, 
-        { value: 'Brasil', text: 'Brasil' },
-        { value: 'Argentina', text: 'Argentina' },
-        { value: 'Paraguai', text: 'Paraguai' },
-        { value: 'Chile', text: 'Chile' }
-      ],
+			citySelected: '',
+			ufBrazilianStates: [],
+      countryList: [],
+			citiesList: [],
+			countryId: 0,
+			stateId: 0,
       typeProvider: [
         { value: 'juridica', text: 'Pessoa Jurídica' },
         { value: 'fisica', text: 'Pessoa Fisíca' },
@@ -233,32 +239,243 @@ export default {
     }
   },
 
-	mounted() {
+	async mounted() {
     if(this.selectedProvider) {
-      this.provider = this.selectedProvider
-    }
+      await this.getProviderById(this.selectedProvider.id)
+    } else {
+			this.getCountries()
+		}
   },
+
+		watch: {
+		countrySelected() {
+			if (this.actionMode === 'save') {
+				if (this.countrySelected && this.countrySelected.value) {
+					this.countryId = this.countrySelected.value
+					this.ufSelected = '',
+					this.ufBrazilianStates = [],
+					this.citySelected = '',
+					this.citiesList = [],
+					this.getStates(this.countryId)
+				} else if (this.countrySelected === null) {
+					this.ufSelected = null,
+					this.ufBrazilianStates = [],
+					this.citySelected = null,
+					this.citiesList = [],
+					this.getCountries()
+				}
+			} else {
+				if (this.countrySelected === null) {
+					this.ufSelected = null,
+					this.ufBrazilianStates = [],
+					this.citySelected = null,
+					this.citiesList = [],
+					this.getCountries()
+				} else {
+					if (!this.ufSelected) {
+						this.countryId = this.countrySelected.value
+						this.getStates(this.countryId)
+					} else if (this.ufSelected && this.countryId !== this.countrySelected.value) {
+						this.ufSelected = null,
+						this.ufBrazilianStates = [],
+						this.citySelected = null,
+						this.citiesList = []
+					}
+				}
+			}
+		},
+		ufSelected() {
+			if (this.actionMode === 'save') {
+				if (this.ufSelected && this.ufSelected.value) {
+					this.stateId = this.ufSelected.value
+					this.citySelected = '',
+					this.citiesList = [],
+					this.getCities(this.stateId)
+				} else if (this.ufSelected === null) {
+					this.citySelected = null,
+					this.citiesList = []
+				}
+			} else {
+				if (this.ufSelected === null) {
+					this.citySelected = null,
+					this.citiesList = []
+				} else {
+					if (!this.citySelected) {
+						this.stateId = this.ufSelected.value
+						this.getCities(this.stateId)
+					}	else if (this.citySelected && this.stateId !== this.ufSelected.value) {
+						this.citySelected = null,
+						this.citiesList = []
+					}		 		
+				}
+			}
+		}
+	},
 
 	methods: {
     backOnePage() {
       this.$router.back()
     },
 
-    saveRecord() {
-      console.log('saveRecord')
+		async getProviderById(id) {
+			let response
+			try {
+				response = await RestConnection.get('fornecedores/consultar/fornecedor/'+id)
+				const payload = response.data.conteudo
+				await this.populateFields(payload)
+			} catch (error) {
+				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes. getProviderById")
+        this.backOnePage()
+			}
+		},
+
+		async populateFields(payload){
+			this.provider = payload.supplier.info			
+			this.countrySelected = ({value: payload.supplier.country.id, text: `${payload.supplier.country.sigla} - ${payload.supplier.country.nomePt}`})
+			this.countryId = this.countrySelected.value			
+			this.ufSelected = ({value: payload.supplier.state.id, text: `${payload.supplier.state.uf} - ${payload.supplier.state.nome}`})
+			this.stateId = this.ufSelected.value			
+			this.citySelected = ({value: payload.supplier.city.id, text: `${payload.supplier.city.nomeCidade}`})
+		},
+
+		async getCountries() {
+			let response, countryList
+			try {
+				response = await RestConnection.get('paises/consultar/pais')
+				countryList = response.data.conteudo			 
+				for (let i = 0; i < countryList.length; i++) {
+					this.countryList.push({value: countryList[i].id, text: `${countryList[i].sigla} - ${countryList[i].nomePt}`})
+				}
+			} catch (error) {
+				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes. getCountries")
+        this.backOnePage()
+			}
+		},
+
+		async getStates(id) {
+			let response, ufBrazilianStates
+			try {
+				response = await RestConnection.get('estados/consultar/estado/pais/'+id)
+				ufBrazilianStates = response.data.conteudo		 
+				for (let i = 0; i < ufBrazilianStates.length; i++) {
+					this.ufBrazilianStates.push({value: ufBrazilianStates[i].id, text: `${ufBrazilianStates[i].uf} - ${ufBrazilianStates[i].nome}`})
+				}
+			} catch (error) {
+				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes.")
+        this.backOnePage()
+			}
+		},
+
+		async getCities(id) {
+			let response, list
+			try {
+				response = await RestConnection.get('cidades/consultar/cidade/estado/'+id)
+				list = response.data.conteudo		 
+				for (let i = 0; i < list.length; i++) {
+					this.citiesList.push({value: list[i].id, text: `${list[i].nomeCidade}`})
+				}
+			} catch (error) {
+				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes.")
+        this.backOnePage()
+			}
+		},		
+
+    async saveRecord() {
+     	let response, idAdress
+			idAdress = await this.saveNewAdress();
+			//Criar validação se o idAdress existe e se o status foi 200
+      let parameters = {
+				nome_fantasia: this.provider.nomeFantasia,
+				razao_social: this.provider.razaoSocial,
+				cpf_cnpj: this.provider.cpfCnpj,
+				insc_municipal: this.provider.inscMunicipal,
+				insc_estadual: this.provider.inscEstadual,
+				status: this.provider.status,
+				email: this.provider.email,
+				phone: this.provider.telefone,
+				cellphone: this.provider.celular,
+				id_endereco: idAdress,	
+      }
+      try {
+        response = await RestConnection.post('fornecedores/cadastrar/fornecedor/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Salvar este Fornecedor.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    alterRecord() {
-      console.log('alterRecord')
+		async saveNewAdress() {
+			let response
+			let parameters = {
+					zipcode: this.provider.cep,
+					street: this.provider.rua,
+					number:  this.provider.numero,
+					block:  this.provider.bairro,
+					complement:  this.provider.complemento,
+					country: this.countrySelected.value,
+					state: this.ufSelected.value,
+					city: this.citySelected.value
+			 }
+			 try {
+        response = await RestConnection.post('enderecos/cadastrar/endereco/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível salvar o endereço do Fornecedor.')
+          }
+      }
+			return response.data.conteudo[0].id
+		},
+
+    async alterRecord() {
+     	let response, idAdress
+      let parameters = {
+				id: this.provider.id,
+				nome_fantasia: this.provider.nomeFantasia,
+				razao_social: this.provider.razaoSocial,
+				cpf_cnpj: this.provider.cpfCnpj,
+				insc_municipal: this.provider.inscMunicipal,
+				insc_estadual: this.provider.inscEstadual,
+				status: this.provider.status,
+				email: this.provider.email,
+				phone: this.provider.telefone,
+				cellphone: this.provider.celular,
+				id_endereco:  this.provider.idEndereco,				
+      }
+      try {
+        response = await RestConnection.put('fornecedores/atualizar/fornecedor/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível Atualizar este Fornecedor.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    deleteRecord() {
-      console.log('deleteRecord')      
+    async deleteRecord() {
+      let response
+      try {
+          response = await RestConnection.delete('fornecedores/deletar/fornecedor/' + this.provider.id)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Deletar este Fornecedor.')
+            }
+        }
+      alert(response.data.mensagem)
+      this.backOnePage()     
     },
 
-    clearReactiveData(){
-      this.provider.id = 0
-    },
   }
 
 

@@ -9,16 +9,29 @@
               <label>Código*</label>
               <b-form-input id="quotation-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="quotation.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>Moeda*</label>
-              <b-input-group class="mb-3">
-                <b-form-select v-model="quotation.coin" :options="coinList" :disabled="setInputFieldDisabled"></b-form-select>
-                <b-input-group-append>
-                  <router-link :to="{ name: 'CadastrarMoeda', params: { actionMode:'save' }}">
-                    <b-button variant="primary"><i class="fas fa-money-bill-alt"></i></b-button>
+              <b-row>
+                <b-col cols="11">
+                  <v-select
+                    class="mb-3" 
+                    v-model="selectedCoin"
+                    :required="!selectedCoin" 
+                    label="text" 
+                    :options="coinList">
+                    <template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
+                      <router-link :to="{ name: 'CadastrarMoeda', params: { actionMode:'save' }}">
+                        <b-button variant="primary"><i class="fas fa-money-bill-alt"></i></b-button>
+                      </router-link>
+                    </template>
+                  </v-select>
+                </b-col>  
+                <b-col cols="1" class="btn-new-register">
+                  <router-link :to="{ name: 'ConsultarMoeda', params: { actionMode:'save' }}">
+                   <b-button variant="primary"><i class="fas fa-money-bill-alt fa-sm"></i></b-button>
                   </router-link>
-                </b-input-group-append>
-              </b-input-group>
+                </b-col>  
+              </b-row>
               <label>Cotação</label>
-							<b-form-input id="quotation" class="mb-3" :disabled="setInputFieldDisabled" v-model="quotation.currentQuotation" required type="number" placeholder="Exemplo: 4.00"></b-form-input>
+							<b-form-input id="quotation" class="mb-3" :disabled="setInputFieldDisabled" v-model="quotation.cotacao" required type="number" placeholder="Exemplo: 4.00"></b-form-input>
           </b-form-group>
         </b-form>
 				<b-row>
@@ -45,6 +58,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -60,19 +74,13 @@ export default {
     return {
       quotation: {
         id: 0,
-        coin: '',
-				symbol: '',
-				currentQuotation: '',
-				dataOfCreation: ''
+				cotacao: '',
+        nomeMoeda: '',
+        simbolo: '',
+        idMoeda: 0,
       },
-			coinList: [
-				{ value: null, text: 'Selecione a Moeda' }, 
-        { value: 'real', text: 'Real - R$' },
-        { value: 'dolar', text: 'Dolar - U$' }, 
-        { value: 'peso', text: 'Peso - P$' }, 
-        { value: 'euro', text: 'Euro - €' }, 
-        { value: 'bitcon', text: 'Bitcoin - ₿' }, 
-			]
+      selectedCoin: null,
+			coinList: []
     }
   },
   computed: {
@@ -82,25 +90,93 @@ export default {
   },
   mounted() {
     if(this.selectedQuotation) {
-      this.quotation = this.selectedQuotation    
+      this.quotation = this.selectedQuotation
+      this.selectedCoin = {value: this.quotation.idMoeda, text: `${this.quotation.simbolo} - ${this.quotation.nomeMoeda}`}
+    }
+    this.getCoins();
+  },
 
+  watch: {
+    selectedCoin() {
+      if (this.selectedCoin) this.quotation.idMoeda = this.selectedCoin.value
     }
   },
+
   methods: {
     backOnePage() {
       this.$router.back()
     },
 
-    saveRecord() {
-      console.log('saveRecord')
+    async getCoins () {
+      let response, coinList
+      try {
+        response = await RestConnection.get('moedas/consultar/')
+        coinList = response.data.conteudo
+        for (let i = 0; i < coinList.length; i++) {
+					this.coinList.push({value: coinList[i].id, text: `${coinList[i].simbolo} - ${coinList[i].nomeMoeda}`})
+				}
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Moedas.")
+          }
+          this.backOnePage()
+      }
     },
 
-    alterRecord() {
-      console.log('alterRecord')
+    async saveRecord() {
+      let response
+      let parameters = {
+        quotation: this.quotation.cotacao,
+        id_coin: this.quotation.idMoeda
+      }
+      try {
+        response = await RestConnection.post('cotacoes/cadastrar/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Salvar esta Cotaçaõ.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    deleteRecord() {
-      console.log('deleteRecord')      
+    async alterRecord() {
+      let response
+      let parameters = {
+        id: this.quotation.id,
+        quotation: this.quotation.cotacao,
+        id_coin: this.quotation.idMoeda
+      }
+      try {
+        response = await RestConnection.put('cotacoes/atualizar/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Atualizar esta Moeda.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
+    },
+
+    async deleteRecord() {
+      let response
+      try {
+          response = await RestConnection.delete('cotacoes/deletar/' + this.quotation.id)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Deletar esta Cotacão.')
+            }
+        }
+      alert(response.data.mensagem)
+      this.backOnePage()      
     },
 
     clearReactiveData(){

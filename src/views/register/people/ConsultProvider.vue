@@ -10,9 +10,9 @@
         <b-row class="justify-content-md-center mt-3">
           <b-col cols="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: Mercado"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: Mercado"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getProviders"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -25,7 +25,7 @@
         <div class="mt-3" v-if="listOfProviders.length > 0">
           <b-table hover fixed striped bordered :items="listOfProviders" :fields="fields">
             <template slot="actions" slot-scope="data">
-                <router-link :to="{ name: 'CadastrarFornecedor', params: { actionMode:'edit', selectedEmployee: data.item }}">
+                <router-link :to="{ name: 'CadastrarFornecedor', params: { actionMode:'edit', selectedProvider: data.item }}">
                 <b-button variant="outline-info" class="mt-2 mx-auto"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
               </router-link>
             </template>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,28 +54,54 @@ export default {
 	data() {
 		return {
 			listOfProviders: [],
-			providersReturnDB: [
-				{
-				id: '01',
-				nomeFantasia: 'Antonio Simões Leal Neto',
-				razaoSocial: 'Antonio Simões Leal ME',
-				cnpj: '06.717.574/0001-61',
-				}
-			],
+      searchItem: '',
 			fields: [
         { key: 'id', label: 'Código', sortable: true},
         { key: 'nomeFantasia', label: 'Nome Fantasia' },
         { key: 'razaoSocial', label: 'Razão Social' },
-        { key: 'cnpj', label: 'CNPJ' },
+        { key: 'cpfCnpj', label: 'CNPJ' },
         { key: 'actions', label: 'Ações' }
       ]
 		}
 	},
 
   methods: {
-    getProviders() {
-      this.listOfProviders = this.providersReturnDB
-    }
+
+    getItem () {
+      if (this.searchItem.length === 0) {
+        this.getProvidersList()
+      } else {
+        this.getProviderByName(this.searchItem)
+      }
+    },
+
+    async getProvidersList () {
+      let response
+      try {
+        response = await RestConnection.get('fornecedores/consultar/fornecedor')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Fornecedores.")
+          }
+      }
+      this.listOfProviders = response.data.conteudo
+    },
+
+    async getProviderByName (searchItem) {
+      let response
+      try {
+          response = await RestConnection.get('fornecedores/consultar/fornecedor/razao-social/' + searchItem)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Nenhum Fornecedor com este nome encontrado.')
+            }
+        }
+        this.listOfProviders = response.data.conteudo
+      }
   }
 
 }

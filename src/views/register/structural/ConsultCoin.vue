@@ -10,9 +10,9 @@
         <b-row class="mt-3">
           <b-col cols="12" md="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: Bitcoin"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: Bitcoin"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getCoin"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,51 +54,57 @@ export default {
 	data() {
 		return {
 			listOfCoins: [],
-			coinsDBReturn: [
-				{
-					id: '01',
-					coin: 'real',
-					symbol: "R$",
-				},
-				{
-					id: '02',
-					coin: 'dolar',
-					symbol: "U$",
-				},
-				{
-					id: '02',
-					coin: 'peso',
-					symbol: "P$",
-				},
-				{
-					id: '04',
-					coin: 'euro',
-					symbol: "€",
-				},
-				{
-					id: '05',
-					coin: 'bitcoin',
-					symbol: "₿",
-				},
-			],
+			searchItem: '',
 			fields: [
 				{
 					key: 'id', label: 'Código', sortable: true
 				},
 				{
-					key: 'symbol', label: '$$', sortable: true
+					key: 'simbolo', label: '$$', sortable: true
 				},			
 				{
-					key: 'coin', label: 'Moeda', sortable: true
+					key: 'nomeMoeda', label: 'Moeda', sortable: true
 				},			
 				{ key: 'actions', label: 'Ações' }
 			]
 		}
 	},
 	methods: {
-		getCoin() {
-			this.listOfCoins = this.coinsDBReturn
-		}
+    getItem () {
+      if (this.searchItem.length === 0) {
+        this.getCoins()
+      } else {
+        this.getCoinByName(this.searchItem)
+      }
+    },
+
+    async getCoins () {
+      let response
+      try {
+        response = await RestConnection.get('moedas/consultar/')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Moedas.")
+          }
+      }
+      this.listOfCoins = response.data.conteudo
+    },
+
+    async getCoinByName (searchItem) {
+      let response
+      try {
+          response = await RestConnection.get('moedas/consultar/nome/' + searchItem)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Nenhum Moeda com este número encontrado.')
+            }
+        }
+        this.listOfCoins = response.data.conteudo
+      }
 	}
 
 }

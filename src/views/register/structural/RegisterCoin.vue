@@ -7,11 +7,13 @@
             id="informacoes-basicas"
             description="*Campos obrigatórios">
               <label>Código*</label>
-              <b-form-input id="coin-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="coin.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
+              <b-form-input id="coin-id" class="mb-3" v-model="coin.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
 							<label>Simbolo</label>
-							<b-form-input id="coin" class="mb-3" :disabled="setInputFieldDisabled" v-model="coin.symbol" required type="text" placeholder="Exemplo: R$"></b-form-input>
-              <label>Cotação</label>
-							<b-form-input id="coin" class="mb-3" :disabled="setInputFieldDisabled" v-model="coin.coin" required type="text" placeholder="Exemplo: Real"></b-form-input>
+							<b-form-input id="coin" class="mb-3" v-model="coin.simbolo" required type="text" placeholder="Exemplo: R$"></b-form-input>
+              <label>Nome Moeda</label>
+							<b-form-input id="coin" class="mb-3" v-model="coin.nomeMoeda" required type="text" placeholder="Exemplo: Real"></b-form-input>
+              <label>Nome Plural</label>
+							<b-form-input id="coin" class="mb-3" v-model="coin.nomeMoedaPlural" required type="text" placeholder="Exemplo: Real"></b-form-input>
           </b-form-group>
         </b-form>
 				<b-row>
@@ -38,6 +40,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,8 +56,9 @@ export default {
     return {
       coin: {
         id: 0,
-        coin: '',
-				symbol: '',
+        nomeMoeda: '',
+				nomeMoedaPlural: '',
+        simbolo: '',
       }
     }
   },
@@ -74,24 +78,62 @@ export default {
       this.$router.back()
     },
 
-    saveRecord() {
-      console.log('saveRecord')
+    async saveRecord() {
+      let response
+      let parameters = {
+        name: this.coin.nomeMoeda,
+        pluralName: this.coin.nomeMoedaPlural,
+        symbol: this.coin.simbolo
+      }
+      try {
+        response = await RestConnection.post('moedas/cadastrar/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Salvar esta Moeda.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    alterRecord() {
-      console.log('alterRecord')
+    async alterRecord() {
+      let response
+      let parameters = {
+        id: this.coin.id,
+        name: this.coin.nomeMoeda,
+        pluralName: this.coin.nomeMoedaPlural,
+        symbol: this.coin.simbolo
+      }
+      try {
+        response = await RestConnection.put('moedas/atualizar/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível Atualizar esta Moeda.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    deleteRecord() {
-      console.log('deleteRecord')      
-    },
-
-    clearReactiveData(){
-      this.coin.id = 0,
-      this.coin.coin = ''
-      this.coin.symbol = ''
-    },
-  }
+    async deleteRecord() {
+      let response
+      try {
+          response = await RestConnection.delete('moedas/deletar/' + this.coin.id)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Deletar esta moeda.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()    
+      }  
+    }
 }
 </script>
 

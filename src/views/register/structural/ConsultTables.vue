@@ -10,9 +10,9 @@
         <b-row class="mt-3">
           <b-col cols="12" md="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input placeholder="Exemplo: 01"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: 01"></b-form-input>
               <b-input-group-append>
-                <b-button variant="outline-secondary" @click="getTables"><i class="fas fa-search"></i> Buscar</b-button>
+                <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
@@ -43,6 +43,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -53,62 +54,53 @@ export default {
 	data() {
 		return {
 			listOfTables: [],
-			tablesDBReturn: [
-				{
-					id: '01',
-					tableNumber: '01',
-				},
-				{
-					id: '02',
-					tableNumber: '02',
-				},
-				{
-					id: '03',
-					tableNumber: '03',
-				},
-				{
-					id: '04',
-					tableNumber: '04',
-				},
-				{
-					id: '05',
-					tableNumber: '05',
-				},
-				{
-					id: '06',
-					tableNumber: '06',
-				},
-				{
-					id: '07',
-					tableNumber: '07',
-				},
-				{
-					id: '08',
-					tableNumber: '08',
-				},
-				{
-					id: '09',
-					tableNumber: '09',
-				},
-				{
-					id: '10',
-					tableNumber: '10',
-				},
-			],
+			searchItem: '',
 			fields: [
 				{
-					key: 'tableNumber', label: 'Número da Mesa', sortable: true
+					key: 'numero', label: 'Número da Mesa', sortable: true
 				},
 				{ key: 'actions', label: 'Ações' }
 			]
 		}
 	},
 	methods: {
-		getTables() {
-			this.listOfTables = this.tablesDBReturn
-		}
-	}
 
+    getItem () {
+      if (this.searchItem.length === 0) {
+        this.getTables()
+      } else {
+        this.getTablesByNumber(this.searchItem)
+      }
+    },
+
+    async getTables () {
+      let response
+      try {
+        response = await RestConnection.get('mesas/consultar/mesa')
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Mesas.")
+          }
+      }
+      this.listOfTables = response.data.conteudo
+    },
+
+    async getTablesByNumber (searchItem) {
+      let response
+      try {
+          response = await RestConnection.get('mesas/consultar/mesa/numero/' + searchItem)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Nenhum Mesa com este número encontrado.')
+            }
+        }
+        this.listOfTables = response.data.conteudo
+      }
+	  }
 }
 </script>
 

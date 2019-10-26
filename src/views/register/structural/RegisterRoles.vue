@@ -1,5 +1,5 @@
 <template>
-	<div class="register-quotation">
+	<div class="register-role">
     <template  v-if="this.$route.path === '/cadastro-estrutural/funcao'">
       <page-title icon="fab fa-black-tie" main="Cadastrar Função"></page-title>  
         <b-form class="form-panel mb-3">
@@ -7,9 +7,11 @@
             id="informacoes-basicas"
             description="*Campos obrigatórios">
               <label>Código*</label>
-              <b-form-input id="quotation-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="role.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
+              <b-form-input id="role-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="role.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
+              <label>Nome</label>
+							<b-form-input id="role-name" class="mb-3" v-model="role.nome" required type="text" placeholder="Exemplo: Garçom"></b-form-input>
               <label>Descrição</label>
-							<b-form-input id="quotation" class="mb-3" v-model="role.description" required type="text" placeholder="Exemplo: Garçom"></b-form-input>
+							<b-form-input id="role-description" class="mb-3" v-model="role.detalhes" required type="text" placeholder="Exemplo: Extra"></b-form-input>
           </b-form-group>
         </b-form>
 				<b-row>
@@ -36,6 +38,7 @@
 </template>
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -51,7 +54,8 @@ export default {
     return {
       role: {
         id: 0,
-        description: '',
+        nome: '',
+        detalhes: ''
       },
     }
   },
@@ -70,21 +74,61 @@ export default {
       this.$router.back()
     },
 
-    saveRecord() {
-      console.log('saveRecord')
+    async saveRecord() {
+      let response
+      let parameters = {
+        name: this.role.nome,
+        details: this.role.detalhes
+      }
+      try {
+        response = await RestConnection.post('funcoes/cadastrar/funcao/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Salvar esta Função.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    alterRecord() {
-      console.log('alterRecord')
+    async alterRecord() {
+      let response
+      let parameters = {
+        id: this.role.id,
+        name: this.role.nome,
+        details: this.role.detalhes
+      }
+      try {
+        response = await RestConnection.put('funcoes/atualizar/funcao/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível Atualizar esta Função.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    deleteRecord() {
-      console.log('deleteRecord')      
-    },
-
-    clearReactiveData(){
-    },
-  }
+    async deleteRecord() {
+      let response
+      try {
+          response = await RestConnection.delete('funcoes/deletar/funcao/' + this.role.id)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Deletar esta Função.')
+            }
+        }
+        this.listOfCountries = response.data.conteudo   
+      alert(response.data.mensagem)
+      this.backOnePage()    
+      }   
+    }
 }
 </script>
 

@@ -14,16 +14,37 @@
               <label>Código*</label>
               <b-form-input id="city-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="city.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>Nome*</label>
-              <b-form-input id="city-name" class="mb-3" v-model="city.nameCity" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
+              <b-form-input id="city-name" class="mb-3" v-model="city.nomeCidade" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
               <label>UF*</label>
-              <b-input-group>
+              <b-row>
+                <b-col cols="11">
+                  <v-select
+                    class="mb-3" 
+                    v-model="ufSelected"
+                    :required="!ufSelected" 
+                    label="text" 
+                    :options="ufBrazilianStates">
+                    <template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
+                      <router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'save' }}">
+                        <b-button variant="primary"><i class="fas fa-flag"></i></b-button>
+                      </router-link>
+                    </template>
+                  </v-select>
+                </b-col>  
+                <b-col cols="1" class="btn-new-register">
+                  <router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'save' }}">
+                   <b-button variant="primary"><i class="fas fa-flag fa-sm"></i></b-button>
+                  </router-link>
+                </b-col>  
+              </b-row>
+              <!-- <b-input-group>
                <b-form-select class="mb-3" v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
                 <b-input-group-append>
-                  <router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'save' }}">
+                  <router-link :to="{ name: 'ConsultarEstado', params: { actionMode:'save' }}">
                     <b-button variant="primary"><i class="fas fa-university fa-lg"></i></b-button>
                   </router-link>
                 </b-input-group-append>
-              </b-input-group>
+              </b-input-group> -->
           </b-form-group>
         </b-form>
         <b-row>
@@ -52,6 +73,7 @@
 
 
 <script>
+import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
@@ -67,42 +89,13 @@ export default {
     return {
       city: {
         id: 0,
-        nameCity: '',
-        ufID: 0,
-        uf: ''
+        nomeCidade: '',
+        idEstado: 0,
+        nomeEstado: '',
+        uf: '',
       },
       ufSelected: null,
-      ufBrazilianStates: [
-        { value: null, text: 'Selecione a UF' },
-        { value: 'AC', text: 'AC' },
-        { value: 'AL', text: 'AL' },
-        { value: 'AP', text: 'AP' },
-        { value: 'AM', text: 'AM' },
-        { value: 'BA', text: 'BA' },
-        { value: 'CE', text: 'CE' },
-        { value: 'DF', text: 'DF' },
-        { value: 'ES', text: 'ES' },
-        { value: 'GO', text: 'GO' },
-        { value: 'MA', text: 'MA' },
-        { value: 'MT', text: 'MT' },
-        { value: 'MS', text: 'MS' },
-        { value: 'MG', text: 'MG' },
-        { value: 'PA', text: 'PA' },
-        { value: 'PB', text: 'PB' },
-        { value: 'PR', text: 'PR' },
-        { value: 'PE', text: 'PE' },
-        { value: 'PI', text: 'PI' },
-        { value: 'RJ', text: 'RJ' },
-        { value: 'RN', text: 'RN' },
-        { value: 'RS', text: 'RS' },
-        { value: 'RO', text: 'RO' },
-        { value: 'RR', text: 'RR' },
-        { value: 'SC', text: 'SC' },
-        { value: 'SP', text: 'SP' },
-        { value: 'SE', text: 'SE' },
-        { value: 'TO', text: 'TO' },
-        { value: 'XX', text: 'XX' },
-      ],
+      ufBrazilianStates: [],
     }
   },
   computed: {
@@ -111,10 +104,22 @@ export default {
     }
   },
 
+  watch: {
+    ufSelected() {
+      if (this.ufSelected) this.city.idEstado = this.ufSelected.value
+      if (this.ufSelected === null) {
+        this.getInfos()
+      }
+    }
+  },
+
+
   mounted() {
     if(this.selectedCity) {
       this.city = this.selectedCity
-      this.ufSelected = this.city.uf
+      this.ufSelected = {value: this.city.idEstado, text: `${this.city.uf} - ${this.city.nomeEstado}`}
+    } else {
+      this.getInfos()
     }
   },
 
@@ -123,16 +128,73 @@ export default {
       this.$router.back()
     },
 
-    saveRecord() {
-      console.log('saveRecord')
+    async getInfos() {
+			let response, stateList
+			try {
+				response = await RestConnection.get('estados/consultar/estado')
+				stateList = response.data.conteudo			 
+				for (let i = 0; i < stateList.length; i++) {
+					this.ufBrazilianStates.push({value: stateList[i].id, text: `${stateList[i].uf} - ${stateList[i].nome}`})
+				}
+			} catch (error) {
+				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes.")
+        this.backOnePage()
+			}
+		},
+
+    async saveRecord() {
+      let response
+      let parameters = {
+        name: this.city.nomeCidade,
+        state: this.ufSelected.value,
+      }
+      try {
+        response = await RestConnection.post('cidades/cadastrar/cidade/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Salvar esta Cidade.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    alterRecord() {
-      console.log('alterRecord')
+    async alterRecord() {
+      let response
+      let parameters = {
+        id: this.city.id,
+        name: this.city.nomeCidade,
+        state: this.ufSelected.value,
+      }
+      try {
+        response = await RestConnection.put('cidades/atualizar/cidade/', parameters)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi Atualizar esta Cidade.')
+          }
+      }
+      alert(response.data.mensagem)
+      this.backOnePage()
     },
 
-    deleteRecord() {
-      console.log('deleteRecord')      
+    async deleteRecord() {
+      let response
+      try {
+          response = await RestConnection.delete('cidades/deletar/cidade/' + this.city.id)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Deletar esta Cidade.')
+            }
+        }
+        this.listOfCountries = response.data.conteudo   
+      alert(response.data.mensagem)
+      this.backOnePage()    
     },
 
     clearReactiveData(){
