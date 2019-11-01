@@ -1,22 +1,20 @@
 <template>
   <div>
-    <template  v-if="this.$route.path === '/cadastros-geografico/pais'">
+    <template>
       <b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
-            <page-title icon="fas fa-flag" main="Cadastrar País"></page-title>       
+            <page-title icon="fas fa-hamburger" main="Cadastrar Grupo de Produtos"></page-title> 
           </b-col>
         </b-row>
         <b-form class="form-panel">
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Código*</label>
-              <b-form-input id="country-id" class="mb-2" :disabled="setInputFieldDisabled" v-model="country.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
-              <label>País*</label>
-              <b-form-input id="country-name" class="mb-3" v-model="country.nomePt" required type="text" placeholder="Exemplo: Brasil"></b-form-input>
-              <label>Sigla*</label>
-              <b-form-input id="country-sigla" class="mb-3" v-model="country.sigla" required type="text" placeholder="Exemplo: BR"></b-form-input>
+              <label>Grupo*</label>
+              <b-form-input id="productgroup-name" class="mb-3" v-model="productGroup.nomeGrupo" required type="text" placeholder="Exemplo: Bebidas"></b-form-input>
+              <label>Descrição</label>
+              <b-form-input id="productgroup-description" class="mb-3" v-model="productGroup.descricao" required type="text" placeholder="Exemplo: Alcoolicas"></b-form-input>
           </b-form-group>
         </b-form>
         <b-row>
@@ -34,8 +32,7 @@
           <template v-else>
             <b-col class="d-flex justify-content-end m-3 mt-5">
               <b-button class="mr-3" variant="outline-info" @click="alterRecord">Salvar Alteração</b-button>
-              <b-button variant="outline-danger" @click="deleteRecord">Excluir</b-button>
-              
+              <b-button variant="outline-danger" @click="deleteRecord">Excluir</b-button>              
             </b-col>
           </template>
         </b-row>
@@ -50,20 +47,20 @@ import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
-  name: 'CrudPais',
+  name: 'CrudGrupoProdutos',
   components: {
 		'page-title': PageTitle
   },
   props: {
     actionMode: String,
-    selectedCountry: Object,
+    selectedProductGroup: Object,
   },
   data() {
     return {
-      country: {
+      productGroup: {
         id: 0,
-        nomePt: '',
-        sigla: '',
+        nomeGrupo: '',
+        descricao: '',
       }
     }
   },
@@ -73,8 +70,8 @@ export default {
     }
   },
   mounted() {
-    if(this.selectedCountry) {
-      this.country = this.selectedCountry    
+    if(this.selectedProductGroup) {
+      this.productGroup = this.selectedProductGroup    
     }
   },
   methods: {
@@ -85,16 +82,17 @@ export default {
     async saveRecord() {
       let response
       let parameters = {
-        name: this.country.nomePt,
-        initials: this.country.sigla
+        name: this.productGroup.nomeGrupo,
+        details: this.productGroup.descricao,
+        status: true,
       }
       try {
-        response = await RestConnection.post('paises/cadastrar/pais/', parameters)
+        response = await RestConnection.post('grupos-produto/cadastrar/', parameters)
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
-            return alert('Não foi Salvar este país.')
+            return alert('Não foi Salvar este Grupo de Produtos.')
           }
       }
       alert(response.data.mensagem)
@@ -104,18 +102,19 @@ export default {
     async alterRecord() {
       let response
       let parameters = {
-        id: this.country.id,
-        name: this.country.nomePt,
-        initials: this.country.sigla
+        id: this.productGroup.id,
+        name: this.productGroup.nomeGrupo,
+        details: this.productGroup.descricao,
+        status: true,
       }
       try {
-        response = await RestConnection.put('paises/atualizar/pais/', parameters)
+        response = await RestConnection.put('grupos-produto/atualizar/', parameters)
       } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi possível Atualizar este país.')
-          }
+        if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+          return alert(exception.response.data.mensagem)
+        } else {
+          return alert('Não foi possível Atualizar este Grupo de Produtos.')
+        }
       }
       alert(response.data.mensagem)
       this.backOnePage()
@@ -124,14 +123,14 @@ export default {
     async deleteRecord() {
       let response
       try {
-          response = await RestConnection.delete('paises/deletar/pais/' + this.country.id)
-        } catch (exception) {
-            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-              return alert(exception.response.data.mensagem)
-            } else {
-              return alert('Não foi possível Deletar este país.')
-            }
-        }
+        response = await RestConnection.delete('grupos-produto/deletar/' + this.productGroup.id)
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível Deletar este Grupo de Produtos.')
+          }
+      }
       alert(response.data.mensagem)
       this.backOnePage()    
     }

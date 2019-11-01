@@ -47,7 +47,7 @@ import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
-  name: 'CrudMesa',
+  name: 'ConsultMesa',
   components: {
 		'page-title': PageTitle
 	},

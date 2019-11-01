@@ -133,8 +133,19 @@ const treeData = [{
 			]
 		},
 		{ text: 'Estoque',
-			data: { icon: 'fas fa-boxes', url:'CadastrosEstoque' },
+			data: { icon: 'fas fa-boxes', url:'CadastroEstoque' },
 			children: [
+				{
+				text: 'Grupo de produtos',
+				data: { 
+					icon: 'fas fa-hamburger',
+					url: 'ConsultarGrupoProdutos'	
+				}/* ,
+				data: { 
+					icon: 'fas fa-hamburger',
+					url: 'ConsultarProdutos'	
+				} */
+			}
 			/* {
 				text: 'Insumos',
 				data: { 
@@ -147,18 +158,18 @@ const treeData = [{
 				icon: 'fas fa-bread-slice',
 				url: 'ConsultarGrupoDeInsumos'	}
 			}, */
-			{
+			/* {
 				text: 'Produtos',
 				data: { 
 				icon: 'fas fa-hamburger',
-				url: 'ConsultarProdutos'	}
+				url: 'Produtos'	}
 			},
 			{
 				text: 'Grupo de produtos',
 				data: { 
 				icon: 'fas fa-hamburger',
-				url: 'ConsultarGrupoDeProdutos'	}
-			},			
+				url: 'GrupoProduto'	}
+			}, */			
 			]
 		},
 	]
