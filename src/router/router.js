@@ -47,6 +47,14 @@ const RegisterRoles = () => import(/* webpackChunkName: "register-structure" */ 
 const RegisterTable = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterTable')
 const RegisterCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCoin')
 
+
+// Cadastro do Estoque
+const RegisterStorage = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterStorage')
+const ConsultProductGroup = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProductGroup')
+const RegisterProductGroup = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterProductGroup')
+//const ConsultProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProduct')
+
+
 const Tables = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/Tables')
 const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
 
@@ -247,6 +255,30 @@ export default new Router({
         props: true
       }
       ]
+    },
+    {
+      path: 'cadastro-estoque',
+      name: 'CadastroEstoque',
+      component: RegisterStorage,
+      children: [
+      {
+        path: 'consulta-grupo-produto',
+        name: 'ConsultarGrupoProdutos',
+        component: ConsultProductGroup
+      },
+      {
+        path: 'cadastrar-grupo-produto',
+        name: 'CadastrarGrupoProdutos',
+        component: RegisterProductGroup,
+        props: true
+      },
+      /* {
+        path: 'consulta-produto',
+        name: 'ConsultarProdutos',
+        component: ConsultProduct
+      }, */]
+
+      
     },
     {
       path: 'mesas',

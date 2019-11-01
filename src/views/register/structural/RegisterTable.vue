@@ -40,7 +40,7 @@ import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
-  name: 'CrudFuncoes',
+  name: 'CrudMesa',
   components: {
 		'page-title': PageTitle
 	},
