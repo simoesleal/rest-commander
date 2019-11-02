@@ -19,9 +19,9 @@
 					<div class="material-card bg-fff">
 						<div class="card-body">
 							<h2 class="text-uppercase font-1-3em font-700">
-							Produtos
+							Unidades de Medida
 							</h2>
-							<router-link :to="'cadastro-estoque/consulta-produto'" class="btn btn-info text-uppercase">
+							<router-link :to="'cadastro-estoque/consulta-unidade-medida'" class="btn btn-info text-uppercase">
 								Cadastrar
 							</router-link>
 						</div>
