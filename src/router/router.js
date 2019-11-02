@@ -52,6 +52,8 @@ const RegisterCoin = () => import(/* webpackChunkName: "register-structure" */ '
 const RegisterStorage = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterStorage')
 const ConsultProductGroup = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProductGroup')
 const RegisterProductGroup = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterProductGroup')
+const ConsultUnitMeasurement = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultUnitMeasurement')
+const RegisterUnitMeasurement = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterUnitMeasurement')
 //const ConsultProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProduct')
 
 
@@ -270,6 +272,17 @@ export default new Router({
         path: 'cadastrar-grupo-produto',
         name: 'CadastrarGrupoProdutos',
         component: RegisterProductGroup,
+        props: true
+      },
+      {
+        path: 'consulta-unidade-medida',
+        name: 'ConsultarUnidadeMedida',
+        component: ConsultUnitMeasurement
+      },
+      {
+        path: 'cadastrar-unidade-medida',
+        name: 'CadastrarUnidadeMedida',
+        component: RegisterUnitMeasurement,
         props: true
       },
       /* {

@@ -140,11 +140,18 @@ const treeData = [{
 				data: { 
 					icon: 'fas fa-hamburger',
 					url: 'ConsultarGrupoProdutos'	
-				}/* ,
+				}
+				/* ,
 				data: { 
 					icon: 'fas fa-hamburger',
 					url: 'ConsultarProdutos'	
 				} */
+			}, {
+				text: 'Unidades de Medida',
+				data: {
+					icon: 'fas fa-weight-hanging',
+					url: 'ConsultarUnidadeMedida'
+				}
 			}
 			/* {
 				text: 'Insumos',
