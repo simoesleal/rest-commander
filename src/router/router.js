@@ -54,7 +54,8 @@ const ConsultProductGroup = () => import(/* webpackChunkName: "register-people" 
 const RegisterProductGroup = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterProductGroup')
 const ConsultUnitMeasurement = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultUnitMeasurement')
 const RegisterUnitMeasurement = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterUnitMeasurement')
-//const ConsultProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProduct')
+const ConsultProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProduct')
+const RegisterProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterProduct')
 
 
 const Tables = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/Tables')
@@ -285,13 +286,16 @@ export default new Router({
         component: RegisterUnitMeasurement,
         props: true
       },
-      /* {
+      {
         path: 'consulta-produto',
         name: 'ConsultarProdutos',
         component: ConsultProduct
-      }, */]
-
-      
+      }, {
+        path: 'cadastrar-produto',
+        name: 'CadastrarProduto',
+        component: RegisterProduct,
+        props: true
+      },]      
     },
     {
       path: 'mesas',
