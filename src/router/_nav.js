@@ -203,7 +203,7 @@ const treeData = [{
 			text: 'Novo Pedido',
 			data: { 
 			icon: 'far fa-edit',
-			url: 'LancamentoDePedido'	}
+			url: 'NovoPedido'	}
 		}
 	]
 },

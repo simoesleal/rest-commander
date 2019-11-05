@@ -1,7 +1,7 @@
 <template>
 	<div class="register-quotation">
     <template  v-if="this.$route.path === '/cadastro-estoque/cadastrar-produto'">
-      <page-title icon="fas fa-money-bill-alt" main="Cadastrar Produto"></page-title>  
+      <page-title icon="fas fa-hamburger" main="Cadastrar Produto"></page-title>  
         <b-form class="form-panel mb-3">
           <b-form-group
             id="informacoes-basicas"
