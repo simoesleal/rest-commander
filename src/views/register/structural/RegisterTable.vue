@@ -6,10 +6,10 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Código*</label>
-              <b-form-input id="quotation-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="table.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>Número da Mesa</label>
 							<b-form-input id="quotation" class="mb-3" v-model="table.numero" required type="text" placeholder="Exemplo: 01"></b-form-input>
+              <label>Detalhe*</label>
+              <b-form-input id="quotation-id" class="mb-3" v-model="table.detalhes" required type="text" placeholder="Exemplo: Familia"></b-form-input>              
           </b-form-group>
         </b-form>
 				<b-row>
@@ -45,7 +45,10 @@ export default {
 		'page-title': PageTitle
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      default: 'save',
+      type: String
+    },
     selectedTable: Object,
   },
   data() {
@@ -53,6 +56,8 @@ export default {
       table: {
         id: 0,
         numero: '',
+        detalhes: '',
+        status: 'ABERTA'
       },
     }
   },
@@ -74,7 +79,9 @@ export default {
     async saveRecord() {
       let response
       let parameters = {
-        number: this.table.numero
+        number: this.table.numero,
+        details: this.table.detalhes,
+        status: this.table.status
       }
       try {
         response = await RestConnection.post('mesas/cadastrar/mesa/', parameters)

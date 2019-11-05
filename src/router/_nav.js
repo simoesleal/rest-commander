@@ -188,16 +188,16 @@ const treeData = [{
 	data: { icon: 'fas fa-cash-register', url:'Pdv' },
 	children: [
 		{
-			text: 'Mesas',
-			data: { 
-			icon: 'fab fa-buromobelexperte',
-			url: 'listagemDeMesas'	}
-		},
-		{
 			text: 'Caixa',
 			data: { 
 			icon: 'fas fa-cash-register',
 			url: 'LancamentoCaixa'	}
+		},
+		{
+			text: 'Mesas',
+			data: { 
+			icon: 'fab fa-buromobelexperte',
+			url: 'MapaMesas'	}
 		},
 		{
 			text: 'Novo Pedido',
