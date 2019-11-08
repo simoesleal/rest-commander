@@ -3,7 +3,7 @@
 		<b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
-            <page-title style="color:red;" icon="fab fa-buromobelexperte" main="Mapa de Mesas"></page-title>       
+            <page-title  icon="fab fa-buromobelexperte" main="Mapa de Mesas"></page-title>       
           </b-col>
         </b-row>
 		</b-container>
