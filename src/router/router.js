@@ -58,8 +58,9 @@ const ConsultProduct = () => import(/* webpackChunkName: "register-people" */ '.
 const RegisterProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterProduct')
 
 
-const Tables = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/Tables')
+const TableMap = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableMap')
 const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
+const TableDetails = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableDetails')
 
 
 Vue.use(Router)
@@ -298,14 +299,20 @@ export default new Router({
       },]      
     },
     {
-      path: 'mesas',
-      name: 'Mesas',
-      component: Tables,
+      path: 'mapa-mesas',
+      name: 'MapaMesas',
+      component: TableMap,
     },
     {
       path: 'novo-pedido',
       name: 'NovoPedido',
       component: NewOrder,
+    },
+    {
+      path: 'resumo-mesa',
+      name: 'ResumoMesa',
+      component: TableDetails,
+      props: true
     }
   ],
   }],

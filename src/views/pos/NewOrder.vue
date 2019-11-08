@@ -103,10 +103,10 @@
 
         <b-row>
           <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
-            <div @click="backOnePage">
-                <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
-                <div class="text-uppercase font-300">Voltar</div>
-            </div>
+            <router-link :to="{ name: 'MapaMesas'}">
+              <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
+              <div class="text-uppercase font-300">Voltar</div>
+            </router-link>
           </b-col>
         </b-row>
       </b-container>	
@@ -150,7 +150,7 @@ export default {
     async getTables () {
       let response, tableList
       try {
-        response = await RestConnection.get('mesas/consultar/mesa')
+        response = await RestConnection.get('mesas/consultar/mesas/ocupadas')
         tableList = response.data.conteudo
         for (let i = 0; i < tableList.length; i++) {
 					this.tableList.push({value: tableList[i].id, text: `Mesa - ${tableList[i].numero}`})
@@ -227,7 +227,7 @@ export default {
     },
 
     backOnePage() {
-      this.$router.back()
+      this.$router.back(-1)
     },
 
     clearProductOrder() {
