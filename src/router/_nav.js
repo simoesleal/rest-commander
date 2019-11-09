@@ -191,7 +191,7 @@ const treeData = [{
 			text: 'Caixa',
 			data: { 
 			icon: 'fas fa-cash-register',
-			url: 'LancamentoCaixa'	}
+			url: 'Caixa'	}
 		},
 		{
 			text: 'Mesas',
