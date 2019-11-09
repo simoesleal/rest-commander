@@ -62,6 +62,8 @@ const TableMap = () => import(/* webpackChunkName: "point-of-sale" */ '../views/
 const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
 const TableDetails = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableDetails')
 
+const Cashier = () => import(/* webpackChunkName: "point-of-sale" */ '../views/cashier/Cashier')
+
 
 Vue.use(Router)
 
@@ -313,7 +315,11 @@ export default new Router({
       name: 'ResumoMesa',
       component: TableDetails,
       props: true
-    }
-  ],
+    },
+    {
+      path: 'caixa',
+      name: 'Caixa',
+      component: Cashier,
+    }],
   }],
 })

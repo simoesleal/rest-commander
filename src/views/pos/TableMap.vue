@@ -19,7 +19,12 @@
 				<b-row>
 					<b-col cols="4" md="3" lg="2" v-for="(mesa, index) in listOfTables" :key="index">
 							<router-link :to="{ name: 'ResumoMesa', params: { selectedTable: mesa }}">
-								<b-button class="mesas text-nowrap shadow-sm" variant="outline-primary"><i class="fab fa-buromobelexperte"></i> {{mesa.numero}}</b-button>
+								<template v-if="mesa.status === 'OCUPADA' ">
+									<b-button class="mesas text-nowrap shadow-sm" variant="outline-danger"><i class="fab fa-buromobelexperte"></i> {{mesa.numero}}</b-button>
+								</template>
+								<template v-else>
+									<b-button class="mesas text-nowrap shadow-sm" variant="outline-primary"><i class="fab fa-buromobelexperte"></i> {{mesa.numero}}</b-button>
+								</template>								
 							</router-link>
 					</b-col>
 				</b-row>

@@ -13,25 +13,20 @@
             description="*Campos obrigatórios">             
 						<label>Mesa</label>
             <b-row>
-              <b-col cols="12" md="11">
+              <b-col cols="12">
                 <v-select
                   class="mb-3" 
                   v-model="tableSelected"
                   :required="!tableSelected" 
                   label="text" 
                   :options="tableList">
-                  <template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
-                    <router-link :to="{ name: 'CadastrarMesa', params: { actionMode:'save' }}">
+                  <template slot="no-options">Nenhuma mesa ocupada! 
+                    <router-link :to="{ name: 'MapaMesas'}">
                       <b-button variant="primary"><i class="fab fa-buromobelexperte"></i></b-button>
                     </router-link>
                   </template>
                 </v-select>
-              </b-col>  
-              <b-col cols="1" class="d-none d-md-inline-block btn-new-register">
-                <router-link :to="{ name: 'ConsultarMesas', params: { actionMode:'save' }}">
-                  <b-button variant="primary"><i class="fab fa-buromobelexperte fa-sm"></i></b-button>
-                </router-link>
-              </b-col>  
+              </b-col>   
            </b-row>
           </b-form-group>
         </b-form>
