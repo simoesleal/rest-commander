@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<b-container>
+		<b-container  v-if="this.$route.path === '/caixa'">
 			<b-row class="mt-2">
 				<b-col cols="12" md="9">
 					<page-title icon="fas fa-cash-register" main="Caixa"></page-title>       
@@ -104,6 +104,7 @@
 				</b-col>   
 			</b-row>
 		</b-container>
+		<router-view></router-view>
 	</div>
 </template>
 
@@ -194,7 +195,7 @@ export default {
 
 		},
 		async fecharMesa() {
-
+			this.$router.push({ name: 'FechamentoConta' })
 		},
 		async fecharCaixa() {
 

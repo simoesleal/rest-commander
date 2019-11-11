@@ -77,7 +77,6 @@
             <b-row>
               <b-col class="d-flex justify-content-end">
                 <b-button variant="outline-dark" class="m-1" @click="clearProductOrder"><i class="fas fa-broom"></i> Limpar</b-button>
-
                 <b-button variant="primary" class="m-1" @click="addProductOrder"><i class="fas fa-plus"></i> Adicionar</b-button>
               </b-col>   
             </b-row>
@@ -88,6 +87,9 @@
         <div class="my-5">
           <label class="text-uppercase">Resudo do Pedido</label>
           <b-table responsive hover striped bordered :items="itensPedido" :fields="fields">
+            <template slot="actions" slot-scope="data">
+              <b-button @click="deleteOrder(data.index)" class="mr-5"><i class="fas fa-times"></i></b-button>
+            </template>
           </b-table>
         </div>
         <b-row class="mt-5 p-5">
@@ -122,6 +124,8 @@ export default {
 		return {
 			tableSelected: '',
       tableList: [],
+      customerAccountSelected: '',
+      customerAccountList: [],
 			selectedProduct: '',
       productList: [],
       itensPedido: [],
@@ -130,25 +134,44 @@ export default {
         { key: 'produto', label: 'Produto', sortable: true},
         { key: 'quantidade', label: 'QTD', sortable: true},
         { key: 'observacao', label: 'Obs', sortable: true},
+        { key: 'actions', label: 'Ações' }
       ],
       orderObservation: '',
-      quantity: 1
+      quantity: 1,
 		}
 	},
 
   mounted() {
-    this.getTables()
+    this.getOpenCustomerAccount()
     this.getProduct()
   },
 
+  watch: {
+    tableSelected() {
+      if (this.tableSelected && this.tableSelected.value) {        
+        this.getCustomerAccount(this.tableSelected.value)      
+      } else {
+        this.customerAccountSelected = ''
+      }
+    }
+  },
+
   methods: {
-    async getTables () {
+  
+    getCustomerAccount(idMesa) {
+      this.customerAccountSelected = this.customerAccountList.find(function(element) {
+        return element.idMesa === idMesa
+      })
+    },
+
+    async getOpenCustomerAccount () {
       let response, tableList
       try {
-        response = await RestConnection.get('mesas/consultar/mesas/ocupadas')
+        response = await RestConnection.get('conta-cliente/consultar/mesas/ocupadas')
         tableList = response.data.conteudo
+        this.customerAccountList = tableList
         for (let i = 0; i < tableList.length; i++) {
-					this.tableList.push({value: tableList[i].id, text: `Mesa - ${tableList[i].numero}`})
+					this.tableList.push({value: tableList[i].idMesa, text: `Mesa - ${tableList[i].numeroMesa}`})
 				}
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
@@ -156,8 +179,7 @@ export default {
           } else {
             return alert("Não foi possível buscar a lista de Mesas.")
           }
-      }
-      
+      }      
     },
 
     async getProduct () {
@@ -202,7 +224,7 @@ export default {
         let parameters = {
           idMesa: this.tableSelected.value,
           idFuncionario: 1,
-          idContaCliente: 2,
+          idContaCliente: this.customerAccountSelected.id,
           produtos: this.itensPedido
         }     
         try {
@@ -221,8 +243,12 @@ export default {
       }
     },
 
+    deleteOrder(index) {
+      this.itensPedido.splice(index, 1)
+    },
+
     backOnePage() {
-      this.$router.back(-1)
+      this.$router.push({ name: 'MapaMesas' })
     },
 
     clearProductOrder() {
