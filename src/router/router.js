@@ -325,7 +325,8 @@ export default new Router({
         {
           path: 'fechamento-conta',
           name: 'FechamentoConta',
-          component: CloseClientAccount
+          component: CloseClientAccount,
+          props: true
         }
       ]
     }],

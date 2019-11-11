@@ -201,6 +201,9 @@ export default {
   components: {
 		'page-title': PageTitle
 	},
+	props: {
+    idCaixa: [Number, String],
+  },
 	data() {
 		return {
 			listOfTables: [],
@@ -368,7 +371,6 @@ export default {
 				} else {
 					return alert('Não foi buscar a lista de pedidos. Por favor, tente novamente.')
 				}
-				
 			}
 		},
 
@@ -378,7 +380,7 @@ export default {
 				p_id_conta_cliente: this.idContaCliente,
 				p_id_mesa: this.idMesa,
 				json_fechamento: [ {
-					idCaixa: 3,
+					idCaixa: this.idCaixa,
 					idFormaPagamento: this.formaPagamentoSelected.value,
 					dinheiroReal: this.dinheiro.real,
 					dinheiroDolar: this.dinheiro.dolar,
@@ -391,7 +393,7 @@ export default {
 				} ]
 			}
 			try {
-				response = await RestConnection.post('caixa/fechamento-mesa/', parameters)
+				response = await RestConnection.post('fechamento/novo-fechamento/', parameters)
 				if (response.data.status === 200) {
 					alert('Mesa fechada com sucesso!')
 					this.backOnePage()
