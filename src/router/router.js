@@ -63,6 +63,7 @@ const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/
 const TableDetails = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableDetails')
 
 const Cashier = () => import(/* webpackChunkName: "point-of-sale" */ '../views/cashier/Cashier')
+const CloseClientAccount = () => import(/* webpackChunkName: "point-of-sale" */ '../views/cashier/CloseClientAccount')
 
 
 Vue.use(Router)
@@ -320,6 +321,13 @@ export default new Router({
       path: 'caixa',
       name: 'Caixa',
       component: Cashier,
+      children: [
+        {
+          path: 'fechamento-conta',
+          name: 'FechamentoConta',
+          component: CloseClientAccount
+        }
+      ]
     }],
   }],
 })
