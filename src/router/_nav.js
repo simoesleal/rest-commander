@@ -122,7 +122,7 @@ const treeData = [{
 					text: 'Conta Bancaria',
 					data: { 
 					icon: 'fas fa-piggy-bank',
-					url: 'ConsultarContasBancarias'	}
+					url: 'ConsultarContaBancaria'	}
 				},
 				{
 					text: 'Formas de Pagamento',
