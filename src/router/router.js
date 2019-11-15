@@ -52,6 +52,8 @@ const ConsultDocumentType = () => import(/* webpackChunkName: "register-financia
 const RegistertDocumentType = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertDocumentType')
 const ConsultBank = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/ConsultBank')
 const RegistertBank = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertBank')
+const ConsultPaymentType = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/ConsultPaymentType')
+const RegistertPaymentType = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertPaymentType')
 
 const TableMap = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableMap')
 const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
@@ -282,7 +284,19 @@ export default new Router({
         name: 'CadastrarBanco',
         component: RegistertBank,
         props: true
-      } ]      
+      },
+      {
+        path: 'consulta-tipo-pagamento',
+        name: 'ConsultarTipoPagamento',
+        component: ConsultPaymentType
+      },
+      {
+        path: 'cadastrar-tipo-pagamento',
+        name: 'CadastrarTipoPagamento',
+        component: RegistertPaymentType,
+        props: true
+      } 
+      ]      
     },
     // FIM CADASTRO FINANCEIRO    
     
