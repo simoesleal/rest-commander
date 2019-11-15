@@ -30,23 +30,12 @@ const RegisterCustomer = () => import(/* webpackChunkName: "register-people" */ 
 const RegisterStructure = () => import(/* webpackChunkName: "register-people" */ '../views/register/structural/RegisterStructure')
 const ConsultTables = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultTables')
 const ConsultRoles = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultRoles')
-const ConsultNcm = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultNcm')
-const ConsultCest = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCest')
-const ConsultCstPisCofins = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCstPisCofins')
-const ConsultCstCsosn = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCstCsosn')
-const ConsultCfop = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCfop')
 const ConsultQuotation = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultQuotation')
 const ConsultCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCoin')
-const RegisterCest = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCest')
-const RegisterCfop = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCfop')
-const RegisterCstCsosn = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCstCsosn')
-const RegisterCstPisCofins = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCstPisCofins')
-const RegisterNcm = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterNcm')
 const RegisterQuotation = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterQuotation')
 const RegisterRoles = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterRoles')
 const RegisterTable = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterTable')
 const RegisterCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCoin')
-
 
 // Cadastro do Estoque
 const RegisterStorage = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterStorage')
@@ -57,6 +46,10 @@ const RegisterUnitMeasurement = () => import(/* webpackChunkName: "register-peop
 const ConsultProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProduct')
 const RegisterProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterProduct')
 
+//Cadastro do Financeiro
+const RegisterFinancial = () => import(/* webpackChunkName: "register-people" */ '../views/register/financial/RegisterFinancial')
+const ConsultDocumentType = () => import(/* webpackChunkName: "register-people" */ '../views/register/financial/ConsultDocumentType')
+const RegistertDocumentType = () => import(/* webpackChunkName: "register-people" */ '../views/register/financial/RegistertDocumentType')
 
 const TableMap = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableMap')
 const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
@@ -84,11 +77,12 @@ export default new Router({
       name: 'Dashboard',
       component: Dashboard,
     },
+    // INICIO CADASTRO GEOGRAFICO
     {
       path: 'cadastros-geografico',
       name: 'Cadastros',
       component: RegisterGeography,
-      children: [,
+      children: [
       {
         path: 'paises',
         name: 'ConsultarPais',
@@ -101,12 +95,14 @@ export default new Router({
         path: 'cidades',
         name: 'ConsultarCidade',
         component: ConsultCity,
-      },{
+      },
+      {
         path: 'pais',
         name: 'CadastrarPais',
         component: RegisterCountry,
         props: true
-      }, {
+      },
+      {
         path: 'estado',
         name: 'CadastrarEstado',
         component: RegisterState,
@@ -118,6 +114,9 @@ export default new Router({
         props: true
       }]
     },
+    // FIM CADASTRO GEOGRAFICO
+
+    // INICIO CADASTRO PESSOAS
     {
       path: 'cadastro-pessoas',
       name: 'CadastroPessoas',
@@ -157,6 +156,9 @@ export default new Router({
       props: true
       }]
     },
+    // FIM CADASTRO PESSOAS
+
+    // INICIO CADASTRO ESTRUTURAL
     {
       path: 'cadastro-estrutural',
       name: 'CadastrosEstruturais',
@@ -172,31 +174,6 @@ export default new Router({
         name: 'ConsultarFuncoes',
         component: ConsultRoles
       },
-      /* {
-        path: 'ncms',
-        name: 'ConsultarNCM',
-        component: ConsultNcm
-      }, */
-     /*  {
-        path: 'cestes',
-        name: 'ConsultarCEST',
-        component: ConsultCest
-      }, */
-      /* {
-        path: 'cst-pis-cofins-consulta',
-        name: 'ConsultarCstPisCofins',
-        component: ConsultCstPisCofins
-      }, */
-      /* {
-        path: 'cst-csosn-consulta',
-        name: 'ConsultarCstCsosn',
-        component: ConsultCstCsosn
-      }, */
-     /*  {
-        path: 'cfops',
-        name: 'ConsultarCfop',
-        component: ConsultCfop
-      }, */
       {
         path: 'cotacoes',
         name: 'ConsultarCotacao',
@@ -207,36 +184,6 @@ export default new Router({
         name: 'ConsultarMoeda',
         component: ConsultCoin
       },
-      /* {
-        path: 'cest',
-        name: 'CadastrarCest',
-        component: RegisterCest,
-        props: true
-      }, */
-      /* {
-        path: 'cfop',
-        name: 'CadastrarCfop',
-        component: RegisterCfop,
-        props: true
-      }, */
-      /* {
-        path: 'cst-csosn-registro',
-        name: 'CadastrarCstCsosn',
-        component: RegisterCstCsosn,
-        props: true
-      }, */
-      /* {
-        path: 'cst-pis-cofins-registro',
-        name: 'CadastrarCstPisCofins',
-        component: RegisterCstPisCofins,
-        props: true
-      } */,
-      /* {
-        path: 'ncm',
-        name: 'CadastrarNcm',
-        component: RegisterNcm,
-        props: true
-      }, */
       {
         path: 'cotacao',
         name: 'CadastrarCotacao',
@@ -263,6 +210,9 @@ export default new Router({
       }
       ]
     },
+    // FIM CADASTRO ESTRUTURAL
+
+    // INICIO CADASTRO ESTOQUE
     {
       path: 'cadastro-estoque',
       name: 'CadastroEstoque',
@@ -301,6 +251,28 @@ export default new Router({
         props: true
       },]      
     },
+    // FIM CADASTRO ESTOQUE
+
+    // INICIO CADASTRO FINANCEIRO
+    {
+      path: 'cadastro-financeiro',
+      name: 'CadastroFinanceiro',
+      component: RegisterFinancial,
+      children: [
+      {
+        path: 'consulta-tipo-documento',
+        name: 'ConsultarTiposDocumento',
+        component: ConsultDocumentType
+      },
+      {
+        path: 'cadastrar-tipo-documento',
+        name: 'CadastrarTipoDocumento',
+        component: RegistertDocumentType,
+        props: true
+      } ]      
+    },
+    // FIM CADASTRO FINANCEIRO    
+    
     {
       path: 'mapa-mesas',
       name: 'MapaMesas',
