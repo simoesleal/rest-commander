@@ -119,16 +119,22 @@ const treeData = [{
 					url: 'ConsultarContasBancarias'	}
 				},
 				{
+					text: 'Tipo de Documentos',
+					data: { 
+					icon: 'fas fa-scroll',
+					url: 'ConsultarTipoDocumento'	}
+				},
+				{
+					text: 'Formas de Pagamento',
+					data: { 
+					icon: 'fas fa-money-check-alt',
+					url: 'ConsultarFormasDePagamento'	}
+				},
+				{
 					text: 'Grupo de Custo',
 					data: { 
 					icon: 'fas fa-layer-group',
 					url: 'ConsultarGruposDeCusto'	}
-				},
-				{
-					text: 'Fomras de Pagamento',
-					data: { 
-					icon: 'fas fa-money-check-alt',
-					url: 'ConsultarFormasDePagamento'	}
 				},
 			]
 		},
@@ -222,14 +228,14 @@ const treeData = [{
 					text: 'Duplicatas a Pagar',
 					data: { 
 					icon: 'fas fa-file',
-					url: 'consultarDuplicataPagar'	}
-				},
+					url: 'NovaContaPagar'	}
+				}/* ,
 				{
 					text: 'Alterar Duplicata',
 					data: { 
 					icon: 'fas fa-file',
 					url: 'alterarDuplicataPagar'	}
-				}
+				} */
 			]
 		},
 		{

@@ -65,6 +65,8 @@ const TableDetails = () => import(/* webpackChunkName: "point-of-sale" */ '../vi
 const Cashier = () => import(/* webpackChunkName: "point-of-sale" */ '../views/cashier/Cashier')
 const CloseClientAccount = () => import(/* webpackChunkName: "point-of-sale" */ '../views/cashier/CloseClientAccount')
 
+const AccountsPayables = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/AccountsPayables')
+const NewAccountPayable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/NewAccountPayable')
 
 Vue.use(Router)
 
@@ -326,6 +328,19 @@ export default new Router({
           path: 'fechamento-conta',
           name: 'FechamentoConta',
           component: CloseClientAccount,
+          props: true
+        }
+      ]
+    },
+    {
+      path: 'contas-pagar',
+      name: 'ContasPagar',
+      component: AccountsPayables,
+      children: [
+        {
+          path: 'nova-conta-pagar',
+          name: 'NovaContaPagar',
+          component: NewAccountPayable,
           props: true
         }
       ]
