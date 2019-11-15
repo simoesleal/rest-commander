@@ -54,6 +54,8 @@ const ConsultBank = () => import(/* webpackChunkName: "register-financial" */ '.
 const RegistertBank = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertBank')
 const ConsultPaymentType = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/ConsultPaymentType')
 const RegistertPaymentType = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertPaymentType')
+const ConsultBankAccount = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/ConsultBankAccount')
+const RegistertBankAccount = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertBankAccount')
 
 const TableMap = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableMap')
 const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
@@ -294,6 +296,17 @@ export default new Router({
         path: 'cadastrar-tipo-pagamento',
         name: 'CadastrarTipoPagamento',
         component: RegistertPaymentType,
+        props: true
+      },
+      {
+        path: 'consulta-conta-bancaria',
+        name: 'ConsultarContaBancaria',
+        component: ConsultBankAccount
+      },
+      {
+        path: 'cadastrar-conta-bancaria',
+        name: 'CadastrarContaBancaria',
+        component: RegistertBankAccount,
         props: true
       } 
       ]      
