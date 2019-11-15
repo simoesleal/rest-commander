@@ -113,16 +113,16 @@ const treeData = [{
 			data: { icon: 'fas fa-coins', url:'CadastroFinanceiro' },
 			children: [
 				{
+					text: 'Banco',
+					data: { 
+					icon: 'fas fa-university',
+					url: 'ConsultarBanco'	}
+				},
+				{
 					text: 'Conta Bancaria',
 					data: { 
 					icon: 'fas fa-piggy-bank',
 					url: 'ConsultarContasBancarias'	}
-				},
-				{
-					text: 'Grupo de Custo',
-					data: { 
-					icon: 'fas fa-layer-group',
-					url: 'ConsultarGruposDeCusto'	}
 				},
 				{
 					text: 'Formas de Pagamento',

@@ -1,31 +1,31 @@
 <template>
-  <div>
+  <div v-if="this.$route.path === '/cadastro-financeiro/consulta-banco'">
     <template>
       <b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
-            <page-title icon="far fa-file-alt" main="Consultar Tipo de Documentos"></page-title>       
+            <page-title icon="fas fa-university" main="Consultar Bancos"></page-title>       
           </b-col>
         </b-row>
         <b-row class="mt-3">
           <b-col cols="12" md="9">
             <b-input-group prepend="Pesquisar:">
-              <b-form-input v-model="searchItem" placeholder="Exemplo: Boleto"></b-form-input>
+              <b-form-input v-model="searchItem" placeholder="Exemplo: Banco do Brasil"></b-form-input>
               <b-input-group-append>
                 <b-button variant="outline-secondary" @click="getItem"><i class="fas fa-search"></i> Buscar</b-button>
               </b-input-group-append>
             </b-input-group>
           </b-col>
           <b-col cols="12" md="2">
-            <router-link :to="{ name: 'CadastrarTipoDocumento', params: { actionMode:'save' }}">
-              <b-button variant="primary"><i class="fas fa-plus"></i> Novo Documento</b-button>
+            <router-link :to="{ name: 'CadastrarBanco', params: { actionMode:'save' }}">
+              <b-button variant="primary"><i class="fas fa-plus"></i> Novo Banco</b-button>
             </router-link>
           </b-col>
         </b-row>
-        <div class="mt-3" v-if="listOfDocumentType.length > 0">
-          <b-table hover striped bordered fixed :items="listOfDocumentType" :fields="fields">
+        <div class="mt-3" v-if="listOfBanks.length > 0">
+          <b-table hover striped bordered fixed :items="listOfBanks" :fields="fields">
             <template v-slot:cell(actions)="data">
-                <router-link :to="{ name: 'CadastrarTipoDocumento', params: { actionMode:'edit', selectedDocumentType: data.item }}">
+                <router-link :to="{ name: 'CadastrarBanco', params: { actionMode:'edit', selectedBank: data.item }}">
                 <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
               </router-link>
             </template>
@@ -47,24 +47,21 @@ import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
-  name: 'ConsultTipoDocumento',
+  name: 'ConsultBanks',
   components: {
 		'page-title': PageTitle
 	},
 	data() {
 		return {
-			listOfDocumentType: [],
+			listOfBanks: [],
 			searchItem: '',
 			fields: [
 				{
 					key: 'id', label: 'Código', sortable: true
 				},
 				{
-					key: 'tipoDocumento', label: 'Tipo do Documento', sortable: true
-				},			
-				{
-					key: 'descricao', label: 'Descrição', sortable: true
-				},			
+					key: 'banco', label: 'Banco', sortable: true
+				},						
 				{ key: 'actions', label: 'Ações' }
 			]
 		}
@@ -72,38 +69,38 @@ export default {
 	methods: {
     getItem () {
       if (this.searchItem.length === 0) {
-        this.getTypeDocument()
+        this.getBank()
       } else {
-        this.getTypeDocumentByName(this.searchItem)
+        this.getBankByName(this.searchItem)
       }
     },
 
-    async getTypeDocument () {
+    async getBank () {
       let response
       try {
-        response = await RestConnection.get('tipo-documento/consultar/')
+        response = await RestConnection.get('bancos/consultar/banco/')
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
-            return alert("Não foi possível buscar a lista de Tipos de Documentos.")
+            return alert("Não foi possível buscar a lista de Bancos.")
           }
       }
-      this.listOfDocumentType = response.data.conteudo
+      this.listOfBanks = response.data.conteudo
     },
 
-    async getTypeDocumentByName (searchItem) {
+    async getBankByName (searchItem) {
       let response
       try {
-          response = await RestConnection.get('tipo-documento/consultar/nome/' + searchItem)
+          response = await RestConnection.get('bancos/consultar/banco/descricao/' + searchItem)
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
             } else {
-              return alert('Nenhum Tipo de Documento com este nome encontrado.')
+              return alert('Nenhum Banco com este nome encontrado.')
             }
         }
-        this.listOfDocumentType = response.data.conteudo
+        this.listOfBanks = response.data.conteudo
       }
 	}
 

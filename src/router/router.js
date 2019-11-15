@@ -27,7 +27,7 @@ const RegisterProvider = () => import(/* webpackChunkName: "register-people" */ 
 const RegisterCustomer = () => import(/* webpackChunkName: "register-people" */ '../views/register/people/RegisterCustomer')
 
 // Cadastros de Estrutura
-const RegisterStructure = () => import(/* webpackChunkName: "register-people" */ '../views/register/structural/RegisterStructure')
+const RegisterStructure = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterStructure')
 const ConsultTables = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultTables')
 const ConsultRoles = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultRoles')
 const ConsultQuotation = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultQuotation')
@@ -38,18 +38,20 @@ const RegisterTable = () => import(/* webpackChunkName: "register-structure" */ 
 const RegisterCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCoin')
 
 // Cadastro do Estoque
-const RegisterStorage = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterStorage')
-const ConsultProductGroup = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProductGroup')
-const RegisterProductGroup = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterProductGroup')
-const ConsultUnitMeasurement = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultUnitMeasurement')
-const RegisterUnitMeasurement = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterUnitMeasurement')
-const ConsultProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/ConsultProduct')
-const RegisterProduct = () => import(/* webpackChunkName: "register-people" */ '../views/register/storage/RegisterProduct')
+const RegisterStorage = () => import(/* webpackChunkName: "register-storage" */ '../views/register/storage/RegisterStorage')
+const ConsultProductGroup = () => import(/* webpackChunkName: "register-storage" */ '../views/register/storage/ConsultProductGroup')
+const RegisterProductGroup = () => import(/* webpackChunkName: "register-storage" */ '../views/register/storage/RegisterProductGroup')
+const ConsultUnitMeasurement = () => import(/* webpackChunkName: "register-storage" */ '../views/register/storage/ConsultUnitMeasurement')
+const RegisterUnitMeasurement = () => import(/* webpackChunkName: "register-storage" */ '../views/register/storage/RegisterUnitMeasurement')
+const ConsultProduct = () => import(/* webpackChunkName: "register-storage" */ '../views/register/storage/ConsultProduct')
+const RegisterProduct = () => import(/* webpackChunkName: "register-storage" */ '../views/register/storage/RegisterProduct')
 
 //Cadastro do Financeiro
-const RegisterFinancial = () => import(/* webpackChunkName: "register-people" */ '../views/register/financial/RegisterFinancial')
-const ConsultDocumentType = () => import(/* webpackChunkName: "register-people" */ '../views/register/financial/ConsultDocumentType')
-const RegistertDocumentType = () => import(/* webpackChunkName: "register-people" */ '../views/register/financial/RegistertDocumentType')
+const RegisterFinancial = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegisterFinancial')
+const ConsultDocumentType = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/ConsultDocumentType')
+const RegistertDocumentType = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertDocumentType')
+const ConsultBank = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/ConsultBank')
+const RegistertBank = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertBank')
 
 const TableMap = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableMap')
 const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
@@ -268,6 +270,17 @@ export default new Router({
         path: 'cadastrar-tipo-documento',
         name: 'CadastrarTipoDocumento',
         component: RegistertDocumentType,
+        props: true
+      },     
+      {
+        path: 'consulta-banco',
+        name: 'ConsultarBanco',
+        component: ConsultBank
+      },
+      {
+        path: 'cadastrar-banco',
+        name: 'CadastrarBanco',
+        component: RegistertBank,
         props: true
       } ]      
     },
