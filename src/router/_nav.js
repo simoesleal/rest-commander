@@ -128,7 +128,7 @@ const treeData = [{
 					text: 'Formas de Pagamento',
 					data: { 
 					icon: 'fas fa-money-check-alt',
-					url: 'ConsultarFormasDePagamento'	}
+					url: 'ConsultarTipoPagamento'	}
 				},
 				{
 					text: 'Tipo de Documentos',

@@ -27,6 +27,18 @@
 						</div>
 					</div>
 				</div>
+				<div class="col-12 col-md-4">
+					<div class="material-card bg-fff">
+						<div class="card-body">
+							<h2 class="text-uppercase font-1-3em font-700">
+								Formas de Pagamento
+							</h2>
+							<router-link :to="'cadastro-financeiro/consulta-tipo-pagamento'" class="btn btn-info text-uppercase">
+								Cadastrar
+							</router-link>
+						</div>
+					</div>
+				</div>
 			</div>
 		</div>
 		<router-view></router-view>
