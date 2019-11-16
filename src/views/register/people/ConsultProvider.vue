@@ -24,7 +24,7 @@
         </b-row>
         <div class="mt-3" v-if="listOfProviders.length > 0">
           <b-table hover fixed striped bordered :items="listOfProviders" :fields="fields">
-            <template slot="actions" slot-scope="data">
+            <template v-slot:cell(actions)="data">
                 <router-link :to="{ name: 'CadastrarFornecedor', params: { actionMode:'edit', selectedProvider: data.item }}">
                 <b-button variant="outline-info" class="mt-2 mx-auto"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
               </router-link>

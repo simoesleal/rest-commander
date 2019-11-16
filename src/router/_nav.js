@@ -110,13 +110,19 @@ const treeData = [{
 			]
 		},
 		{ text: 'Financeiro',
-			data: { icon: 'fas fa-coins', url:'CadastrosFinanceiro' },
+			data: { icon: 'fas fa-coins', url:'CadastroFinanceiro' },
 			children: [
+				{
+					text: 'Banco',
+					data: { 
+					icon: 'fas fa-university',
+					url: 'ConsultarBanco'	}
+				},
 				{
 					text: 'Conta Bancaria',
 					data: { 
 					icon: 'fas fa-piggy-bank',
-					url: 'ConsultarContasBancarias'	}
+					url: 'ConsultarContaBancaria'	}
 				},
 				{
 					text: 'Tipo de Documentos',
@@ -126,9 +132,16 @@ const treeData = [{
 				},
 				{
 					text: 'Formas de Pagamento',
+					text: 'Formas de Pagamento',
 					data: { 
 					icon: 'fas fa-money-check-alt',
-					url: 'ConsultarFormasDePagamento'	}
+					url: 'ConsultarTipoPagamento'	}
+				},
+				{
+					text: 'Tipo de Documentos',
+					data: { 
+					icon: 'far fa-file-alt',
+					url: 'ConsultarTiposDocumento'	}
 				},
 				{
 					text: 'Grupo de Custo',

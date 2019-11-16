@@ -24,7 +24,7 @@
         </b-row>
         <div class="mt-3" v-if="listOfEmployees.length > 0">
           <b-table hover striped bordered :items="listOfEmployees" :fields="fields">
-            <template slot="actions" slot-scope="data">
+            <template v-slot:cell(actions)="data">
                 <router-link :to="{ name: 'CadastrarFuncionario', params: { actionMode:'edit', selectedEmployee: data.item }}">
                 <b-button variant="outline-info" class="justify-content-end mt-auto mx-auto"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
               </router-link>
