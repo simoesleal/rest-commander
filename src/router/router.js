@@ -66,6 +66,15 @@ const CloseClientAccount = () => import(/* webpackChunkName: "point-of-sale" */ 
 
 const AccountsPayables = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/AccountsPayables')
 const NewAccountPayable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/NewAccountPayable')
+const DetailsAccountPayable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/DetailsAccountPayable')
+const DetailsInstallmentPayable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/DetailsInstallmentPayable')
+const ConsultInstallmentPayable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/ConsultInstallmentPayable')
+const AccountsReceivables = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/AccountsReceivables')
+const NewAccountReceivable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/NewAccountReceivable')
+const DetailsAccountReceivable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/DetailsAccountReceivable')
+const ConsultInstallmentReceivable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/ConsultInstallmentReceivable')
+const DetailsInstallmentReceivable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/DetailsInstallmentReceivable')
+
 
 Vue.use(Router)
 
@@ -354,7 +363,54 @@ export default new Router({
           name: 'NovaContaPagar',
           component: NewAccountPayable,
           props: true
+        },
+        {
+          path: 'detalhes-conta-pagar',
+          name: 'DetalhesContaPagar',
+          component: DetailsAccountPayable,
+          props: true
+        },
+        {
+          path: 'detalhes-parcelas-pagar',
+          name: 'DetalhesParcelaPagar',
+          component: DetailsInstallmentPayable,
+          props: true
+        },
+        {
+          path: 'consultar-parcelas-pagar',
+          name: 'ConsultarParcelaPagar',
+          component: ConsultInstallmentPayable
         }
+      ]
+    },
+    {
+      path: 'contas-receber',
+      name: 'ContasReceber',
+      component: AccountsReceivables,
+      children: [
+        {
+          path: 'nova-conta-receber',
+          name: 'NovaContaReceber',
+          component: NewAccountReceivable,
+          props: true
+        },
+        {
+          path: 'detalhes-conta-receber',
+          name: 'DetalhesContaReceber',
+          component: DetailsAccountReceivable,
+          props: true
+        },
+        {
+          path: 'consultar-parcelas-receber',
+          name: 'ConsultarParcelaReceber',
+          component: ConsultInstallmentReceivable
+        },
+        {
+          path: 'detalhes-parcelas-receber',
+          name: 'DetalhesParcelaReceber',
+          component: DetailsInstallmentReceivable,
+          props: true
+        },
       ]
     }],
   }],

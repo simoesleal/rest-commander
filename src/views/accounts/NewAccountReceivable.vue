@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<div v-if="this.$route.path === '/contas-pagar/nova-conta-pagar'">
+		<div v-if="this.$route.path === '/contas-receber/nova-conta-receber'">
 			<b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
-            <page-title icon="fas fa-copy" main="Nova Duplitaca a Pagar"></page-title> 
+            <page-title icon="fas fa-copy" main="Nova Duplitaca a Receber"></page-title> 
           </b-col>
         </b-row>
 
@@ -16,22 +16,22 @@
 							<b-form-row>
 								<b-col cols="12">
 									<label>Código*</label>
-									<b-form-input v-model="codigoParcelamento" id="account-id" class="mb-3" type="text" placeholder="Exemplo: 0000"></b-form-input>
+									<b-form-input v-model="codigoParcelamento" id="account-id" class="mb-3" type="text" placeholder="Exemplo: LUZ"></b-form-input>
 								</b-col>
 							</b-form-row>
 
 							<b-form-row>
 								<b-col cols="12">
-									<label>Fornecedor*</label>
+									<label>Cliente*</label>
 									<v-select
 										class="mb-3" 
-										v-model="supplierSelected"
-										:required="!supplierSelected" 
+										v-model="customerSelected"
+										:required="!customerSelected" 
 										label="text" 
-										:options="supplierList">
+										:options="customerList">
 										<template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
-											<router-link :to="{ name: 'CadastrarFornecedor', params: { actionMode:'save' }}">
-												<b-button variant="primary"><i class="fas fa-truck"></i></b-button>
+											<router-link :to="{ name: 'CadastrarCliente', params: { actionMode:'save' }}">
+												<b-button variant="primary"><i class="fas fa-user-astronaut"></i></b-button>
 											</router-link>
 										</template>
 									</v-select>
@@ -249,8 +249,8 @@ export default {
 	data() {
 		return {
 			codigoParcelamento: '',
-			supplierSelected: '',
-			supplierList: [],
+			customerSelected: '',
+			customerList: [],
 			documentTypeSelected: '',
 			documentTypeList: [],
 			coinSelected: '',
@@ -343,16 +343,16 @@ export default {
     },
 
 		async getInfos() {
-			let response, supplierList, documentTypeList, bankAccountList, coinList
+			let response, customerList, documentTypeList, bankAccountList, coinList
 			try {
-				response = await RestConnection.get('contas-a-pagar/buscar/informacoes/cadastrais')
-				supplierList = response.data.conteudo.supplierList			 
+				response = await RestConnection.get('contas-a-receber/buscar/informacoes/cadastrais')
+				customerList = response.data.conteudo.customerList			 
 				documentTypeList = response.data.conteudo.documentTypeList			 
 				bankAccountList = response.data.conteudo.bankAccountList			 
 				coinList = response.data.conteudo.coinList	
 
-				for (let i = 0; i < supplierList.length; i++) {
-					this.supplierList.push({value: supplierList[i].id, text: `${supplierList[i].razaoSocial} / ${supplierList[i].cpfCnpj}`})
+				for (let i = 0; i < customerList.length; i++) {
+					this.customerList.push({value: customerList[i].id, text: `${customerList[i].nome} ${customerList[i].sobrenome} / ${customerList[i].telefone}`})
 				}
 
 				for (let i = 0; i < documentTypeList.length; i++) {
@@ -440,19 +440,19 @@ export default {
 					qtdInstallment: this.qtdParcelas,
 					totalValue: this.valorLiquido,
 					description: this.observacoes,
-					idFornecedor: this.supplierSelected.value,
+					idCliente: this.customerSelected.value,
 					idContaBancaria: this.accountSelected.value,
 					idTipoDocumento: this.documentTypeSelected.value,
 					idMoeda: this.coinSelected.value,
 					Installment: installments
 				}
 				try {
-					response = await RestConnection.post('contas-a-pagar/nova-conta-pagar/', parameters)
+					response = await RestConnection.post('contas-a-receber/nova-conta-receber/', parameters)
 				} catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
-            return alert('Não foi possível criar esta conta a pagar. Por favor, tente novamente.')
+            return alert('Não foi possível criar esta conta a receber. Por favor, tente novamente.')
           }
 				}				
 				this.alertValorTotal = false

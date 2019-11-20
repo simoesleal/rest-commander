@@ -16,7 +16,7 @@
 					</b-col>
 				</b-row>
 				<div class="text-muted">
-					<div class="table-response">
+					<div class="table-responsive">
 						<table class="table table-striped table-bordered ">
 							<thead class="thead-dark">
 								<tr>

@@ -1,10 +1,10 @@
 <template>
 	<div>
-		<div v-if="this.$route.path === '/contas-pagar'">
+		<div v-if="this.$route.path === '/contas-receber'">
 			<b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
-            <page-title icon="fas fa-file-invoice" main="Contas a Pagar"></page-title> 
+            <page-title icon="fas fa-file-invoice-dollar" main="Contas a Receber "></page-title> 
           </b-col>
         </b-row>
 				<b-row class="justify-content-md-center mt-3">
@@ -17,49 +17,20 @@
             </b-input-group>
           </b-col>
           <b-col>
-            <router-link :to="{ name: 'NovaContaPagar', params: { actionMode:'save' }}">
+            <router-link :to="{ name: 'NovaContaReceber', params: { actionMode:'save' }}">
               <b-button variant="primary"><i class="fas fa-plus"></i> Nova Duplicata</b-button>
             </router-link>
           </b-col>
         </b-row>
-        <div class="mt-3 table-responsive" v-if="listOfAccountsPayable.length > 0">
-          <b-table hover fixed striped bordered :items="listOfAccountsPayable" :fields="fields">
+        <div class="mt-3 table-responsive" v-if="listOfAccountsReceivables.length > 0">
+          <b-table hover fixed striped bordered :items="listOfAccountsReceivables" :fields="fields">
 						<template v-slot:cell(actions)="data">
-							<router-link :to="{ name: 'DetalhesContaPagar', params: { actionMode:'edit', selectedAccountPayable: data.item }}">
+							<router-link :to="{ name: 'DetalhesContaReceber', params: { actionMode:'edit', selectedAccountReceivable: data.item }}">
                 <b-button variant="outline-info" class="mt-2 mx-auto"><i class="fas fa-info-circle"></i> Detalhes</b-button>
               </router-link>
             </template>
           </b-table>
         </div>
-				<!-- <div>
-					<div class="table-responsive">
-						<table class="table table-striped table-bordered">
-							<thead>
-								<tr>
-									<th scoped="col">Código</th>
-									<th scoped="col">Documento</th>
-									<th scoped="col">Qtd. Parcela</th>
-									<th scoped="col">Razão Social Fornecedor</th>
-									<th scoped="col">CNPJ/CPF Fornecedor</th>
-									<th scoped="col">Valor Total</th>
-									<th scoped="col">Ações</th>
-								</tr>
-							</thead>
-							<tbody v-for="(account) in listOfAccountsPayable" :key="account.id">
-								<tr>
-									<td>{{account.id}}</td>
-									<td>{{account.tipoDocumento}}</td>
-									<td>{{account.qtdParcela}}</td>
-									<td>{{account.rsFornecedor}}</td>
-									<td>{{account.docFornecedor}}</td>
-									<td>{{account.valorTotal}}</td>
-									<td><b-button variant="outline-info" class="mt-2 mx-auto"><i class="fas fa-info-circle"></i> Detalhes</b-button></td>
-								</tr>
-							</tbody>
-						</table>
-					</div>
-				</div> -->
-
 			</b-container>
 			</div>
 		<router-view></router-view>
@@ -78,15 +49,16 @@ export default {
 
 	data() {
 		return {
-			listOfAccountsPayable: [],
+			listOfAccountsReceivables: [],
 			searchItem: '',
 			fields: [
         { key: 'id', label: 'ID', sortable: true},
         { key: 'codigo', label: 'Código', sortable: true},
         { key: 'tipoDocumento', label: 'Documento' },
         { key: 'qtdParcela', label: '# Parcelas' },
-        { key: 'rsFornecedor', label: 'Fornecedor' },
-        { key: 'docFornecedor', label: 'CNPJ/CPF' },
+        { key: 'docCliente', label: 'Cliente' },
+        { key: 'nomeCliente', label: 'Nome' },
+        { key: 'sobrenomeCliente', label: 'Sobrenome' },
         { key: 'valorTotal', label: 'Valor Total' },
         { key: 'actions', label: 'Ações' }
       ]
@@ -100,38 +72,38 @@ export default {
 
     getItem () {
       if (this.searchItem.length === 0) {
-        this.getAccountPayablesList()
+        this.getAccountReceivablesList()
       } else {
-        this.getAccountPayableByNumber(this.searchItem)
+        this.getAccountReceivableByIdentifier(this.searchItem)
       }
     },
 
-    async getAccountPayablesList () {
+    async getAccountReceivablesList () {
       let response
       try {
-        response = await RestConnection.get('contas-a-pagar/consultar/')
+        response = await RestConnection.get('contas-a-receber/consultar/')
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
-            return alert("Não foi possível buscar a lista de Clientes.")
+            return alert("Não foi possível buscar a lista de Contas a Receber.")
           }
       }
-      this.listOfAccountsPayable = response.data.conteudo
+      this.listOfAccountsReceivables = response.data.conteudo
     },
 
-    async getAccountPayableByNumber (searchItem) {
+    async getAccountReceivableByIdentifier (searchItem) {
       let response
       try {
-          response = await RestConnection.get('contas-a-pagar/consultar/numeracao/' + searchItem)
+          response = await RestConnection.get('contas-a-receber/consultar/identificador/' + searchItem)
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
             } else {
-              return alert('Nenhuma Conta a Pagar com este nome encontrado.')
+              return alert('Nenhuma Conta a Receber com este código encontrado.')
             }
         }
-        this.listOfAccountsPayable = response.data.conteudo
+        this.listOfAccountsReceivables = response.data.conteudo
       }
   }	
 }

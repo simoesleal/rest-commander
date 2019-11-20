@@ -125,13 +125,6 @@ const treeData = [{
 					url: 'ConsultarContaBancaria'	}
 				},
 				{
-					text: 'Tipo de Documentos',
-					data: { 
-					icon: 'fas fa-scroll',
-					url: 'ConsultarTipoDocumento'	}
-				},
-				{
-					text: 'Formas de Pagamento',
 					text: 'Formas de Pagamento',
 					data: { 
 					icon: 'fas fa-money-check-alt',
@@ -142,12 +135,6 @@ const treeData = [{
 					data: { 
 					icon: 'far fa-file-alt',
 					url: 'ConsultarTiposDocumento'	}
-				},
-				{
-					text: 'Grupo de Custo',
-					data: { 
-					icon: 'fas fa-layer-group',
-					url: 'ConsultarGruposDeCusto'	}
 				},
 			]
 		},
@@ -238,17 +225,17 @@ const treeData = [{
 			url: 'ContasPagar' },
 			children: [
 				{
+					text: 'Nova Duplicata a Pagar',
+					data: { 
+					icon: 'fas fa-copy',
+					url: 'NovaContaPagar'	}
+				},
+				{
 					text: 'Duplicatas a Pagar',
 					data: { 
-					icon: 'fas fa-file',
-					url: 'NovaContaPagar'	}
-				}/* ,
-				{
-					text: 'Alterar Duplicata',
-					data: { 
-					icon: 'fas fa-file',
-					url: 'alterarDuplicataPagar'	}
-				} */
+					icon: 'fas fa-copy',
+					url: 'ConsultarParcelaPagar'	}
+				}
 			]
 		},
 		{
@@ -258,16 +245,16 @@ const treeData = [{
 			url: 'ContasReceber'},
 			children: [
 				{
-					text: 'Duplicatas a Receber',
+					text: 'Nova Duplicata a Receber',
 					data: { 
-					icon: 'fas fa-file',
-					url: 'consultarDuplicataReceber'	}
+					icon: 'fas fa-copy',
+					url: 'NovaContaReceber'	}
 				},
 				{
-					text: 'Criar Parcelamento',
+					text: 'Duplicatas  a Receber',
 					data: { 
-					icon: 'fas fa-calculator',
-					url: 'criarParcelamentoReceber'	}
+					icon: 'fas fa-copy',
+					url: 'ConsultarParcelaReceber'	}
 				}
 			]
 		},
