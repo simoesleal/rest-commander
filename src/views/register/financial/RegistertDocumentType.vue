@@ -64,7 +64,6 @@ export default {
   },
   mounted() {
     if(this.selectedDocumentType) {
-      console.log(this.selectedDocumentType)
       this.documentType = this.selectedDocumentType    
     }
   },
@@ -80,7 +79,6 @@ export default {
         description: this.documentType.descricao,
         status: true
       }
-       console.log(parameters)
       try {
         response = await RestConnection.post('tipo-documento/cadastrar/', parameters)
       } catch (exception) {
@@ -102,7 +100,6 @@ export default {
         description: this.documentType.descricao,
         status: true
       }
-      console.log(parameters)
       try {
         response = await RestConnection.put('tipo-documento/atualizar/', parameters)
       } catch (exception) {

@@ -225,16 +225,16 @@ const treeData = [{
 			url: 'ContasPagar' },
 			children: [
 				{
-					text: 'Duplicatas a Pagar',
+					text: 'Nova Duplicata a Pagar',
 					data: { 
-					icon: 'fas fa-file',
-					url: 'consultarDuplicataPagar'	}
+					icon: 'fas fa-copy',
+					url: 'NovaContaPagar'	}
 				},
 				{
-					text: 'Alterar Duplicata',
+					text: 'Duplicatas a Pagar',
 					data: { 
-					icon: 'fas fa-file',
-					url: 'alterarDuplicataPagar'	}
+					icon: 'fas fa-copy',
+					url: 'ConsultarParcelaPagar'	}
 				}
 			]
 		},
@@ -245,16 +245,16 @@ const treeData = [{
 			url: 'ContasReceber'},
 			children: [
 				{
-					text: 'Duplicatas a Receber',
+					text: 'Nova Duplicata a Receber',
 					data: { 
-					icon: 'fas fa-file',
-					url: 'consultarDuplicataReceber'	}
+					icon: 'fas fa-copy',
+					url: 'NovaContaReceber'	}
 				},
 				{
-					text: 'Criar Parcelamento',
+					text: 'Duplicatas  a Receber',
 					data: { 
-					icon: 'fas fa-calculator',
-					url: 'criarParcelamentoReceber'	}
+					icon: 'fas fa-copy',
+					url: 'ConsultarParcelaReceber'	}
 				}
 			]
 		},
