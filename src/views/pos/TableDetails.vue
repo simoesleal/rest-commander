@@ -18,6 +18,9 @@
 						<label class="text-uppercase">Resudo do Pedido</label>
 						<template v-if="itensPedido.length > 0 && pedidosStatus === 200">
 							<b-table responsive hover striped bordered :items="itensPedido" :fields="fields">
+								<template v-slot:cell(actions)="data">
+									<b-button @click="deleteOrder(data.index)" class="mr-5"><i class="fas fa-times"></i></b-button>
+								</template>
 							</b-table>
 						</template>
 						<template v-else>
@@ -76,6 +79,7 @@ export default {
         { key: 'nomeProd', label: 'Produto', sortable: true},
         { key: 'quantidade', label: 'QTD', sortable: true},
         { key: 'observacao', label: 'Obs', sortable: true},
+        { key: 'actions', label: 'Ações' }
       ],
 		}
 	},
@@ -85,7 +89,9 @@ export default {
 			if(this.selectedTable.status === 'OCUPADA') {
 				this.getOrdersFromCustomer(this.selectedTable.id, this.selectedTable.numero)
 			}
-    }
+    } else {
+			this.backOnePage()
+		}
 	},
 	methods: {
 		backOnePage() {
@@ -128,7 +134,29 @@ export default {
 				}
 				
 			}
-		}
+		},
+
+		async deleteOrder(index) {
+			let response
+			let parameters = {
+				idProdutoPedido: this.itensPedido[index].id,
+				idProduto: this.itensPedido[index].idProd,
+				quantity: this.itensPedido[index].quantidade,
+			}
+			try {
+				response = await RestConnection.put('pedidos/deletar-pedido', parameters)
+				if (response.data.status === 200) {
+					alert('Pedido excluído com sucesso.')
+					this.getOrdersFromCustomer(this.selectedTable.id, this.selectedTable.numero)
+				}
+			} catch (exception) {
+				if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+					return alert(exception.response.data.mensagem)
+				} else {
+					return alert('Não foi possível deletar este Pedido. Por favor, tente novamente.')
+				}  				
+			}
+		},
 
 	}
 }
