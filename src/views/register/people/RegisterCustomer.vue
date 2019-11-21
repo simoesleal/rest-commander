@@ -5,16 +5,14 @@
 			<b-form-group
 				id="informacoes-basicas"
 				description="*Campos obrigatórios">
-					<!-- <label>Código*</label>
-					<b-form-input id="customer-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="customer.id" required type="number" placeholder="Exemplo: 01"></b-form-input> -->
 					<label>Nome*</label>
-					<b-form-input id="customer-name" class="mb-3" v-model="customer.nome" required type="text" placeholder="Exemplo: Geni Machado"></b-form-input>
+					<b-form-input id="customer-name" class="mb-3" v-model.trim="customer.nome" required type="text" placeholder="Exemplo: Geni Machado"></b-form-input>
 					<label>Sobrenome*</label>
-					<b-form-input id="customer-name" class="mb-3" v-model="customer.sobrenome" required type="text" placeholder="Exemplo: Geni Machado"></b-form-input>
+					<b-form-input id="customer-name" class="mb-3" v-model.trim="customer.sobrenome" required type="text" placeholder="Exemplo: Geni Machado"></b-form-input>
 					<b-form-row>
 						<b-col cols="12" sm="6">
 							<label>Documento*</label>
-							<b-form-input id="customer-docs" class="mb-3" v-model="customer.docs" required type="text" placeholder="Exemplo: 111.111.111-11"></b-form-input>
+							<b-form-input id="customer-docs" class="mb-3" v-model.trim="customer.docs" required type="text" placeholder="Exemplo: 111.111.111-11"></b-form-input>
 						</b-col>
 							<b-col cols="12" sm="2">
 							<label>Sexo*</label>
@@ -22,11 +20,11 @@
 						</b-col>
 						<b-col cols="12" sm="2">
 							<label>Tipo do Documento</label>
-							<b-form-input id="customer-docType" class="mb-3" v-model="customer.tipoDoc" type="text" placeholder="Exemplo: RG"></b-form-input>
+							<b-form-input id="customer-docType" class="mb-3" v-model.trim="customer.tipoDoc" type="text" placeholder="Exemplo: RG"></b-form-input>
 						</b-col>
 						<b-col cols="12" sm="2">
 							<label>Org. Exp.</label>
-							<b-form-input id="customer-orgExp" class="mb-3" v-model="customer.orgExp" type="text" placeholder="Exemplo: SSP-PR"></b-form-input>
+							<b-form-input id="customer-orgExp" class="mb-3" v-model.trim="customer.orgExp" type="text" placeholder="Exemplo: SSP-PR"></b-form-input>
 						</b-col>
 					</b-form-row>
 					<b-form-row>
@@ -42,11 +40,11 @@
 				<b-form-row>
 					<b-col cols="12" sm="6">
 						<label>Telefone</label>
-						<b-form-input id="customer-phone" class="mb-3" v-model="customer.telefone" required type="number" placeholder="Exemplo: +55 (45) 3025-1144"></b-form-input>
+						<the-mask id="customer-telefone" type="text" class="form-control mb-3" v-model.trim="customer.telefone" :mask="['+## (##) ####-####']" :masked="false" placeholder="Exemplo: +55 (45) 3025-1144" :required="true"/>
 					</b-col>
 					<b-col cols="12" sm="6">
 						<label>Celular</label>
-						<b-form-input id="customer-cellphone" class="mb-3" v-model="customer.celular" required type="number" placeholder="Exemplo: +55 (45) 98404-5443"></b-form-input>
+						<the-mask id="customer-celular" type="text" class="form-control mb-3" v-model.trim="customer.celular" :mask="['+## (##) #####-####']" :masked="false" placeholder="Exemplo: +55 (45) 98404-5443" :required="true"/>
 					</b-col>
 				</b-form-row>										
 				<b-form-row>
@@ -74,7 +72,7 @@
 					<b-form-row>
 						<b-col cols="12" sm="6">
 							<label>CEP</label>
-							<b-form-input id="customer-cep" class="mb-3" v-model="customer.cep" type="text" placeholder="Exemplo: 00000-000"></b-form-input>
+							<the-mask id="customer-cep" type="text" class="form-control mb-3" v-model.trim="customer.cep" :mask="['#####-###']" :masked="false" placeholder="Exemplo: 00000-000" :required="true"/>
 						</b-col>
 						<b-col cols="12" sm="6">
 							<label>Complemento</label>
@@ -174,14 +172,19 @@
 <script>
 import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
+import {TheMask} from 'vue-the-mask'
 
 export default {
 	name: 'CadastroDeCliente',
 	components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
+		TheMask
 	},
 	props: {
-    actionMode: String,
+    actionMode: {
+			type: String,
+			default: 'save',
+		},
     selectedCustomer: Object,
   },
 	data() {

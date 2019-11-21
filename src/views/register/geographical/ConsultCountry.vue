@@ -66,9 +66,7 @@ export default {
       ]
     }
   },
-/*   watch: {
-		$route(to, from){}
-	}, */
+  
   methods: {
     backOnePage () {
       this.$router.back()

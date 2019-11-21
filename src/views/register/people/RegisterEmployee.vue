@@ -5,8 +5,6 @@
 			<b-form-group
 				id="informacoes-basicas"
 				description="*Campos obrigatórios">
-					<!-- <label>Código*</label>
-					<b-form-input id="employee-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="employee.id" required type="number" placeholder="Exemplo: 01"></b-form-input> -->
 					<label>Nome*</label>
 					<b-form-input id="employee-name" class="mb-3" v-model="employee.nome" required type="text" placeholder="Exemplo: Antonio Simões"></b-form-input>
 					<label>Sobrenome*</label>
@@ -31,7 +29,7 @@
 				<b-form-row>
 					<b-col cols="12" sm="6">
 						<label>CPF*</label>
-						<b-form-input id="employee-cpf" class="mb-3" v-model="employee.cpf" required type="number" placeholder="Exemplo: 111.111.111-11"></b-form-input>
+						<the-mask id="employee-cpf" type="text" class="form-control mb-3" v-model.trim="employee.cpf" :mask="['###.###.###-##']" :masked="false" placeholder="Exemplo: 111.111.111-11" :required="true"/>
 					</b-col>
 					<b-col cols="12" sm="6">
 						<label>RG*</label>
@@ -41,7 +39,7 @@
 				<b-form-row>
 					<b-col cols="12" sm="6">
 						<label>Nascimento*</label>
-						<b-form-input id="employee-birth" class="mb-3" v-model="employee.dataNascimento" required type="date" placeholder="Exemplo: 01/02/1193"></b-form-input>
+						<the-mask id="employee-birth" type="text" class="form-control" v-model="employee.dataNascimento"  :mask="['##/##/####']" :masked="true" placeholder="Ex:dd/mm/aaaa" :required="true"/>
 					</b-col>
 					<b-col cols="12" sm="6">
 						<label>Função*</label>
@@ -61,17 +59,16 @@
 							</v-select>
 						</b-col>  
 					</b-row>
-						<!-- <b-form-input id="employee-role" class="mb-3" v-model="employee.role" required type="text" placeholder="Exemplo: Caixa"></b-form-input> -->
 					</b-col>
 				</b-form-row>					
 				<b-form-row>
 					<b-col cols="12" sm="6">
 						<label>Telefone</label>
-						<b-form-input id="employee-phone" class="mb-3" v-model="employee.telefone" type="tel" placeholder="Exemplo: +55(45) 3025-1144"></b-form-input>
+						<the-mask id="employee-phone" type="text" class="form-control mb-3" v-model.trim="employee.telefone" :mask="['+## (##) ####-####']" :masked="false" placeholder="Exemplo: +55 (45) 3025-1144" :required="true"/>
 					</b-col>
 					<b-col cols="12" sm="6">
 						<label>Celular</label>
-						<b-form-input id="employee-smartphone" class="mb-3" v-model="employee.celular" type="tel" placeholder="Exemplo: +55(45) 98404-5443"></b-form-input>
+						<the-mask id="employee-cellphone" type="text" class="form-control mb-3" v-model.trim="employee.celular" :mask="['+## (##) #####-####']" :masked="false" placeholder="Exemplo: +55 (45) 98404-5443" :required="true"/>
 					</b-col>
 				</b-form-row>
 				<b-form-row>
@@ -100,7 +97,7 @@
 					<b-form-row>
 						<b-col cols="12" sm="6">
 							<label>CEP</label>
-							<b-form-input id="employee-cep" class="mb-3" v-model="employee.cep" type="text" placeholder="Exemplo: 00000-000"></b-form-input>
+							<the-mask id="employee-cep" type="text" class="form-control mb-3" v-model.trim="employee.cep" :mask="['#####-###']" :masked="false" placeholder="Exemplo: 00000-000" :required="true"/>
 						</b-col>
 						<b-col cols="12" sm="6">
 							<label>Complemento</label>
@@ -159,14 +156,6 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<!-- <b-input-group>
-						<b-form-select v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
-						<b-input-group-append>
-							<router-link :to="{ name: 'CadastrarEstado', params: { actionMode:'save' }}">
-								<b-button variant="primary"><i class="fas fa-university"></i></b-button>
-							</router-link>
-						</b-input-group-append>
-					</b-input-group> -->
 					<label>Cidade</label>
 					<b-row>
 						<b-col cols="11">
@@ -226,15 +215,20 @@
 <script>
 import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
+import {TheMask} from 'vue-the-mask'
 
 export default {
 	name: 'CadastroDeEmpregado',
 	components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
+		TheMask
 	},
 
   props: {
-    actionMode: String,
+    actionMode: {
+			type: String,
+			default: 'save',
+		},
     selectedEmployee: Object,
   },
 

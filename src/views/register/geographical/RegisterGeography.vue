@@ -2,7 +2,7 @@
   <div>
     <div v-if="this.$route.path === '/cadastros-geografico'">
         <page-title icon="fas fa-globe-americas" main="Cadastros Geográficos"></page-title>
-        <div class="row">
+        <div class="container row justify-content-center">
             <div class="col-12 col-sm-4 col-md-3">
                 <div class="material-card bg-fff">
                     <div class="card-body">
