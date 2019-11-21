@@ -63,15 +63,15 @@
           <b-form-row>
             <b-col cols="12">
               <label>Preco de Compra</label>
-						  <b-form-input id="preco-compra" class="mb-3" v-model="product.precoCompra" required type="number" placeholder="Exemplo: R$ 10.00 "></b-form-input>
+              <v-money id="preco-compra" type="text" class="mb-3 form-control" required placeholder="Exemplo: R$ 1000.00" v-model.number="product.precoCompra" v-bind="money"></v-money>
             </b-col>
             <b-col cols="12">
               <label>Preco de Venda</label>
-						  <b-form-input id="preco-compra" class="mb-3" v-model="product.precoVenda" required type="number" placeholder="Exemplo: R$ 10.00 "></b-form-input>
+              <v-money id="preco-venda" type="text" class="mb-3 form-control" required placeholder="Exemplo: R$ 1000.00" v-model.number="product.precoVenda" v-bind="money"></v-money>
             </b-col>
             <b-col cols="12">
               <label>Preco de Custo</label>
-						  <b-form-input id="preco-compra" class="mb-3" v-model="product.precoCusto" required type="number" placeholder="Exemplo: R$ 10.00 "></b-form-input>
+              <v-money id="preco-custo" type="text" class="mb-3 form-control" required placeholder="Exemplo: R$ 1000.00" v-model.number="product.precoCusto" v-bind="money"></v-money>
             </b-col>
           </b-form-row>
         </b-form>
@@ -80,15 +80,15 @@
           <b-form-row>
             <b-col cols="12">
               <label>Quantidade Atual</label>
-						  <b-form-input id="preco-compra" class="mb-3" v-model="product.qtdAtual" required type="number" placeholder="Exemplo: 15 "></b-form-input>
+						  <b-form-input id="preco-compra" class="mb-3" v-model.number="product.qtdAtual" required type="number" placeholder="Exemplo: 15 "></b-form-input>
             </b-col>
             <b-col cols="12">
               <label>Quantidade Máxima</label>
-						  <b-form-input id="preco-compra" class="mb-3" v-model="product.qtdMax" required type="number" placeholder="Exemplo: 20 "></b-form-input>
+						  <b-form-input id="preco-compra" class="mb-3" v-model.number="product.qtdMax" required type="number" placeholder="Exemplo: 20 "></b-form-input>
             </b-col>
             <b-col cols="12">
               <label>Quantidade Mínima</label>
-						  <b-form-input id="preco-compra" class="mb-3" v-model="product.qtdMin" required type="number" placeholder="Exemplo: 5 "></b-form-input>
+						  <b-form-input id="preco-compra" class="mb-3" v-model.number="product.qtdMin" required type="number" placeholder="Exemplo: 5 "></b-form-input>
             </b-col>
           </b-form-row>
         </b-form>
@@ -118,14 +118,21 @@
 <script>
 import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
+import {TheMask} from 'vue-the-mask'
+import {Money} from 'v-money'
 
 export default {
   name: 'CrudProdutos',
   components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
+    TheMask,
+		'v-money': Money
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedProduct: Object,
   },
   data() {
@@ -148,6 +155,14 @@ export default {
 			unitList: [],
       selectedProductGroup: '',
       selectedUnit: '',
+      money: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'R$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      }
     }
   },
   computed: {

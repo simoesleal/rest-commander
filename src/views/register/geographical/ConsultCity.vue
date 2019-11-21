@@ -31,12 +31,14 @@
             </template>
           </b-table>
         </div>
-        <div class="d-flex justify-content-start m-3 mt-5">
-          <router-link :to="{ name: 'Cadastros'}">
-            <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
-            <div class="text-uppercase font-300">Voltar</div>
-          </router-link>
-        </div>
+        <b-row>
+           <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
+            <div @click="backOnePage">
+                <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
+                <div class="text-uppercase font-300">Voltar</div>
+            </div>
+          </b-col>
+        </b-row>
       </b-container>
     </template>
   </div>
@@ -67,6 +69,10 @@ export default {
   },
 
   methods: {
+    backOnePage () {
+      this.$router.back()
+    },
+
     getItem () {
       if (this.searchItem.length === 0) {
         this.getCities()

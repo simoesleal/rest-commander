@@ -6,8 +6,6 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Código*</label>
-              <b-form-input id="quotation-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="quotation.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>Moeda*</label>
               <b-row>
                 <b-col cols="11">
@@ -31,7 +29,7 @@
                 </b-col>  
               </b-row>
               <label>Cotação</label>
-							<b-form-input id="quotation" class="mb-3" :disabled="setInputFieldDisabled" v-model="quotation.cotacao" required type="number" placeholder="Exemplo: 4.00"></b-form-input>
+              <v-money id="quotation" type="text" class="form-control " required placeholder="Exemplo: 4.00" v-model.number="quotation.cotacao" v-bind="money"></v-money>
           </b-form-group>
         </b-form>
 				<b-row>
@@ -60,14 +58,19 @@
 <script>
 import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
+import {Money} from 'v-money'
 
 export default {
   name: 'CrudCotacoes',
   components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
+    'v-money': Money
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+			type: String,
+			default: 'save',
+		},
     selectedQuotation: Object,
   },
   data() {
@@ -80,7 +83,15 @@ export default {
         idMoeda: 0,
       },
       selectedCoin: null,
-			coinList: []
+			coinList: [],
+      money: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'R$ ',
+        suffix: '',
+        precision: 3,
+        masked: false
+      }
     }
   },
   computed: {

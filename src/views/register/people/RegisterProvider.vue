@@ -5,12 +5,10 @@
 			<b-form-group
 				id="informacoes-basicas"
 				description="*Campos obrigatórios">
-					<!-- <label>Código*</label>
-					<b-form-input id="provider-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="provider.id" required type="number" placeholder="Exemplo: 01"></b-form-input> -->
 					<b-form-row>
 						<b-col cols="12" sm="8">
 							<label>CPF/CNPJ</label>
-							<b-form-input id="provider-cpfCnpj" class="mb-3" v-model="provider.cpfCnpj" required type="text" placeholder="Exemplo: 11.111.111/1111-11"></b-form-input>
+							<the-mask id="provider-cpfCnpj" type="text" class="form-control mb-3" v-model.trim="provider.cpfCnpj" :mask="['###.###.###-##', '##.###.###/####-##']" :masked="false" placeholder="Exemplo: 11.111.111/1111-11" :required="true"/>
 						</b-col>
 							<b-col cols="12" sm="4">
 							<label>Tipo de Fornecedor</label>
@@ -43,11 +41,11 @@
 				<b-form-row>
 					<b-col cols="12" sm="6">
 						<label>Telefone</label>
-						<b-form-input id="provider-phone" class="mb-3" v-model="provider.telefone" required type="number" placeholder="Exemplo: +55 (45) 3025-1144"></b-form-input>
+						<the-mask id="provider-phone" type="text" class="form-control mb-3" v-model.trim="provider.telefone" :mask="['+## (##) ####-####']" :masked="false" placeholder="Exemplo: +55 (45) 3025-1144" :required="true"/>
 					</b-col>
 					<b-col cols="12" sm="6">
 						<label>Celular</label>
-						<b-form-input id="provider-cellphone" class="mb-3" v-model="provider.celular" required type="number" placeholder="Exemplo: +55 (45) 98404-5443"></b-form-input>
+						<the-mask id="provider-cellphone" type="text" class="form-control mb-3" v-model.trim="provider.celular" :mask="['+## (##) #####-####']" :masked="false" placeholder="Exemplo: +55 (45) 98404-5443" :required="true"/>
 					</b-col>
 				</b-form-row>										
 				<b-form-row>
@@ -80,7 +78,7 @@
 					<b-form-row>
 						<b-col cols="12" sm="6">
 							<label>CEP</label>
-							<b-form-input id="provider-cep" class="mb-3" v-model="provider.cep" type="text" placeholder="Exemplo: 00000-000"></b-form-input>
+							<the-mask id="provider-cep" type="text" class="form-control mb-3" v-model.trim="provider.cep" :mask="['#####-###']" :masked="false" placeholder="Exemplo: 00000-000" :required="true"/>
 						</b-col>
 						<b-col cols="12" sm="6">
 							<label>Complemento</label>
@@ -182,14 +180,19 @@
 <script>
 import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
+import {TheMask} from 'vue-the-mask'
 
 export default {
 	name: 'CadastroDeFornecedor',
 	components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
+		TheMask
 	},
 	props: {
-    actionMode: String,
+    actionMode: {
+			type: String,
+			default: 'save',
+		},
     selectedProvider: Object,
   },
 	data() {

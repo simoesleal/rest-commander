@@ -6,7 +6,7 @@
 					<b-col cols="12" md="9">
 						<page-title icon="fas fa-cash-register" main="Caixa"></page-title>       
 					</b-col>
-				</b-row>
+				</b-row>	
 				<b-row class="mb-3">
 					<b-col cols="4">
 						<span>Data: {{caixa.dataHoraInicio}}</span>
@@ -30,73 +30,81 @@
 							<tbody>
 								<tr>
 									<th class="table-success" scope="row">Dinheiro (R$)</th>
-									<td ><span>{{ caixa.fundoReal }}</span></td>
-									<td>{{ caixa.fechamentosReal }}</td>
-									<td>{{ parseInt(caixa.fundoReal, 10) + parseInt(caixa.fechamentosReal, 10) }}</td>
+									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="caixa.fundoReal" v-bind="money"></v-money></td>
+									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="caixa.fechamentosReal" v-bind="money"></v-money></td>
+									<td><v-money :value="parseFloat(caixa.fundoReal) + parseFloat(caixa.fechamentosReal)" disabled placeholder="Exemplo: R$ 0.00" required v-bind="money"></v-money></td>						
 									<td></td>
 								</tr>
 								<tr>
 									<th class="table-success" scope="row">Dolar (U$)</th>
-									<td>{{ caixa.fundoDolar }}</td>
-									<td>{{ caixa.fechamentosDolar }}</td>
-									<td>{{ parseInt(caixa.fundoDolar, 10) + parseInt(caixa.fechamentosDolar, 10) }}</td>
-									<td>U$ 0.00</td>
+									<td><v-money disabled placeholder="Exemplo: U$ 0.00" required v-model="caixa.fundoDolar" v-bind="moneyU$"></v-money></td>
+									<td><v-money disabled placeholder="Exemplo: U$ 0.00" required v-model="caixa.fechamentosDolar" v-bind="moneyU$"></v-money></td>
+									<td><v-money :value="parseFloat(caixa.fundoDolar) + parseFloat(caixa.fechamentosDolar)" disabled placeholder="Exemplo: U$ 0.00" required v-bind="moneyU$"></v-money></td>	
+									<td><v-money :value="converteTotalDolar" disabled placeholder="Exemplo: R$ 0.00" required v-bind="money"></v-money></td>
 								</tr>
 								<tr>
 									<th class="table-success" scope="row">Peso (P$)</th>
-									<td>{{ caixa.fundoPeso }}</td>
-									<td>{{ caixa.fechamentosPeso }}</td>
-									<td>{{ parseInt(caixa.fundoPeso, 10) + parseInt(caixa.fechamentosPeso, 10) }}</td>
-									<td>P$ 0.00</td>
+									<td><v-money disabled placeholder="Exemplo: P$ 0.00" required v-model="caixa.fundoPeso" v-bind="moneyP$"></v-money></td>
+									<td><v-money disabled placeholder="Exemplo: P$ 0.00" required v-model="caixa.fechamentosPeso" v-bind="moneyP$"></v-money></td>
+									<td><v-money :value="parseFloat(caixa.fundoPeso) + parseFloat(caixa.fechamentosPeso)" disabled placeholder="Exemplo: P$ 0.00" required v-bind="moneyP$"></v-money></td>	
+									<td><v-money :value="converteTotalPeso" disabled placeholder="Exemplo: R$ 0.00" required v-bind="money"></v-money></td>
 								</tr>
 								<tr>
 									<th class="bg-info" scope="row">Total à Vista</th>
-									<td class="bg-info">{{ parseInt(caixa.fundoReal, 10) + parseInt(caixa.fundoDolar, 10) + parseInt(caixa.fundoPeso, 10) }}</td>
-									<td class="bg-info">{{ parseInt(caixa.fechamentosReal, 10) + parseInt(caixa.fechamentosDolar, 10) + parseInt(caixa.fechamentosPeso, 10) }}</td>
-									<td class="bg-info"> {{calculaTotalAVista}} </td>
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: U$ 0.00" required :value="parseFloat(caixa.fundoReal) + parseFloat(caixa.fundoDolar) + parseFloat(caixa.fundoPeso)" v-bind="moneyU$"></v-money></td>
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="parseFloat(caixa.fechamentosReal) + parseFloat(caixa.fechamentosDolar) + parseFloat(caixa.fechamentosPeso)" v-bind="money"></v-money></td>
+									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="calculaTotalAVista" v-bind="money"></v-money></td>
 									<td></td>
 								</tr>
 								<tr>
 									<th class="table-success" scope="row">Cartão Crédito</th>
 									<td></td>
-									<td>{{ caixa.fechamentosCartaoCred }}</td>
-									<td>{{ caixa.fechamentosCartaoCred }}</td>
+									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="caixa.fechamentosCartaoCred" v-bind="money"></v-money></td>
+									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="caixa.fechamentosCartaoCred" v-bind="money"></v-money></td>
 									<td></td>
 								</tr>
 								<tr>
 									<th class="table-success" scope="row">Cartão Débito</th>
 									<td></td>
-									<td>{{ caixa.fechamentosCartaoDeb }}</td>
-									<td>{{ caixa.fechamentosCartaoDeb }}</td>
+									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="caixa.fechamentosCartaoDeb" v-bind="money"></v-money></td>
+									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="caixa.fechamentosCartaoDeb" v-bind="money"></v-money></td>
 									<td></td>
 								</tr>
 								<tr>
 									<th class="bg-info" scope="row">Total à Prazo</th>
-									<td class="bg-info">0.00</td>
-									<td class="bg-info">{{ parseInt(caixa.fechamentosCartaoCred, 10) + parseInt(caixa.fechamentosCartaoDeb, 10) }}</td>
-									<td class="bg-info">{{ parseInt(caixa.fechamentosCartaoCred, 10) + parseInt(caixa.fechamentosCartaoDeb, 10) }}</td>
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required value="0.00" v-bind="money"></v-money></td>
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="parseInt(caixa.fechamentosCartaoCred, 10) + parseInt(caixa.fechamentosCartaoDeb, 10)" v-bind="money"></v-money></td>
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="parseInt(caixa.fechamentosCartaoCred, 10) + parseInt(caixa.fechamentosCartaoDeb, 10)" v-bind="money"></v-money></td>
 									<td></td>
 								</tr>
 								<tr>
 									<th class="bg-success" scope="row">Total Geral</th>
-									<td class="bg-success">{{calculaTotalGeralFundo}}</td>
-									<td class="bg-success">{{calculaTotalGeralFechamentos}}</td>
-									<td class="bg-success">{{calculaTotalGeralTotal}}</td>
+									<td class="bg-success"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="calculaTotalGeralFundo" v-bind="money"></v-money></td>
+									<td class="bg-success"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="calculaTotalGeralFechamentos" v-bind="money"></v-money></td>
+									<td class="bg-success"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="calculaTotalGeralTotal" v-bind="money"></v-money></td>
 									<td></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 				</div>
-				<b-row>
-					<b-col cols="3">
-						<span>Cotação Dolar: {{caixa.cotacao || 0.00}}</span>
+				<b-row class="mt-3">
+					<b-col cols="4">
+						<b-col>
+							<span>Cotação Dolar: </span>
+							<v-money class="d-inline" disabled placeholder="Exemplo: U$ 0.00" required :value="caixa.cotacaoDolar || 0.00" v-bind="moneyU$"></v-money>
+						</b-col>						
 					</b-col>
-					<b-col cols="3">
-						<span>Cotação Peso: {{caixa.cotacaoPeso || 0.00}}</span>
+					<b-col cols="4">
+						<span>Cotação Peso: </span>
+						<v-money class="d-inline" disabled placeholder="Exemplo: P$ 0.00" required :value="caixa.cotacaoPeso || 0.00" v-bind="moneyP$"></v-money>
+					</b-col>
+					<b-col cols="4">
+						<span>Cotação Guarani: </span>
+						<v-money class="d-inline" disabled placeholder="Exemplo: G$ 0.00000" required :value="caixa.cotacaoGuarani || 0.00" v-bind="moneyG$"></v-money>
 					</b-col>
 				</b-row>
-				<b-row>
+				<b-row class="mt-5">
 					<b-col class="d-flex justify-content-end">
 						<b-button size="lg" variant="outline-dark" class="m-1" v-b-modal.modal-fechamentos><i class="fas fa-check-double"></i> Fechamentos</b-button>
 						<b-button size="lg" variant="outline-primary" class="m-1" @click="fecharMesa"><i class="fab fa-buromobelexperte"></i> Fechar Mesa</b-button>
@@ -118,7 +126,7 @@
 									<tr  v-for="(fechamento, index) in listaFechamentosEfetuados" :key="index">
 										<td>{{fechamento.numeroMesa}}</td>
 										<td>{{fechamento.formaPagamento}}</td>
-										<td>{{fechamento.valorTotal}}</td>
+										<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="fechamento.valorTotal" v-bind="money"></v-money></td>
 									</tr>
 								</tbody>
 							</table>
@@ -191,7 +199,7 @@
 									<span>Real R$</span>
 								</b-col>
 								<b-col cols="10" class="mb-2">
-									<b-form-input type="number" v-model="fundo.real" placeholder="R$ 0.00"></b-form-input>
+									<v-money type="text" class="form-control" required placeholder="Exemplo: R$ 0.00" v-model.number="fundo.real" v-bind="money" trim></v-money>
 								</b-col>
 							</b-row>
 							<b-row>
@@ -199,7 +207,7 @@
 									<span>Dolar R$</span>
 								</b-col>
 								<b-col cols="10" class="mb-2">
-									<b-form-input type="number" v-model="fundo.dolar" placeholder="R$ 0.00"></b-form-input>
+									<v-money type="text" class="form-control" required placeholder="Exemplo: U$ 0.00" v-model.number="fundo.dolar" v-bind="money" trim></v-money>
 								</b-col>
 							</b-row>
 							<b-row>
@@ -207,7 +215,7 @@
 									<span>Peso P$</span>
 								</b-col>
 								<b-col cols="10" class="mb-2">
-									<b-form-input type="number" v-model="fundo.peso" placeholder="R$ 0.00"></b-form-input>
+									<v-money type="text" class="form-control" required placeholder="Exemplo: P$ 0.00" v-model.number="fundo.peso" v-bind="money" trim></v-money>
 								</b-col>
 							</b-row>
 						</b-col>
@@ -227,11 +235,15 @@
 <script>
 import { RestConnection } from '../../rest/rest.connection'
 import PageTitle from '../../components/template/PageTitle'
+import {TheMask} from 'vue-the-mask'
+import {Money} from 'v-money'
 
 export default {
  name: 'Caixa',
   components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
+		TheMask,
+		'v-money': Money
 	},
 	data() {
 		return {
@@ -273,7 +285,39 @@ export default {
 			quotationSelected: '',
 			quotationList: [],
 			saldoInicial: 0,
-			listaFechamentosEfetuados: []
+			listaFechamentosEfetuados: [],
+				money: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'R$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      },
+				moneyU$: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'U$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      },
+				moneyP$: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'P$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      },
+				moneyG$: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'G$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      }
 		}
 	},
 
@@ -315,7 +359,15 @@ export default {
 		calculaSaldoInicial() {
 			this.saldoInicial = parseInt(this.fundo.real, 10) + parseInt(this.fundo.dolar, 10) + parseInt(this.fundo.peso, 10)
 			return this.saldoInicial
-		}
+		},
+		converteTotalDolar() {
+			const tatalFechamentosDolar =	parseFloat(this.caixa.fundoDolar) + parseFloat(this.caixa.fechamentosDolar)
+			return parseFloat(tatalFechamentosDolar) / 4.20
+		},
+		converteTotalPeso() {
+			const tatalFechamentosPeso =	parseFloat(this.caixa.fundoPeso) + parseFloat(this.caixa.fechamentosPeso)
+			return parseFloat(tatalFechamentosPeso) / 14.22
+		},
 	},
 
 	methods: {
@@ -425,6 +477,8 @@ export default {
 		},
 
 		async fecharCaixa() {
+			this.employeeList = []
+			this.quotationList = []
 			let response
 			let parameters = {
 				id: this.caixa.id,
@@ -467,4 +521,9 @@ export default {
 </script>
 
 <style scoped>
+.v-money {
+	border: none;
+	background-color: rgba(255, 255, 255, 0);
+	color: #000;
+}
 </style>

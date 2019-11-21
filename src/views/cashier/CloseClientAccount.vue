@@ -46,8 +46,10 @@
 							<tr v-for="(pedido, index) in itensPedido" :key="index">
 								<td>{{pedido.nomeProd}}</td>
 								<td>{{pedido.quantidade}}</td>
-								<td>{{pedido.pvProd}}</td>
-								<td>{{pedido.pvProd*pedido.quantidade}}</td>
+								<td><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="pedido.pvProd" v-bind="money"></v-money></td>
+								<!-- <td>{{pedido.pvProd}}</td> -->
+								<!-- <td>{{pedido.pvProd*pedido.quantidade}}</td> -->
+								<td><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="pedido.pvProd*pedido.quantidade" v-bind="money"></v-money></td>
 							</tr>
 						</tbody>
 					</table>
@@ -55,13 +57,15 @@
 
 				<b-row class="mt-5">
 					<b-col>
-						<h1>10%</h1>{{tenPercent}}
+						<h1>10%</h1>
+						<v-money class="d-inline" disabled placeholder="Exemplo: R$ 0.00" required :value="tenPercent" v-bind="money"></v-money>
 						<b-form-checkbox v-model="tip" name="tip-button" switch>
 							Sem 10%
 						</b-form-checkbox>
 					</b-col>
 					<b-col>
-						<h1>Valor Total</h1>{{totalValue}}
+						<h1>Valor Total</h1>
+						<v-money class="d-inline" disabled placeholder="Exemplo: R$ 0.00" required :value="totalValue" v-bind="money"></v-money>
 					</b-col>
 				</b-row>
 
@@ -86,7 +90,7 @@
 										<span>Real R$</span>
 									</b-col>
 									<b-col cols="9" class="mb-2">
-										<b-form-input type="number" v-model="dinheiro.real" placeholder="R$ 0.00"></b-form-input>
+										<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="dinheiro.real" v-bind="money"></v-money></span>										
 									</b-col>
 								</b-row>
 								<b-row>
@@ -94,7 +98,7 @@
 										<span>Dolar R$</span>
 									</b-col>
 									<b-col cols="9" class="mb-2">
-										<b-form-input type="number" v-model="dinheiro.dolar" placeholder="R$ 0.00"></b-form-input>
+										<span class="form-control"><v-money placeholder="Exemplo: U$ 0.00" required v-model="dinheiro.dolar" v-bind="moneyU$"></v-money></span>
 									</b-col>
 								</b-row>
 								<b-row>
@@ -102,7 +106,15 @@
 										<span>Peso P$</span>
 									</b-col>
 									<b-col cols="9" class="mb-2">
-										<b-form-input type="number" v-model="dinheiro.peso" placeholder="R$ 0.00"></b-form-input>
+										<span class="form-control"><v-money placeholder="Exemplo: P$ 0.00" required v-model="dinheiro.peso" v-bind="moneyP$"></v-money></span>
+									</b-col>
+								</b-row>
+								<b-row>
+									<b-col cols="3">
+										<span>Guarani G$</span>
+									</b-col>
+									<b-col cols="9" class="mb-2">
+										<span class="form-control"><v-money placeholder="Exemplo: G$ 0.00000" required v-model="dinheiro.guarani" v-bind="moneyG$"></v-money></span>
 									</b-col>
 								</b-row>
 								<b-row>
@@ -110,7 +122,7 @@
 										<span>Cartão Créd</span>
 									</b-col>
 									<b-col cols="9" class="mb-2">
-										<b-form-input type="number" v-model="cartao.credito" placeholder="R$ 0.00"></b-form-input>
+										<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="cartao.credito" v-bind="money"></v-money></span>
 									</b-col>
 								</b-row>
 								<b-row>
@@ -118,20 +130,20 @@
 										<span>Cartão Déb</span>
 									</b-col>
 									<b-col cols="9">
-										<b-form-input type="number" v-model="cartao.debito" placeholder="R$ 0.00"></b-form-input>
+										<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="cartao.debito" v-bind="money"></v-money></span>
 									</b-col>
 								</b-row>
 							</b-col>
 							<b-col cols="6">
 								<b-row class="mt-4">
 									<b-col cols="3">
-										<span>Desconto</span>
+										<span>Desconto %</span>
 									</b-col>
 									<b-col cols="4">
-										<b-form-input type="number" v-model="descontoValorPorcentagem" placeholder="%">{{ descontoPorcentagem }}</b-form-input>
+										<b-form-input class="text-center" type="number" v-model="descontoValorPorcentagem" placeholder="%">{{ descontoPorcentagem }}</b-form-input>
 									</b-col>
 									<b-col cols="4">
-										<b-form-input type="number" v-model="descontoValor" placeholder="R$ 0.00"></b-form-input>
+										<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="descontoValor" v-bind="money"></v-money></span>
 									</b-col>
 								</b-row>
 								<hr>
@@ -140,15 +152,15 @@
 										<span>Valor Total</span>
 									</b-col>
 									<b-col cols="9">
-										<b-form-input type="number" disabled v-model="totalValueCalculeted" placeholder="R$ 0.00">{{valorTotalCalculado}}</b-form-input>
+										<span class="form-control closed-field"><v-money placeholder="Exemplo: R$ 0.00" required :value="valorTotalCalculado" v-bind="money"></v-money></span>
 									</b-col>
 								</b-row>
 								<b-row class="mt-3">
 									<b-col cols="3">
 										<span>Valor Pago</span>
 									</b-col>
-									<b-col cols="9">
-										<b-form-input type="number" disabled v-model="valorAPagar" placeholder="R$ 0.00">{{valorPago}}</b-form-input>
+									<b-col cols="9">										
+										<span class="form-control closed-field"><v-money placeholder="Exemplo: R$ 0.00" required :value="valorPago" v-bind="money"></v-money></span>
 									</b-col>
 								</b-row>
 								<hr>
@@ -156,8 +168,11 @@
 									<b-col cols="3">
 										<span>Faltante</span>
 									</b-col>
+									<!-- <b-col cols="9">
+										<span class="form-control closed-field"><v-money placeholder="Exemplo: R$ 0.00" required :value="totalFaltante" v-bind="money"></v-money></span>
+									</b-col> -->
 									<b-col cols="9">
-										<b-form-input type="number" disabled v-model="totalFaltante" placeholder="R$ 0.00">{{valorTotalFaltante}}</b-form-input>
+										<span class="form-control closed-field"><v-money placeholder="Exemplo: R$ 0.00" required :value="valorTotalFaltante" v-bind="money"></v-money></span>
 									</b-col>
 								</b-row>
 								<b-row class="mt-3">
@@ -165,7 +180,8 @@
 										<span>Troco</span>
 									</b-col>
 									<b-col cols="9">
-										<b-form-input type="number" disabled v-model="totalTroco" placeholder="R$ 0.00">{{valorTotalTroco}}</b-form-input>
+										<!-- <b-form-input type="number" disabled v-model="totalTroco" placeholder="R$ 0.00">{{valorTotalTroco}}</b-form-input> -->
+										<span class="form-control closed-field"><v-money placeholder="Exemplo: R$ 0.00" required :value="valorTotalTroco" v-bind="money"></v-money></span>
 									</b-col>
 								</b-row>
 							</b-col>
@@ -195,11 +211,15 @@
 <script>
 import { RestConnection } from '../../rest/rest.connection'
 import PageTitle from '../../components/template/PageTitle'
+import {TheMask} from 'vue-the-mask'
+import {Money} from 'v-money'
 
 export default {
 	name: 'FechamentoMesa',
   components: {
-		'page-title': PageTitle
+		'page-title': PageTitle,
+		TheMask,
+		'v-money': Money
 	},
 	props: {
     idCaixa: [Number, String],
@@ -221,6 +241,7 @@ export default {
 				real: 0,
 				dolar: 0,
 				peso: 0,
+				guarani: 0
 			},
 			cartao: {
 				credito: 0,
@@ -233,7 +254,39 @@ export default {
 			totalFaltante: 0,
 			totalTroco: 0,
 			idContaCliente: 0,
-			idMesa: 0
+			idMesa: 0,
+			money: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'R$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      },
+			moneyU$: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'U$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      },
+				moneyP$: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'P$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      },
+				moneyG$: {
+        decimal: ',',
+        thousands: '.',
+        prefix: 'G$ ',
+        suffix: '',
+        precision: 2,
+        masked: false
+      }	
 		}
 	},
 	mounted() {
@@ -253,10 +306,10 @@ export default {
 			if (this.itensPedido.length > 0) {
 				let tenPercent = 0
 				for(let i = 0; i < this.itensPedido.length; i++) {
-					let totalValue = this.itensPedido[i].pvProd * this.itensPedido[i].quantidade
-					tenPercent = parseInt(tenPercent, 10) + parseInt(totalValue, 10)
+					let totalValue = parseFloat(this.itensPedido[i].pvProd) * this.itensPedido[i].quantidade
+					tenPercent = parseFloat(tenPercent) + parseFloat(totalValue)
 				}
-				tenPercent = (parseInt(tenPercent, 10)/10)
+				tenPercent = (parseFloat(tenPercent)/10)
 				this.tipValue = tenPercent
 				return tenPercent
 			}
@@ -266,7 +319,7 @@ export default {
 				let total = 0
 				for(let i = 0; i < this.itensPedido.length; i++) {
 					let totalValue = this.itensPedido[i].pvProd * this.itensPedido[i].quantidade
-					total = parseInt(total, 10) + parseInt(totalValue, 10)
+					total = parseFloat(total) + parseFloat(totalValue)
 				}
 				if (this.tip === true) {
 					total = total + this.tipValue
@@ -278,9 +331,10 @@ export default {
 		},
 		descontoPorcentagem() {
 			if (this.descontoValorPorcentagem > 0) {
-				this.descontoValor = (this.totalValue * (this.descontoValorPorcentagem / 100))
+				this.descontoValor = (parseFloat(this.totalValue) * (parseFloat(this.descontoValorPorcentagem) / 100))
+				return `${this.descontoValor}%`
 			} else {
-				this.descontoValor = 0.00
+				return this.descontoValor = `${0.00}%`
 			}
 		},
 		valorTotalCalculado() {
@@ -293,22 +347,22 @@ export default {
 		valorPago() {
 			if (this.formaPagamentoSelected) {
 				if (this.descontoValorPorcentagem > 0) {
-					return this.valorAPagar = ((parseInt(this.dinheiro.real, 10) + parseInt(this.dinheiro.dolar, 10) + parseInt(this.dinheiro.peso, 10) + parseInt(this.cartao.credito,) + parseInt(this.cartao.debito, 10)) - parseInt(this.descontoValor, 10))
+					return this.valorAPagar = ((parseFloat(this.dinheiro.real) + parseFloat(this.dinheiro.dolar) + parseFloat(this.dinheiro.peso) + parseFloat(this.dinheiro.guarani) + parseFloat(this.cartao.credito,) + parseFloat(this.cartao.debito)) - parseFloat(this.descontoValor))
 				} else {
-					return this.valorAPagar = ((parseInt(this.dinheiro.real, 10) + parseInt(this.dinheiro.dolar, 10) + parseInt(this.dinheiro.peso, 10) + parseInt(this.cartao.credito,) + parseInt(this.cartao.debito, 10)))
+					return this.valorAPagar = ((parseFloat(this.dinheiro.real) + parseFloat(this.dinheiro.dolar) + parseFloat(this.dinheiro.peso) + parseFloat(this.dinheiro.guarani) + parseFloat(this.cartao.credito,) + parseFloat(this.cartao.debito)))
 				}
 			}
 		},
 		valorTotalFaltante() {
 			if (this.valorTotalCalculado > this.valorPago) {
-				return this.totalFaltante = parseInt(this.valorTotalCalculado, 10) - parseInt(this.valorPago, 10)
+				return this.totalFaltante = parseFloat(this.valorTotalCalculado) - parseFloat(this.valorPago)
 			} else {
 				return this.totalFaltante = 0
 			}
 		},
 		valorTotalTroco() {
 			if (this.valorTotalCalculado < this.valorPago) {
-				return this.totalTroco = parseInt(this.valorPago, 10) - parseInt(this.valorTotalCalculado, 10)
+				return this.totalTroco = parseFloat(this.valorPago) - parseFloat(this.valorTotalCalculado)
 			} else {
 				return this.totalTroco = 0
 			}
@@ -437,4 +491,15 @@ export default {
 .forma-pagamento-box {
 	border-right: 2px solid #ddd;
 }
+
+.v-money {
+	border: none;
+	background-color: rgba(255, 255, 255, 0);
+	color: #000;
+}
+
+.closed-field {
+	background: rgb(119, 196, 241);
+}
+</style>
 </style>

@@ -67,6 +67,11 @@ export default {
     color: #428bca;
   }
 
+	.btn-voltar:hover {
+    color: #0056b3;
+		text-decoration-line: underline;
+  }
+
 	.form-panel {
     flex: 1;
     background: #FFF;
@@ -75,5 +80,10 @@ export default {
     border: 1px solid #AAA;
     border-radius: 5px;
 		box-shadow: 1px 1px 3px grey;
+  }
+
+	.btn-new-register {
+    position: relative;
+    margin-left:-30px;
   }
 </style>

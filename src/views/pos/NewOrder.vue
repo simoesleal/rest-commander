@@ -61,7 +61,7 @@
            <b-row>
              <b-col cols="12">
                <label>Quantidade</label>
-               <b-form-input id="quantidade" class="mb-3" v-model="quantity" required type="number"></b-form-input>
+               <b-form-input id="quantidade" class="mb-3" v-model.number="quantity" required type="number"></b-form-input>
              </b-col>
            </b-row>
 
@@ -87,7 +87,7 @@
         <div class="my-5">
           <label class="text-uppercase">Resudo do Pedido</label>
           <b-table responsive hover striped bordered :items="itensPedido" :fields="fields">
-            <template slot="actions" slot-scope="data">
+          <template v-slot:cell(actions)="data">
               <b-button @click="deleteOrder(data.index)" class="mr-5"><i class="fas fa-times"></i></b-button>
             </template>
           </b-table>
