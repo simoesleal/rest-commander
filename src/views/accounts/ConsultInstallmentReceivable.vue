@@ -71,7 +71,6 @@ import { RestConnection } from '../../rest/rest.connection'
 import {TheMask} from 'vue-the-mask'
 import {Money} from 'v-money'
 import PageTitle from '../../components/template/PageTitle'
-const moment = require('moment');
 
 export default {
   name: 'NovaContaPagar',
@@ -122,8 +121,8 @@ export default {
       }
     },
 
-		 async getInstallmentByNumber (searchItem) {
-      let response
+		async getInstallmentByNumber (searchItem) {
+			let response
       try {
 					response = await RestConnection.get('parcelas-a-receber/consultar/identificador/' + searchItem)
 					this.listaParcelas = response.data.conteudo

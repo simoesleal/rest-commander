@@ -23,7 +23,7 @@
           </b-col>
         </b-row>
         <div class="mt-3 table-responsive" v-if="listOfAccountsReceivables.length > 0">
-          <b-table hover fixed striped bordered :items="listOfAccountsReceivables" :fields="fields">
+          <b-table hover striped bordered :items="listOfAccountsReceivables" :fields="fields">
 						<template v-slot:cell(actions)="data">
 							<router-link :to="{ name: 'DetalhesContaReceber', params: { actionMode:'edit', selectedAccountReceivable: data.item }}">
                 <b-button variant="outline-info" class="mt-2 mx-auto"><i class="fas fa-info-circle"></i> Detalhes</b-button>
