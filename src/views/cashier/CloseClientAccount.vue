@@ -1,6 +1,6 @@
 <template>
 	<div v-if="this.$route.path === '/caixa/fechamento-conta'">
-		<b-container>
+		<b-container v-if="idCaixa">
 			<div v-if="itensPedido.length <= 0">
 				<b-row>
 					<b-col cols="12" md="9">
@@ -205,6 +205,17 @@
 				</b-row>	
 			</div>
 		</b-container>
+		<b-container v-else>
+			<b-alert show variant="danger">Acesso não permitido!</b-alert>
+			<b-row>
+          <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
+            <router-link :to="{ name: 'Caixa'}">
+              <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
+              <div class="text-uppercase font-300">Voltar</div>
+            </router-link>
+          </b-col>
+        </b-row>
+		</b-container>
 	</div>
 </template>
 
@@ -255,6 +266,7 @@ export default {
 			totalTroco: 0,
 			idContaCliente: 0,
 			idMesa: 0,
+			currentQuotation: 0,
 			money: {
         decimal: ',',
         thousands: '.',
@@ -292,6 +304,7 @@ export default {
 	mounted() {
 		this.getTables()
 		this.getFormasPagamento()
+		this.getQuotations()
 	},
 	watch: {
 		selectedTable() {
@@ -347,9 +360,24 @@ export default {
 		valorPago() {
 			if (this.formaPagamentoSelected) {
 				if (this.descontoValorPorcentagem > 0) {
-					return this.valorAPagar = ((parseFloat(this.dinheiro.real) + parseFloat(this.dinheiro.dolar) + parseFloat(this.dinheiro.peso) + parseFloat(this.dinheiro.guarani) + parseFloat(this.cartao.credito,) + parseFloat(this.cartao.debito)) - parseFloat(this.descontoValor))
+					return this.valorAPagar = (
+						(parseFloat(this.dinheiro.real) + 
+						(parseFloat(this.dinheiro.dolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + 
+						(parseFloat(this.dinheiro.peso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao)) +
+						(parseFloat(this.dinheiro.guarani) / parseFloat(this.currentQuotation.gueraniQuotation.cotacao)) + 
+						parseFloat(this.cartao.credito) + 
+						parseFloat(this.cartao.debito)) - 
+						parseFloat(this.descontoValor)
+					)
 				} else {
-					return this.valorAPagar = ((parseFloat(this.dinheiro.real) + parseFloat(this.dinheiro.dolar) + parseFloat(this.dinheiro.peso) + parseFloat(this.dinheiro.guarani) + parseFloat(this.cartao.credito,) + parseFloat(this.cartao.debito)))
+					return this.valorAPagar = (
+						parseFloat(this.dinheiro.real) + 
+						(parseFloat(this.dinheiro.dolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + 
+						(parseFloat(this.dinheiro.peso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao)) +
+						(parseFloat(this.dinheiro.guarani) / parseFloat(this.currentQuotation.gueraniQuotation.cotacao)) + 
+						parseFloat(this.cartao.credito) + 
+						parseFloat(this.cartao.debito)
+					)				
 				}
 			}
 		},
@@ -402,6 +430,17 @@ export default {
 			}
 		},
 
+		async getQuotations() {
+			let response, quotationList
+			try {
+				response = await RestConnection.get('cotacoes/consultar/lista/caixa')
+				this.currentQuotation = response.data.conteudo
+			} catch (error) {
+				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes. getQuotation")
+        this.backOnePage()
+			}
+		},
+
 		selectCustomerAccount (mesa) {
 			this.selectedTable = {
 				id: mesa.idMesa,
@@ -443,14 +482,14 @@ export default {
 					cartaoDebito: this.cartao.debito,
 					desconto: this.descontoValor,
 					troco: this.totalTroco,
-					valorTotal: this.totalValueCalculeted
+					valorTotal: this.valorPago
 				} ]
 			}
 			try {
 				response = await RestConnection.post('fechamento/novo-fechamento/', parameters)
 				if (response.data.status === 200) {
 					alert('Mesa fechada com sucesso!')
-					this.backOnePage()
+					this.$router.push({ name: 'Caixa', params: {flagGetCaixa: true} })
 				}
 			} catch (exception) {
 				if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {

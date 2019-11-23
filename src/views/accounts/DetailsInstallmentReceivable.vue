@@ -171,7 +171,8 @@ export default {
 			if (this.selectedInstallment.dataApropriacao) {
 				let response
 				let parameters = {
-						id: this.selectedInstallment.id
+						id: this.selectedInstallment.id,
+						dataApropriacao: this.selectedInstallment.dataApropriacao,
 				}
 				try {
 					response = await RestConnection.put('parcelas-a-receber/atualizar/parcela/baixar', parameters)
