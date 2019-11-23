@@ -6,9 +6,9 @@
 				id="informacoes-basicas"
 				description="*Campos obrigatórios">
 					<label>Nome*</label>
-					<b-form-input id="employee-name" class="mb-3" v-model="employee.nome" required type="text" placeholder="Exemplo: Antonio Simões"></b-form-input>
+					<b-form-input id="employee-name" class="mb-3" v-model="employee.nome" required type="text" placeholder="Exemplo: Antonio"></b-form-input>
 					<label>Sobrenome*</label>
-					<b-form-input id="employee-lastname" class="mb-3" v-model="employee.sobrenome" required type="text" placeholder="Exemplo: Antonio Simões"></b-form-input>
+					<b-form-input id="employee-lastname" class="mb-3" v-model="employee.sobrenome" required type="text" placeholder="Exemplo: Simões Leal Neto"></b-form-input>
 					<b-form-row>
 						<b-col cols="12" sm="6">
 							<label>Login*</label>
@@ -52,8 +52,8 @@
 								label="text" 
 								:options="roleList">
 								<template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
-									<router-link :to="{ name: 'CadastrarPais', params: { actionMode:'save' }}">
-										<b-button variant="primary"><i class="fas fa-flag"></i></b-button>
+									<router-link :to="{ name: 'CadastrarFuncao', params: { actionMode:'save' }}">
+										<b-button variant="primary"><i class="fab fa-black-tie"></i></b-button>
 									</router-link>
 								</template>
 							</v-select>

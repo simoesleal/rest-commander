@@ -11,8 +11,6 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Código*</label>
-              <b-form-input id="city-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="city.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>Nome*</label>
               <b-form-input id="city-name" class="mb-3" v-model="city.nomeCidade" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
               <label>UF*</label>

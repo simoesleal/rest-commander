@@ -23,7 +23,7 @@
           </b-col>
         </b-row>
         <div class="mt-3" v-if="listOfCustomers.length > 0">
-          <b-table hover fixed striped bordered :items="listOfCustomers" :fields="fields">
+          <b-table hover striped bordered :items="listOfCustomers" :fields="fields">
             <template v-slot:cell(actions)="data">
                 <router-link :to="{ name: 'CadastrarCliente', params: { actionMode:'edit', selectedCustomer: data.item }}">
                 <b-button variant="outline-info" class="mt-2 mx-auto"><i class="fas fa-pencil-alt"></i> Alterar</b-button>

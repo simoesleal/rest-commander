@@ -18,14 +18,6 @@
 							<label>Sexo*</label>
 							<b-form-select v-model="customer.sexo" :options="typeSex"></b-form-select>
 						</b-col>
-						<b-col cols="12" sm="2">
-							<label>Tipo do Documento</label>
-							<b-form-input id="customer-docType" class="mb-3" v-model.trim="customer.tipoDoc" type="text" placeholder="Exemplo: RG"></b-form-input>
-						</b-col>
-						<b-col cols="12" sm="2">
-							<label>Org. Exp.</label>
-							<b-form-input id="customer-orgExp" class="mb-3" v-model.trim="customer.orgExp" type="text" placeholder="Exemplo: SSP-PR"></b-form-input>
-						</b-col>
 					</b-form-row>
 					<b-form-row>
 						<label>Observações</label>

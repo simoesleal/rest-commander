@@ -22,8 +22,8 @@
             </router-link>
           </b-col>
         </b-row>
-        <div class="mt-3" v-if="listOfTables.length > 0">
-          <b-table hover striped bordered fixed :items="listOfTables" :fields="fields">
+        <div class="mt-3 text-center" v-if="listOfTables.length > 0">
+          <b-table hover striped bordered :items="listOfTables" :fields="fields">
             <template v-slot:cell(actions)="data">
                 <router-link :to="{ name: 'CadastrarMesa', params: { actionMode:'edit', selectedTable: data.item }}">
                 <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>

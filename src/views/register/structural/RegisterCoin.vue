@@ -6,8 +6,6 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Código*</label>
-              <b-form-input id="coin-id" class="mb-3" v-model="coin.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
 							<label>Simbolo</label>
 							<b-form-input id="coin" class="mb-3" v-model="coin.simbolo" required type="text" placeholder="Exemplo: R$"></b-form-input>
               <label>Nome Moeda</label>

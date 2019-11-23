@@ -23,7 +23,7 @@
           </b-col>
         </b-row>
         <div class="mt-3" v-if="listOfDocumentType.length > 0">
-          <b-table hover striped bordered fixed :items="listOfDocumentType" :fields="fields">
+          <b-table hover striped bordered :items="listOfDocumentType" :fields="fields">
             <template v-slot:cell(actions)="data">
                 <router-link :to="{ name: 'CadastrarTipoDocumento', params: { actionMode:'edit', selectedDocumentType: data.item }}">
                 <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>
