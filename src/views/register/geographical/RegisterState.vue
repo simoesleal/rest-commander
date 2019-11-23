@@ -11,20 +11,10 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Código*</label>
-              <b-form-input id="state-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="state.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>Estado*</label>
               <b-form-input id="state-name" class="mb-3" v-model="state.nome" required type="text" placeholder="Exemplo: Paraná"></b-form-input>
               <label>UF*</label>
               <b-form-input id="state-uf" class="mb-3" v-model="state.uf" required type="text" placeholder="Exemplo: PR"></b-form-input>   
-             <!--  <v-select
-                class="mb-3" 
-                v-model="ufSelected"
-                :required="!ufSelected" 
-                label="text" 
-                :options="ufBrazilianStates">
-                  <template slot="no-options">Desculpe, não há opções correspondentes!</template>        
-              </v-select> -->
               <label>Pais*</label>
               <b-row>
                 <b-col cols="11">

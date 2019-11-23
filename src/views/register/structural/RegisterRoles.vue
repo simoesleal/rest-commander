@@ -6,8 +6,6 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Código*</label>
-              <b-form-input id="role-id" class="mb-3" :disabled="setInputFieldDisabled" v-model="role.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>Nome</label>
 							<b-form-input id="role-name" class="mb-3" v-model="role.nome" required type="text" placeholder="Exemplo: Garçom"></b-form-input>
               <label>Descrição</label>

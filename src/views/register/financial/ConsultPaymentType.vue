@@ -23,7 +23,7 @@
           </b-col>
         </b-row>
         <div class="mt-3" v-if="listOfPaymentType.length > 0">
-          <b-table hover striped bordered fixed :items="listOfPaymentType" :fields="fields">
+          <b-table hover striped bordered :items="listOfPaymentType" :fields="fields">
             <template v-slot:cell(actions)="data">
                 <router-link :to="{ name: 'CadastrarTipoPagamento', params: { actionMode:'edit', selectedPaymentType: data.item }}">
                 <b-button variant="outline-info" class="mr-5"><i class="fas fa-pencil-alt"></i> Alterar</b-button>

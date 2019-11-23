@@ -11,7 +11,7 @@
 			<b-row>
 				<b-col class="d-flex justify-content-center align-items-center">
 					<router-link :to="{ name: 'NovoPedido'}">
-						<b-button variant="outline-primary" size="lg"><i class="fas fa-plus"></i> NOVO PEDIDO <i class="far fa-edit"></i> </b-button> 
+						<b-button variant="primary" size="lg"><i class="fas fa-plus"></i> NOVO PEDIDO <i class="far fa-edit"></i> </b-button> 
 					</router-link>						
 				</b-col>
 			</b-row>

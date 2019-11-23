@@ -11,8 +11,6 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Código*</label>
-              <b-form-input id="country-id" class="mb-2" :disabled="setInputFieldDisabled" v-model="country.id" required type="number" placeholder="Exemplo: 01"></b-form-input>
               <label>País*</label>
               <b-form-input id="country-name" class="mb-3" v-model="country.nomePt" required type="text" placeholder="Exemplo: Brasil"></b-form-input>
               <label>Sigla*</label>
