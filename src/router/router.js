@@ -344,6 +344,7 @@ export default new Router({
       path: 'caixa',
       name: 'Caixa',
       component: Cashier,
+      props: true,
       children: [
         {
           path: 'fechamento-conta',

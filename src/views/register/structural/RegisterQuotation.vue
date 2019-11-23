@@ -89,7 +89,7 @@ export default {
         thousands: '.',
         prefix: 'R$ ',
         suffix: '',
-        precision: 3,
+        precision: 2,
         masked: false
       }
     }

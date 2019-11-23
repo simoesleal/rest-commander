@@ -24,7 +24,7 @@
 									<th scope="col">Fundo</th>
 									<th scope="col">Fechamentos</th>
 									<th scope="col">Total</th>
-									<th scope="col"></th>
+									<th scope="col">Câmbio</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -51,9 +51,11 @@
 								</tr>
 								<tr>
 									<th class="bg-info" scope="row">Total à Vista</th>
-									<td class="bg-info"><v-money disabled placeholder="Exemplo: U$ 0.00" required :value="parseFloat(caixa.fundoReal) + parseFloat(caixa.fundoDolar) + parseFloat(caixa.fundoPeso)" v-bind="moneyU$"></v-money></td>
-									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="parseFloat(caixa.fechamentosReal) + parseFloat(caixa.fechamentosDolar) + parseFloat(caixa.fechamentosPeso)" v-bind="money"></v-money></td>
-									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="calculaTotalAVista" v-bind="money"></v-money></td>
+									<td class="bg-info"><v-money disabled type="text" required placeholder="Exemplo: R$ 0.00" :value="calculaTotalAVistaFundo" v-bind="money" trim></v-money></td>		
+
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="calculaTotalAVistaFechamentos" v-bind="money"></v-money></td>
+
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="calculaTotalAVista" v-bind="money"></v-money></td>
 									<td></td>
 								</tr>
 								<tr>
@@ -73,8 +75,8 @@
 								<tr>
 									<th class="bg-info" scope="row">Total à Prazo</th>
 									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required value="0.00" v-bind="money"></v-money></td>
-									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="parseInt(caixa.fechamentosCartaoCred, 10) + parseInt(caixa.fechamentosCartaoDeb, 10)" v-bind="money"></v-money></td>
-									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="parseInt(caixa.fechamentosCartaoCred, 10) + parseInt(caixa.fechamentosCartaoDeb, 10)" v-bind="money"></v-money></td>
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="parseFloat(caixa.fechamentosCartaoCred) + parseFloat(caixa.fechamentosCartaoDeb)" v-bind="money"></v-money></td>
+									<td class="bg-info"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="parseFloat(caixa.fechamentosCartaoCred) + parseFloat(caixa.fechamentosCartaoDeb)" v-bind="money"></v-money></td>
 									<td></td>
 								</tr>
 								<tr>
@@ -88,20 +90,18 @@
 						</table>
 					</div>
 				</div>
-				<b-row class="mt-3">
-					<b-col cols="4">
-						<b-col>
-							<span>Cotação Dolar: </span>
-							<v-money class="d-inline" disabled placeholder="Exemplo: U$ 0.00" required :value="caixa.cotacaoDolar || 0.00" v-bind="moneyU$"></v-money>
-						</b-col>						
+				<b-row class="mt-4">
+					<b-col cols="3">
+						<span>{{currentQuotation.dolarQuotation.nomeMoeda}} </span>
+						<v-money disabled type="text" required placeholder="Exemplo: U$ 0.00" v-model.number="currentQuotation.dolarQuotation.cotacao" v-bind="moneyU$" trim></v-money>
 					</b-col>
-					<b-col cols="4">
-						<span>Cotação Peso: </span>
-						<v-money class="d-inline" disabled placeholder="Exemplo: P$ 0.00" required :value="caixa.cotacaoPeso || 0.00" v-bind="moneyP$"></v-money>
+					<b-col cols="3">
+						<span>{{currentQuotation.pesoQuotation.nomeMoeda}} </span>
+						<v-money disabled type="text" required placeholder="Exemplo: U$ 0.00" v-model.number="currentQuotation.pesoQuotation.cotacao" v-bind="moneyP$" trim></v-money>
 					</b-col>
-					<b-col cols="4">
-						<span>Cotação Guarani: </span>
-						<v-money class="d-inline" disabled placeholder="Exemplo: G$ 0.00000" required :value="caixa.cotacaoGuarani || 0.00" v-bind="moneyG$"></v-money>
+					<b-col cols="3">
+						<span>{{currentQuotation.gueraniQuotation.nomeMoeda}} </span>
+						<v-money disabled type="text" required placeholder="Exemplo: G$ 0.00" v-model.number="currentQuotation.gueraniQuotation.cotacao" v-bind="moneyP$" trim></v-money>
 					</b-col>
 				</b-row>
 				<b-row class="mt-5">
@@ -120,13 +120,19 @@
 										<th scoped="col">Mesa</th>
 										<th scoped="col">Forma de Pagamento</th>
 										<th scoped="col">Valor Total</th>
+										<th></th>
 									</tr>
 								</thead>
-								<tbody>
-									<tr  v-for="(fechamento, index) in listaFechamentosEfetuados" :key="index">
+								<tbody class="text-center">
+									<tr v-for="(fechamento, index) in listaFechamentosEfetuados" :key="index">
 										<td>{{fechamento.numeroMesa}}</td>
 										<td>{{fechamento.formaPagamento}}</td>
 										<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="fechamento.valorTotal" v-bind="money"></v-money></td>
+										<td>
+											<router-link :to="{ name: ''}">
+              					<b-button variant="outline-primary"><i class="fas fa-pencil-alt"></i></b-button>
+            					</router-link>
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -142,11 +148,11 @@
 				</b-row>
 				<b-alert show variant="primary">Nenhum caixa aberto no momento. Preencha as informações abaixo e clique no botão Abrir Caixa</b-alert>
 				<div class="form-panel">
-					<h1 class="h2">Abertura de Caixa</h1>
-					<b-row class="mt-4">
-						<b-col><label>Funcionário</label></b-col>
+					<h1 class="h2 text-center mb-5 mt-2">Abertura de Caixa</h1>
+					<b-row class="mt-4 ml-1">
+						<b-col><label class="h4">Funcionário</label></b-col>
 					</b-row>
-					<b-row class="mb-3">
+					<b-row class="mb-3 ml-1">
 						<b-col cols="11">
 							<v-select
 								class="mb-3" 
@@ -167,60 +173,75 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<b-row class="mt-4">
-						<b-col><label>Cotação Dolar</label></b-col>
-					</b-row>
-					<b-row class="mb-3">
-						<b-col cols="11">
-							<v-select
-								class="mb-3" 
-								v-model="quotationSelected"
-								:required="!quotationSelected" 
-								label="text" 
-								:options="quotationList">
-								<template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
-									<router-link :to="{ name: 'CadastrarMoeda', params: { actionMode:'save' }}">
-										<b-button variant="primary"><i class="fas fa-money-bill-alt"></i></b-button>
-									</router-link>
-								</template>
-							</v-select>
-						</b-col>  
-						<b-col cols="1" class="btn-new-register">
-							<router-link :to="{ name: 'ConsultarMoeda', params: { actionMode:'save' }}">
-								<b-button variant="primary"><i class="fas fa-money-bill-alt fa-sm"></i></b-button>
-							</router-link>
-						</b-col>  
-					</b-row>
-					<h2>Adicionar Fundos</h2>
-					<b-row>
+					<h2 class="m-3 h4">Cotação Atual</h2>
+						<b-row  class="form-panel">
+							<b-col cols="3">
+								<span>{{currentQuotation.dolarQuotation.nomeMoeda}} {{currentQuotation.dolarQuotation.simbolo}} </span>
+								<v-money type="text" required placeholder="Exemplo: U$ 0.00" v-model.number="currentQuotation.dolarQuotation.cotacao" v-bind="moneyU$" trim></v-money>
+							</b-col>
+							<b-col cols="3">
+								<span>{{currentQuotation.pesoQuotation.nomeMoeda}} {{currentQuotation.pesoQuotation.simbolo}} </span>
+								<v-money type="text" required placeholder="Exemplo: U$ 0.00" v-model.number="currentQuotation.pesoQuotation.cotacao" v-bind="moneyP$" trim></v-money>
+							</b-col>
+							<b-col cols="3">
+								<span>{{currentQuotation.gueraniQuotation.nomeMoeda}} {{currentQuotation.gueraniQuotation.simbolo}} </span>
+								<v-money type="text" required placeholder="Exemplo: G$ 0.00" v-model.number="currentQuotation.gueraniQuotation.cotacao" v-bind="moneyP$" trim></v-money>
+							</b-col>
+							<b-col class="mx-auto my-auto">							
+								<b-button block variant="outline-info" @click="updateQuotation"><i class="fas fa-calculator"></i> Atualização Cotações</b-button>
+							</b-col>
+						</b-row>
+					<h2 class="m-3 h4">Adicionar Fundos</h2>
+					<b-row class="form-panel">
 						<b-col>
 							<b-row>
 								<b-col cols="2">
 									<span>Real R$</span>
 								</b-col>
-								<b-col cols="10" class="mb-2">
-									<v-money type="text" class="form-control" required placeholder="Exemplo: R$ 0.00" v-model.number="fundo.real" v-bind="money" trim></v-money>
+								<b-col cols="3" class="mb-2">
+									<v-money type="text" required placeholder="Exemplo: R$ 0.00" v-model.number="fundo.real" v-bind="money" trim></v-money>
+								</b-col>
+								<b-col cols="3" class="mb-2">
+									<span class="h5">Fundo convertido R$</span>
 								</b-col>
 							</b-row>
+
 							<b-row>
 								<b-col cols="2">
-									<span>Dolar R$</span>
+									<span>Dolar U$</span>
 								</b-col>
-								<b-col cols="10" class="mb-2">
-									<v-money type="text" class="form-control" required placeholder="Exemplo: U$ 0.00" v-model.number="fundo.dolar" v-bind="money" trim></v-money>
+								<b-col cols="3" class="mb-2">
+									<v-money type="text" required placeholder="Exemplo: U$ 0.00" v-model.number="fundo.dolar" v-bind="moneyU$" trim></v-money>
+								</b-col>
+								<b-col cols="3" class="mb-2">
+									<v-money disabled type="text" required placeholder="Exemplo: R$ 0.00" :value="parseFloat(fundo.dolar) * parseFloat(currentQuotation.dolarQuotation.cotacao)"  v-bind="money" trim></v-money>
 								</b-col>
 							</b-row>
+
 							<b-row>
 								<b-col cols="2">
 									<span>Peso P$</span>
 								</b-col>
-								<b-col cols="10" class="mb-2">
-									<v-money type="text" class="form-control" required placeholder="Exemplo: P$ 0.00" v-model.number="fundo.peso" v-bind="money" trim></v-money>
+								<b-col cols="3" class="mb-2">
+									<v-money type="text" required placeholder="Exemplo: P$ 0.00" v-model.number="fundo.peso" v-bind="moneyP$" trim></v-money>
+								</b-col>
+								<b-col cols="3" class="mb-2">
+									<v-money type="text" required placeholder="Exemplo: R$ 0.00" :value="parseFloat(currentQuotation.pesoQuotation.cotacao) * parseFloat(fundo.peso)"  v-bind="money" trim></v-money>									
 								</b-col>
 							</b-row>
+							
+							<div class="mt-5">
+								<b-row>
+									<b-col>
+										<span class="h4">Total Fundos - </span>
+										<v-money disabled class="h3" type="text" required placeholder="Exemplo: R$ 0.00" :value="calculaTotalFundo" v-bind="money" trim></v-money>
+									</b-col>
+								</b-row>
+							</div>
+							
 						</b-col>
 					</b-row>
-					<b-row class="mt-5 p-5">
+					<b-row class="mt-5 p-2">
 						<b-col>							
 							<b-button block variant="outline-success" @click="abrirNovoCaixa"><i class="fas fa-cash-register"></i> Abrir Caixa</b-button>
 						</b-col>
@@ -244,6 +265,13 @@ export default {
 		'page-title': PageTitle,
 		TheMask,
 		'v-money': Money
+	},
+	props: {
+		flagGetCaixa: {
+			type: Boolean,
+			required: false,
+			default: false,
+		}
 	},
 	data() {
 		return {
@@ -272,6 +300,7 @@ export default {
 				troco: 0,				
 				totalAVista: 0
 			},
+			caixaFlag: false,
 			totalGeralFundo: 0,
 			totaGeralFechamento: 0,
 			geralTotal: 0,
@@ -286,6 +315,11 @@ export default {
 			quotationList: [],
 			saldoInicial: 0,
 			listaFechamentosEfetuados: [],
+			currentQuotation: {
+				dolarQuotation: {},
+				pesoQuotation: {},
+				gueraniQuotation: []
+			},
 				money: {
         decimal: ',',
         thousands: '.',
@@ -325,31 +359,37 @@ export default {
 		this.getCurrentCashier()
 	},
 
+	watch: {
+		flagGetCaixa() {
+			if (this.flagGetCaixa === true) {
+				this.getCurrentCashier()
+			}
+		}
+	},
+
 	computed: {
+		calculaTotalAVistaFundo() {
+			return parseFloat(this.caixa.fundoReal) + 
+				(parseFloat(this.caixa.fundoDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fundoPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))			
+		},
+		calculaTotalAVistaFechamentos() {
+			return parseFloat(this.caixa.fechamentosReal) + 
+				(parseFloat(this.caixa.fechamentosDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fechamentosPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))	
+		},
 		calculaTotalAVista() {
-			this.caixa.totalAVista = 
-				parseInt(this.caixa.fundoReal, 10) + 
-				parseInt(this.caixa.fundoDolar, 10) + 
-				parseInt(this.caixa.fundoPeso, 10) + 
-				parseInt(this.caixa.fechamentosReal, 10) +
-				parseInt(this.caixa.fechamentosDolar, 10) + 
-				parseInt(this.caixa.fechamentosPeso, 10)
-			return this.caixa.totalAVista
+			return this.calculaTotalAVistaFundo + this.calculaTotalAVistaFechamentos
 		},
 		calculaTotalGeralFundo() {
-			this.totalGeralFundo = 
-				parseInt(this.caixa.fundoReal, 10) + 
-				parseInt(this.caixa.fundoDolar, 10) + 
-				parseInt(this.caixa.fundoPeso, 10)			
+			this.totalGeralFundo = parseFloat(this.caixa.fundoReal) + 
+				(parseFloat(this.caixa.fundoDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fundoPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))				
 			return this.totalGeralFundo
 		},
 		calculaTotalGeralFechamentos(){
-			this.totaGeralFechamento = 
-			parseInt(this.caixa.fechamentosReal, 10) + 
-			parseInt(this.caixa.fechamentosDolar, 10) + 
-			parseInt(this.caixa.fechamentosPeso, 10) + 
-			parseInt(this.caixa.fechamentosCartaoCred, 10) + 
-			parseInt(this.caixa.fechamentosCartaoDeb, 10)
+			this.totaGeralFechamento = parseFloat(this.caixa.fechamentosReal) + 
+				(parseFloat(this.caixa.fechamentosDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + 
+				(parseFloat(this.caixa.fechamentosPeso) *  parseFloat(this.currentQuotation.pesoQuotation.cotacao))  + 
+				parseFloat(this.caixa.fechamentosCartaoCred) + parseFloat(this.caixa.fechamentosCartaoDeb)
+
 			return this.totaGeralFechamento
 		},
 		calculaTotalGeralTotal() {
@@ -362,12 +402,16 @@ export default {
 		},
 		converteTotalDolar() {
 			const tatalFechamentosDolar =	parseFloat(this.caixa.fundoDolar) + parseFloat(this.caixa.fechamentosDolar)
-			return parseFloat(tatalFechamentosDolar) / 4.20
+			return parseFloat(tatalFechamentosDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)
 		},
 		converteTotalPeso() {
 			const tatalFechamentosPeso =	parseFloat(this.caixa.fundoPeso) + parseFloat(this.caixa.fechamentosPeso)
-			return parseFloat(tatalFechamentosPeso) / 14.22
+			return parseFloat(tatalFechamentosPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao)
 		},
+		calculaTotalFundo() {
+			const totalFundo = parseFloat(this.fundo.real) + parseFloat(this.fundo.dolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao) + parseFloat(this.fundo.peso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao)
+			return totalFundo
+		}
 	},
 
 	methods: {
@@ -378,10 +422,12 @@ export default {
 				currentCashier = response.data.conteudo
 				if (response.status === 200 && currentCashier) {
 					this.caixa = currentCashier
+					this.flagGetCaixa = false
 					this.getFechamentos()
+					this.getQuotations()			
 				} else {
 					this.getEmployee()
-					this.getQuotation()
+					this.getQuotations()
 				}
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
@@ -398,11 +444,11 @@ export default {
 				let fechamentos = response.data.conteudo
 				this.listaFechamentosEfetuados = fechamentos
 				for (let i = 0; i < fechamentos.length; i++) {
-					this.caixa.fechamentosReal = parseInt(this.caixa.fechamentosReal, 10) + parseInt(fechamentos[i].realbr, 10)
-					this.caixa.fechamentosDolar = parseInt(this.caixa.fechamentosDolar, 10) + parseInt(fechamentos[i].dolar, 10)
-					this.caixa.fechamentosPeso = parseInt(this.caixa.fechamentosPeso, 10) + parseInt(fechamentos[i].peso, 10)
-					this.caixa.fechamentosCartaoCred = parseInt(this.caixa.fechamentosCartaoCred, 10) + parseInt(fechamentos[i].cc, 10)
-					this.caixa.fechamentosCartaoDeb = parseInt(this.caixa.fechamentosCartaoDeb, 10) + parseInt(fechamentos[i].cb, 10)
+					this.caixa.fechamentosReal = parseFloat(this.caixa.fechamentosReal) + parseFloat(fechamentos[i].realbr)
+					this.caixa.fechamentosDolar = parseFloat(this.caixa.fechamentosDolar) + parseFloat(fechamentos[i].dolar)
+					this.caixa.fechamentosPeso = parseFloat(this.caixa.fechamentosPeso) + parseFloat(fechamentos[i].peso)
+					this.caixa.fechamentosCartaoCred = parseFloat(this.caixa.fechamentosCartaoCred) + parseFloat(fechamentos[i].cc)
+					this.caixa.fechamentosCartaoDeb = parseFloat(this.caixa.fechamentosCartaoDeb) + parseFloat(fechamentos[i].cb)
 				}
 			} catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
@@ -425,14 +471,11 @@ export default {
         this.backOnePage()
 			}
 		},
-		async getQuotation() {
+		async getQuotations() {
 			let response, quotationList
 			try {
-				response = await RestConnection.get('cotacoes/consultar/')
-				quotationList = response.data.conteudo			 
-				for (let i = 0; i < quotationList.length; i++) {
-					this.quotationList.push({value: quotationList[i].id, text: `${quotationList[i].simbolo} - ${quotationList[i].cotacao} (${quotationList[i].nomeMoeda})`})
-				}
+				response = await RestConnection.get('cotacoes/consultar/lista/caixa')
+				this.currentQuotation = response.data.conteudo
 			} catch (error) {
 				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes. getQuotation")
         this.backOnePage()
@@ -443,7 +486,6 @@ export default {
 			let response
 			let parameters = {			
 				id_funcionario: this.employeeSelected.value,
-				id_cotacao: this.quotationSelected.value,
 				saldo_inicial: this.calculaSaldoInicial,
 				saldo_final: 0,
 				fundo_real: this.fundo.real,
@@ -454,8 +496,7 @@ export default {
 				fechamentos_peso: 0,
 				fechamentos_cartao_cred: 0,
 				fechamentos_cartao_deb: 0,
-				valor_total_fechamentos: 0,
-				troco: 0
+				valor_total_fechamentos: 0
 			}
 			try {
 				response = await RestConnection.post('caixa/cadastrar/', parameters)
@@ -506,6 +547,26 @@ export default {
 			}
 		},
 
+		async updateQuotation() {
+			let parameters = {
+				dolarQuotation: this.currentQuotation.dolarQuotation,
+				pesoQuotation: this.currentQuotation.pesoQuotation,
+				gueraniQuotation: this.currentQuotation.gueraniQuotation
+			}
+			try {
+				const response = await RestConnection.put('cotacoes/atualizar/cotacoes/caixa', parameters)
+				if (response.data.status === 200) {
+					alert(response.data.mensagem)
+				}		
+			} catch (exception) {
+				if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+					return alert(exception.response.data.mensagem)
+				} else {
+					return alert("Não foi possível atualizar essas cotações. Por favor, tente novamente")
+				}
+			}
+		},
+
 		clearReactiveData() {
 			this.employeeSelected = '',
 			this.fundo = {
@@ -526,4 +587,5 @@ export default {
 	background-color: rgba(255, 255, 255, 0);
 	color: #000;
 }
+
 </style>
