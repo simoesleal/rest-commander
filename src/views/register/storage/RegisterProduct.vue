@@ -56,6 +56,28 @@
                   </router-link>
                 </b-col>  
               </b-row>
+              <label>Grupo Cardápio*</label>
+              <b-row>
+                <b-col cols="11">
+                  <v-select
+                    class="mb-3" 
+                    v-model="selectedMenuGroup"
+                    :required="!selectedMenuGroup" 
+                    label="text" 
+                    :options="menuGroupList">
+                    <template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
+                      <router-link :to="{ name: 'CadastrarGrupoCardapio', params: { actionMode:'save' }}">
+                        <b-button variant="primary"><i class="fas fa-bars"></i></b-button>
+                      </router-link>
+                    </template>
+                  </v-select>
+                </b-col>  
+                <b-col cols="1" class="btn-new-register">
+                  <router-link :to="{ name: 'ConsultarGrupoProdutos', params: { actionMode:'save' }}">
+                   <b-button variant="primary"><i class="fas fa-bars fa-sm"></i></b-button>
+                  </router-link>
+                </b-col>  
+              </b-row>
           </b-form-group>
         </b-form>
         <b-form class="form-panel mb-3" id="informacoes-preco"
@@ -150,11 +172,15 @@ export default {
         status: 0,
         idGupoProduto: 0,
         idUnidade: 0,
+        idGrupoCardapio: 0
       },
 			productGroupList: [],
 			unitList: [],
+      menuGroupList: [],
       selectedProductGroup: '',
       selectedUnit: '',
+      selectedMenuGroup: '',
+
       money: {
         decimal: ',',
         thousands: '.',
@@ -175,9 +201,11 @@ export default {
       this.product = this.selectedProduct
       this.selectedProductGroup = {value: this.product.idGupoProduto, text: `${this.product.nomeGrupo}`}
       this.selectedUnit = {value: this.product.idUnidade, text: `${this.product.nomeUnidade}`}
+      this.selectedMenuGroup = {value: this.product.idGrupoCardapio, text: `${this.product.grupoCardapioNome}`}
     } else {
       this.getProductGroupList()
       this.getUnitMeasurementList()
+      this.getMenuGroup()
     }
   },
 
@@ -193,7 +221,13 @@ export default {
       if (this.selectedUnit === null) {
         this.getUnitMeasurementList()
       }
-    }
+    },
+    selectedMenuGroup() {
+      if (this.selectedMenuGroup) this.product.idGrupoCardapio = this.selectedMenuGroup.value
+      if (this.selectedMenuGroup === null) {
+        this.getMenuGroup()
+      }
+    },
   },
 
   methods: {
@@ -237,6 +271,24 @@ export default {
       }
     },
 
+    async getMenuGroup () {
+      let response, menuGroupList
+      try {
+        response = await RestConnection.get('grupos-cardapio/consultar/')
+        menuGroupList = response.data.conteudo
+        for (let i = 0; i < menuGroupList.length; i++) {
+					this.menuGroupList.push({value: menuGroupList[i].id, text: `${menuGroupList[i].nomeGrupo}`})
+				}
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Grupos do Cardápio.")
+          }
+          this.backOnePage()
+      }
+    },    
+
     async saveRecord() {
       let response
       let parameters = {
@@ -250,7 +302,8 @@ export default {
         min_quantity: this.product.qtdMin,
         status: true,
         id_grupo_produto: this.selectedProductGroup.value,
-        id_unidade: this.selectedUnit.value
+        id_unidade: this.selectedUnit.value,
+        id_grupo_cardapio: this.selectedMenuGroup.value
       }
       try {
         response = await RestConnection.post('produtos/cadastrar/produto/', parameters)
@@ -279,7 +332,8 @@ export default {
         min_quantity: this.product.qtdMin,
         status: true,
         id_grupo_produto: this.selectedProductGroup.value,
-        id_unidade: this.selectedUnit.value
+        id_unidade: this.selectedUnit.value,
+        id_grupo_cardapio: this.selectedMenuGroup.value
       }
       try {
         response = await RestConnection.put('produtos/atualizar/produto/', parameters)
