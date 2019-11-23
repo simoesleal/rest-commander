@@ -32,10 +32,13 @@ const ConsultTables = () => import(/* webpackChunkName: "register-structure" */ 
 const ConsultRoles = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultRoles')
 const ConsultQuotation = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultQuotation')
 const ConsultCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultCoin')
+const ConsultMenuGroup = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/ConsultMenuGroup')
 const RegisterQuotation = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterQuotation')
 const RegisterRoles = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterRoles')
 const RegisterTable = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterTable')
 const RegisterCoin = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterCoin')
+const RegisterMenuGroup = () => import(/* webpackChunkName: "register-structure" */ '../views/register/structural/RegisterMenuGroup')
+
 
 // Cadastro do Estoque
 const RegisterStorage = () => import(/* webpackChunkName: "register-storage" */ '../views/register/storage/RegisterStorage')
@@ -223,6 +226,17 @@ export default new Router({
         path: 'moeda',
         name: 'CadastrarMoeda',
         component: RegisterCoin,
+        props: true
+      },
+      {
+        path: 'consulta-grupo-cardapio',
+        name: 'ConsultarGrupoCardapio',
+        component: ConsultMenuGroup
+      },
+      {
+        path: 'cadastrar-grupo-cardapio',
+        name: 'CadastrarGrupoCardapio',
+        component: RegisterMenuGroup,
         props: true
       }
       ]

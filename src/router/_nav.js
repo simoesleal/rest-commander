@@ -159,7 +159,13 @@ const treeData = [{
 					icon: 'fas fa-hamburger',
 					url: 'ConsultarProdutos'	
 				}
-			}
+			},
+				{
+					text: 'Grupo Menu',
+					data: { 
+					icon: 'fas fa-bars',
+					url: 'ConsultarGrupoCardapio'	}
+				}
 			/* {
 				text: 'Insumos',
 				data: { 

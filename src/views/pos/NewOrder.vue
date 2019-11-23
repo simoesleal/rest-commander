@@ -35,9 +35,26 @@
             id="selected-table"
             description="*Campos obrigatórios">  
 
+            <label>Grupo Cardápio</label>
+            <b-row>
+              <b-col cols="12">
+                <v-select
+                  class="mb-3" 
+                  v-model="selectedMenuGroup"
+                  :required="!selectedMenuGroup" 
+                  label="text" 
+                  :options="menuGroupList">
+                  <template slot="no-options">Desculpe, não há opções correspondentes! Clique aqui para para um novo cadastro 
+                      <router-link :to="{ name: 'CadastrarGrupoCardapio', params: { actionMode:'save' }}">
+                        <b-button variant="primary"><i class="fas fa-bars"></i></b-button>
+                      </router-link>
+                  </template>
+                </v-select>
+              </b-col>  
+            </b-row>
             <label>Produto</label>
             <b-row>
-              <b-col cols="12" md="11">
+              <b-col cols="12">
                 <v-select
                   class="mb-3" 
                   v-model="selectedProduct"
@@ -50,13 +67,8 @@
                     </router-link>
                   </template>
                 </v-select>
-              </b-col>  
-              <b-col cols="1" class="d-none d-md-inline-block btn-new-register">
-                <router-link :to="{ name: 'ConsultarProdutos', params: { actionMode:'save' }}">
-                  <b-button variant="primary"><i class="fas fa-hamburger fa-sm"></i></b-button>
-                </router-link>
               </b-col>
-           </b-row>
+            </b-row>
 
            <b-row>
              <b-col cols="12">
@@ -129,6 +141,8 @@ export default {
 			selectedProduct: '',
       productList: [],
       itensPedido: [],
+      selectedMenuGroup: '',
+      menuGroupList: [],
       fields: [
         { key: 'idProduto', label: 'Código', sortable: true},
         { key: 'produto', label: 'Produto', sortable: true},
@@ -144,6 +158,7 @@ export default {
   mounted() {
     this.getOpenCustomerAccount()
     this.getProduct()
+    this.getMenuGroup()
   },
 
   watch: {
@@ -152,6 +167,17 @@ export default {
         this.getCustomerAccount(this.tableSelected.value)      
       } else {
         this.customerAccountSelected = ''
+      }
+    },
+    selectedMenuGroup() {
+      if (this.selectedMenuGroup && this.selectedMenuGroup.value) {
+        this.productList = []
+        this.selectedProduct = ''
+        this.getProductByMenuGroup(this.selectedMenuGroup.value)
+      } else {
+        this.productList = []
+        this.selectedProduct = ''
+        this.getProduct()
       }
     }
   },
@@ -186,6 +212,24 @@ export default {
       let response, productList
       try {
         response = await RestConnection.get('produtos/consultar/produto/')
+        productList = response.data.conteudo
+        for (let i = 0; i < productList.length; i++) {
+					this.productList.push({value: productList[i].id, text: `${productList[i].nomeProduto} - ${productList[i].descricaoProduto}`})
+				}
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert('Não foi possível buscar a lista de Produtos.')
+          }
+      }
+      
+    },
+
+    async getProductByMenuGroup (menuGroupId) {
+      let response, productList
+      try {
+        response = await RestConnection.get('produtos/consultar/produto/grupo-cardapio/' + menuGroupId)
         productList = response.data.conteudo
         for (let i = 0; i < productList.length; i++) {
 					this.productList.push({value: productList[i].id, text: `${productList[i].nomeProduto} - ${productList[i].descricaoProduto}`})
@@ -242,6 +286,24 @@ export default {
         }
       }
     },
+
+    async getMenuGroup () {
+      let response, menuGroupList
+      try {
+        response = await RestConnection.get('grupos-cardapio/consultar/')
+        menuGroupList = response.data.conteudo
+        for (let i = 0; i < menuGroupList.length; i++) {
+					this.menuGroupList.push({value: menuGroupList[i].id, text: `${menuGroupList[i].nomeGrupo}`})
+				}
+      } catch (exception) {
+          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+            return alert(exception.response.data.mensagem)
+          } else {
+            return alert("Não foi possível buscar a lista de Grupos do Cardápio.")
+          }
+          this.backOnePage()
+      }
+    },      
 
     deleteOrder(index) {
       this.itensPedido.splice(index, 1)
