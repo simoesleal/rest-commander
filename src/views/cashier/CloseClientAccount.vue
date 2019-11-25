@@ -345,7 +345,7 @@ export default {
 		descontoPorcentagem() {
 			if (this.descontoValorPorcentagem > 0) {
 				this.descontoValor = (parseFloat(this.totalValue) * (parseFloat(this.descontoValorPorcentagem) / 100))
-				return `${this.descontoValor}%`
+				return `${this.descontoValor}`
 			} else {
 				return this.descontoValor = `${0.00}%`
 			}
