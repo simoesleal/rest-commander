@@ -1,6 +1,9 @@
 <template>
 	<div v-if="this.$route.path === '/caixa/fechamento-conta'">
 		<b-container v-if="idCaixa">
+			<div v-if="alertSemPedidos">
+				<b-alert :show="alertSemPedidos" variant="danger">Essa mesa não possui lançamentos para ser encerrada.</b-alert> 
+			</div>
 			<div v-if="itensPedido.length <= 0">
 				<b-row>
 					<b-col cols="12" md="9">
@@ -349,6 +352,7 @@ export default {
 			divisaoCliente: [],
       numberOfDivisionList: 1,
 			valorAPagarDivido: 0,
+			alertSemPedidos: false,
 			money: {
         decimal: ',',
         thousands: '.',
@@ -436,7 +440,7 @@ export default {
 				this.descontoValor = (parseFloat(this.totalValue) * (parseFloat(this.descontoValorPorcentagem) / 100))
 				return `${this.descontoValor}`
 			} else {
-				return this.descontoValor = `${0.00}%`
+				return this.descontoValor = `${0.00}`
 			}
 		},
 		valorTotalCalculado() {
@@ -551,8 +555,12 @@ export default {
 			try {
 				response = await RestConnection.get('conta-cliente/consultar/pedidos/' + idMesa + '/' + numeroMesa)
 				if (response.data.status === 200) {
-					this.pedidosStatus = 200
-					this.itensPedido = response.data.conteudo
+					if (response.data.conteudo.length > 0) {
+						this.alertSemPedidos = false
+						this.itensPedido = response.data.conteudo
+					} else {
+						this.alertSemPedidos = true
+					}
 				}
 			} catch (exception) {
 				if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
