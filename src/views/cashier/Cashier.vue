@@ -16,7 +16,7 @@
 					</b-col>
 				</b-row>
 				<div class="text-muted">
-					<div class="table-responsive">
+					<div class="table-responsive text-center">
 						<table class="table table-striped table-bordered ">
 							<thead class="thead-dark">
 								<tr>
@@ -464,7 +464,7 @@ export default {
 				response = await RestConnection.get('funcionarios/consultar/funcionario')
 				employeeList = response.data.conteudo			 
 				for (let i = 0; i < employeeList.length; i++) {
-					this.employeeList.push({value: employeeList[i].id, text: `${employeeList[i].nome}`})
+					this.employeeList.push({value: employeeList[i].id, text: `${employeeList[i].nome} ${employeeList[i].sobrenome} - ${employeeList[i].login}`})
 				}
 			} catch (error) {
 				alert("Erro ao carregar informações necessárias para este formulário. Por favor, tente novamente em alguns instântes. getEmployee")

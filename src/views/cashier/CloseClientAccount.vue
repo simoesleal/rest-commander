@@ -1,6 +1,9 @@
 <template>
 	<div v-if="this.$route.path === '/caixa/fechamento-conta'">
 		<b-container v-if="idCaixa">
+			<div v-if="alertSemPedidos">
+				<b-alert :show="alertSemPedidos" variant="danger">Essa mesa não possui lançamentos para ser encerrada.</b-alert> 
+			</div>
 			<div v-if="itensPedido.length <= 0">
 				<b-row>
 					<b-col cols="12" md="9">
@@ -68,6 +71,86 @@
 						<v-money class="d-inline" disabled placeholder="Exemplo: R$ 0.00" required :value="totalValue" v-bind="money"></v-money>
 					</b-col>
 				</b-row>
+
+				<!-- INICIO DIVISAO CONTA -->
+				<div class="mt-5" v-if="divisaoCliente.length > 0">
+          <b-container>
+            <b-row class="mb-3 d-flex justify-content-center">
+              <template v-for="(cliente, index) in divisaoCliente" >
+                <b-col cols="3" class="form-panel mb-3" :key="index">
+                  <h4>Cliente - {{index+1}}</h4>
+                  <b-row class="mb-2">
+                    <b-col>
+                      <span>Real R$</span>
+											<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="divisaoCliente[index].dinheiro.real" v-bind="money"></v-money></span>	
+                    </b-col>
+                  </b-row>
+                  <b-row class="mb-2">
+                    <b-col>
+                      <span>Dolar R$</span>
+											<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="divisaoCliente[index].dinheiro.dolar" v-bind="moneyU$"></v-money></span>	
+                    </b-col>
+                  </b-row>
+                  <b-row class="mb-2">
+                    <b-col>
+                      <span>Peso P$</span>
+											<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="divisaoCliente[index].dinheiro.peso" v-bind="moneyP$"></v-money></span>	
+                    </b-col>
+                  </b-row>
+                  <b-row class="mb-2">
+                    <b-col>
+                      <span>Guarani G$</span>
+											<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="divisaoCliente[index].dinheiro.guarani" v-bind="moneyG$"></v-money></span>	
+                    </b-col>
+                  </b-row>
+                  <b-row class="mb-2">
+                    <b-col>
+                      <span>Cartão Créd</span>
+											<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="divisaoCliente[index].cartao.credito" v-bind="money"></v-money></span>
+                    </b-col>
+                  </b-row>
+                  <b-row class="mb-2">
+                    <b-col>
+                      <span>Cartão Déb</span>
+											<span class="form-control"><v-money placeholder="Exemplo: R$ 0.00" required v-model="divisaoCliente[index].cartao.debito" v-bind="money"></v-money></span>
+                    </b-col>
+                  </b-row>
+                  <b-row class="mb-2">
+                    <b-col>
+                      <span>Valor À Pagar</span>
+											<span class="form-control closed-field"><v-money disabled placeholder="Exemplo: R$ 0.00" required :value="valorTotalCalculadoDivido" v-bind="money"></v-money></span>
+                    </b-col>
+                  </b-row>
+                  <b-row class="mb-2">
+                    <b-col>
+                      <span>Valor Pago</span>
+											<span class="form-control closed-field">
+												<v-money placeholder="Exemplo: R$ 0.00" 
+												required
+												disabled
+											  v-bind="money"
+												:value="divisaoCliente[index].dinheiro.real + 
+													(divisaoCliente[index].dinheiro.dolar * parseFloat(currentQuotation.dolarQuotation.cotacao)) +
+													(divisaoCliente[index].dinheiro.peso * parseFloat(currentQuotation.pesoQuotation.cotacao)) +
+													(divisaoCliente[index].dinheiro.guarani / parseFloat(currentQuotation.gueraniQuotation.cotacao)) + 
+													divisaoCliente[index].cartao.credito + 
+													divisaoCliente[index].cartao.debito">
+												</v-money>
+											</span>
+                    </b-col>
+                  </b-row>
+                </b-col>
+
+              </template>
+            </b-row>
+            <b-col class="d-flex justify-content-end mt-4">
+                <b-button variant="outline-dark" class="m-1" @click="removeClient"><i class="fas fa-broom"></i> Remover Conta</b-button>
+                <b-button variant="outline-primary" class="m-1" @click="addClient"><i class="fas fa-plus"></i> Adicionar Conta</b-button>
+								<b-button variant="success" class="m-1" @click="somarClientesDividos"><i class="fas fa-check"></i> Concluir Calculo</b-button>
+            </b-col> 
+          </b-container>
+        </div>
+				<!-- FIM DIVISAO CONTA -->
 
 				<div class="mt-5">
 					<b-collapse id="collapse-close-account" class="mt-2  form-panel">
@@ -168,9 +251,6 @@
 									<b-col cols="3">
 										<span>Faltante</span>
 									</b-col>
-									<!-- <b-col cols="9">
-										<span class="form-control closed-field"><v-money placeholder="Exemplo: R$ 0.00" required :value="totalFaltante" v-bind="money"></v-money></span>
-									</b-col> -->
 									<b-col cols="9">
 										<span class="form-control closed-field"><v-money placeholder="Exemplo: R$ 0.00" required :value="valorTotalFaltante" v-bind="money"></v-money></span>
 									</b-col>
@@ -180,13 +260,15 @@
 										<span>Troco</span>
 									</b-col>
 									<b-col cols="9">
-										<!-- <b-form-input type="number" disabled v-model="totalTroco" placeholder="R$ 0.00">{{valorTotalTroco}}</b-form-input> -->
 										<span class="form-control closed-field"><v-money placeholder="Exemplo: R$ 0.00" required :value="valorTotalTroco" v-bind="money"></v-money></span>
 									</b-col>
 								</b-row>
 							</b-col>
 						</b-row>
 						 <b-row>
+							 <b-col class="d-flex justify-content-start mt-4">
+                <b-button variant="outline-secondary" class="m-1" @click="addClient"><i class="fas fa-divide"></i> Dividir Conta</b-button>
+              </b-col> 
               <b-col class="d-flex justify-content-end mt-4">
                 <b-button variant="outline-dark" class="m-1" @click="clearPagamento"><i class="fas fa-broom"></i> Limpar</b-button>
                 <b-button variant="success" class="m-1" @click="closeClientAccount"><i class="fas fa-check-double"></i> Concluir Fechamento</b-button>
@@ -267,6 +349,10 @@ export default {
 			idContaCliente: 0,
 			idMesa: 0,
 			currentQuotation: 0,
+			divisaoCliente: [],
+      numberOfDivisionList: 1,
+			valorAPagarDivido: 0,
+			alertSemPedidos: false,
 			money: {
         decimal: ',',
         thousands: '.',
@@ -311,7 +397,14 @@ export default {
 			let idMesa = this.selectedTable.id
 			let numeroMesa = this.selectedTable.numero
 			this.getOrdersFromCustomer(idMesa, numeroMesa)
-		}
+		},
+    divisaoCliente() {
+      if (this.divisaoCliente.length === 1) {				
+        this.divisaoCliente = []
+      }
+			this.valorTotalCalculado			
+			deep: true
+    },
 	},
 
 	computed: {
@@ -347,7 +440,7 @@ export default {
 				this.descontoValor = (parseFloat(this.totalValue) * (parseFloat(this.descontoValorPorcentagem) / 100))
 				return `${this.descontoValor}`
 			} else {
-				return this.descontoValor = `${0.00}%`
+				return this.descontoValor = `${0.00}`
 			}
 		},
 		valorTotalCalculado() {
@@ -393,6 +486,13 @@ export default {
 				return this.totalTroco = parseFloat(this.valorPago) - parseFloat(this.valorTotalCalculado)
 			} else {
 				return this.totalTroco = 0
+			}
+		},
+		valorTotalCalculadoDivido() {
+			if (this.valorTotalCalculado > 0) {
+				return this.valorTotalCalculado / this.divisaoCliente.length
+			} else {
+				return 0
 			}
 		}
 	},
@@ -455,8 +555,12 @@ export default {
 			try {
 				response = await RestConnection.get('conta-cliente/consultar/pedidos/' + idMesa + '/' + numeroMesa)
 				if (response.data.status === 200) {
-					this.pedidosStatus = 200
-					this.itensPedido = response.data.conteudo
+					if (response.data.conteudo.length > 0) {
+						this.alertSemPedidos = false
+						this.itensPedido = response.data.conteudo
+					} else {
+						this.alertSemPedidos = true
+					}
 				}
 			} catch (exception) {
 				if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
@@ -499,6 +603,51 @@ export default {
 				}  				
 			}
 		},
+
+		addClient() {
+      if (this.divisaoCliente.length <= 0) {        
+          this.divisaoCliente.push({dinheiro: {real: 0, dolar: 0, peso: 0, guarani: 0 }, cartao: { credito: 0, debito: 0, }, valorAPagar: this.valorAPagarDivido, valorPago: 0})
+          this.divisaoCliente.push({dinheiro: {real: 0, dolar: 0, peso: 0, guarani: 0 }, cartao: { credito: 0, debito: 0, }, valorAPagar: this.valorAPagarDivido, valorPago: 0})
+      } /* else if (this.divisaoCliente.length === 6) {
+        alert('Divisão máxima de 6 pessoas.')
+        return false
+      } */ else {
+        this.divisaoCliente.push({dinheiro: {real: 0, dolar: 0, peso: 0, guarani: 0 }, cartao: { credito: 0, debito: 0, }, valorAPagar: this.valorAPagarDivido, valorPago: 0})
+      }   
+		},
+
+		somarClientesDividos() {
+			this.dinheiro = {
+				real: 0,
+				dolar: 0,
+				peso: 0,
+			}
+			this.cartao = {
+				credito: 0,
+				debito: 0,
+			}
+			let totalReal = 0, totalDolar = 0, totalPeso = 0, totalGuarani = 0, totalCredito = 0, totalDebito = 0	
+			for (let i = 0; i < this.divisaoCliente.length; i++) {
+				totalReal += this.divisaoCliente[i].dinheiro.real
+				totalDolar += this.divisaoCliente[i].dinheiro.dolar
+				totalPeso += this.divisaoCliente[i].dinheiro.peso
+				totalGuarani += this.divisaoCliente[i].dinheiro.guarani
+				totalCredito += this.divisaoCliente[i].cartao.credito
+				totalDebito += this.divisaoCliente[i].cartao.debito
+			}
+			this.dinheiro.real = totalReal
+			this.dinheiro.dolar = totalDolar
+			this.dinheiro.peso = totalPeso
+			this.dinheiro.guarani = totalGuarani
+			this.cartao.credito = totalCredito
+			this.cartao.debito = totalDebito
+		},
+
+		removeClient() {
+      if (this.divisaoCliente.length > 0) {
+        this.divisaoCliente.pop()
+      }
+    },
 		
 		backOnePage() {
       this.$router.back()
@@ -519,6 +668,7 @@ export default {
 				debito: 0,
 			},
 			this.descontoValor = 0
+			this.divisaoCliente = []
 		},
 
 	},
@@ -538,7 +688,7 @@ export default {
 }
 
 .closed-field {
-	background: rgb(119, 196, 241);
+	background: rgb(209, 238, 255);
 }
 </style>
 </style>

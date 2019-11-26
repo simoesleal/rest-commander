@@ -214,7 +214,7 @@ export default {
         response = await RestConnection.get('produtos/consultar/produto/')
         productList = response.data.conteudo
         for (let i = 0; i < productList.length; i++) {
-					this.productList.push({value: productList[i].id, text: `${productList[i].nomeProduto} - ${productList[i].descricaoProduto}`})
+					this.productList.push({value: productList[i].id, text: `${productList[i].nomeProduto} ${productList[i].descricaoProduto}`})
 				}
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
@@ -232,7 +232,7 @@ export default {
         response = await RestConnection.get('produtos/consultar/produto/grupo-cardapio/' + menuGroupId)
         productList = response.data.conteudo
         for (let i = 0; i < productList.length; i++) {
-					this.productList.push({value: productList[i].id, text: `${productList[i].nomeProduto} - ${productList[i].descricaoProduto}`})
+					this.productList.push({value: productList[i].id, text: `${productList[i].nomeProduto} ${productList[i].descricaoProduto}`})
 				}
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
@@ -253,6 +253,7 @@ export default {
           observacao: this.orderObservation,
         }
         this.itensPedido.push(productOrder)
+        this.clearProductOrder()
       } else {
         alert('Selecione um produto!')
       }
@@ -314,6 +315,7 @@ export default {
     },
 
     clearProductOrder() {
+      this.selectedMenuGroup = '',
       this.selectedProduct = '',
       this.orderObservation = '',
       this.quantity = 1
