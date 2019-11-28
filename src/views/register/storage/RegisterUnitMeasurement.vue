@@ -13,7 +13,7 @@
             description="*Campos obrigatórios">
               <label>Unidade*</label>
               <b-form-input id="unit-name" class="mb-3" v-model="unit.nomeUnidade" required type="text" placeholder="Exemplo: Litro"></b-form-input>
-              <label>Abreviação</label>
+              <label>Abreviação*</label>
               <b-form-input id="unit-description" class="mb-3" v-model="unit.abreviatura" required type="text" placeholder="Exemplo: L"></b-form-input>
           </b-form-group>
         </b-form>
@@ -52,7 +52,10 @@ export default {
 		'page-title': PageTitle
   },
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedUnit: Object,
   },
   data() {

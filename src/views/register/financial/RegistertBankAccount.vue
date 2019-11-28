@@ -119,18 +119,25 @@ export default {
       bankList: []
     }
   },
+
   computed: {
     setInputFieldDisabled() { 
       if(this.actionMode === 'edit') { return true } else { return false } 
     }
   },
+
   mounted() {
     if(this.selectedBankAccount) {
       this.bankAccount = this.selectedBankAccount
       this.selectedBank =  {value: this.bankAccount.idBanco, text: `${this.bankAccount.nomeBanco}`}
+    } 
+    if (this.selectedBankAccount === null) {
+        this.bankList = []
+        this.selectedBankAccount = ''
     }
     this.getBank()
   },
+
   methods: {
     backOnePage() {
       this.$router.back()
@@ -151,50 +158,58 @@ export default {
     },
 
     async saveRecord() {
-      let response
-      let parameters = {
-        id_banco: this.selectedBank.value,
-        account: this.bankAccount.contaBancaria,
-        agency: this.bankAccount.agencia,
-        agencyDigit: this.bankAccount.digitoAgencia,
-        accountNumber: this.bankAccount.numeroConta,
-        accountNumberDigit: this.bankAccount.digitoConta,
+      if (this.selectedBank) {
+        let response
+        let parameters = {
+          id_banco: this.selectedBank.value,
+          account: this.bankAccount.contaBancaria,
+          agency: this.bankAccount.agencia,
+          agencyDigit: this.bankAccount.digitoAgencia,
+          accountNumber: this.bankAccount.numeroConta,
+          accountNumberDigit: this.bankAccount.digitoConta,
+        }
+        try {
+          response = await RestConnection.post('contas-bancarias/cadastrar/conta-bancaria/', parameters)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Salvar esta Conta Bancária.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()
+      } else {
+        alert('O banco é um campo obrigatório, selecione um banco.')
       }
-      try {
-        response = await RestConnection.post('contas-bancarias/cadastrar/conta-bancaria/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi possível Salvar esta Conta Bancária.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
     },
 
     async alterRecord() {
-      let response
-      let parameters = {
-        id: this.bankAccount.id,
-        id_banco: this.selectedBank.value,
-        account: this.bankAccount.contaBancaria,
-        agency: this.bankAccount.agencia,
-        agencyDigit: this.bankAccount.digitoAgencia,
-        accountNumber: this.bankAccount.numeroConta,
-        accountNumberDigit: this.bankAccount.digitoConta,
+      if (this.selectedBank) {
+        let response
+        let parameters = {
+          id: this.bankAccount.id,
+          id_banco: this.selectedBank.value,
+          account: this.bankAccount.contaBancaria,
+          agency: this.bankAccount.agencia,
+          agencyDigit: this.bankAccount.digitoAgencia,
+          accountNumber: this.bankAccount.numeroConta,
+          accountNumberDigit: this.bankAccount.digitoConta,
+        }
+        try {
+          response = await RestConnection.put('contas-bancarias/atualizar/conta-bancaria/', parameters)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Atualizar esta Conta Bancária.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()
+      } else {
+        alert('O banco é um campo obrigatório, selecione um banco.')
       }
-      try {
-        response = await RestConnection.put('contas-bancarias/atualizar/conta-bancaria/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi possível Atualizar esta Conta Bancária.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
     },
 
     async deleteRecord() {

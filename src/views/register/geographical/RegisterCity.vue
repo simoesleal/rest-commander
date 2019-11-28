@@ -35,14 +35,6 @@
                   </router-link>
                 </b-col>  
               </b-row>
-              <!-- <b-input-group>
-               <b-form-select class="mb-3" v-model="ufSelected" :options="ufBrazilianStates"></b-form-select>
-                <b-input-group-append>
-                  <router-link :to="{ name: 'ConsultarEstado', params: { actionMode:'save' }}">
-                    <b-button variant="primary"><i class="fas fa-university fa-lg"></i></b-button>
-                  </router-link>
-                </b-input-group-append>
-              </b-input-group> -->
           </b-form-group>
         </b-form>
         <b-row>
@@ -80,7 +72,10 @@ export default {
 		'page-title': PageTitle
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedCity: Object,
   },
   data() {
@@ -106,6 +101,8 @@ export default {
     ufSelected() {
       if (this.ufSelected) this.city.idEstado = this.ufSelected.value
       if (this.ufSelected === null) {
+        this.ufBrazilianStates = []
+        this.ufSelected = ''
         this.getInfos()
       }
     }
@@ -141,42 +138,50 @@ export default {
 		},
 
     async saveRecord() {
-      let response
-      let parameters = {
-        name: this.city.nomeCidade,
-        state: this.ufSelected.value,
+      if (this.ufSelected) {
+        let response
+        let parameters = {
+          name: this.city.nomeCidade,
+          state: this.ufSelected.value,
+        }
+        try {
+          response = await RestConnection.post('cidades/cadastrar/cidade/', parameters)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi Salvar esta Cidade.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()
+      } else {
+        alert('Não identificamos nenhum Estado selecionado e este é um campo obrigatório. Por favor, tente novamente.')
       }
-      try {
-        response = await RestConnection.post('cidades/cadastrar/cidade/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Salvar esta Cidade.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
     },
 
     async alterRecord() {
-      let response
-      let parameters = {
-        id: this.city.id,
-        name: this.city.nomeCidade,
-        state: this.ufSelected.value,
+      if (this.ufSelected) {
+        let response
+        let parameters = {
+          id: this.city.id,
+          name: this.city.nomeCidade,
+          state: this.ufSelected.value,
+        }
+        try {
+          response = await RestConnection.put('cidades/atualizar/cidade/', parameters)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi Atualizar esta Cidade.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()
+      } else {
+        alert('Não identificamos nenhum Estado selecionado e este é um campo obrigatório. Por favor, tente novamente.')
       }
-      try {
-        response = await RestConnection.put('cidades/atualizar/cidade/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Atualizar esta Cidade.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
     },
 
     async deleteRecord() {

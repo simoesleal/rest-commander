@@ -6,7 +6,7 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-							<label>Banco</label>
+							<label>Banco*</label>
 							<b-form-input id="nome-banco" class="mb-3" v-model="bank.banco" required type="text" placeholder="Exemplo: Banco Novo"></b-form-input>
           </b-form-group>
         </b-form>
@@ -43,7 +43,10 @@ export default {
 		'page-title': PageTitle
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedBank: Object,
   },
   data() {

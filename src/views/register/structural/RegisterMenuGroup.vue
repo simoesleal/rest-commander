@@ -4,7 +4,7 @@
       <b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
-            <page-title icon="fas fa-hamburger" main="Cadastrar Grupo de Produtos"></page-title> 
+            <page-title icon="fas fa-bars" main="Cadastrar Grupo do Cardápio"></page-title> 
           </b-col>
         </b-row>
         <b-form class="form-panel">
@@ -50,7 +50,10 @@ export default {
 		'page-title': PageTitle
   },
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedMenuGroup: Object,
   },
   data() {

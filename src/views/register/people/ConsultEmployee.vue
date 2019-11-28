@@ -31,6 +31,9 @@
             </template>
           </b-table>
         </div>
+        <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhum Funcionário encontrado.</b-alert> 
+        </template>	
         <div class="d-flex justify-content-start m-3 mt-5">
           <router-link :to="{ name: 'CadastroPessoas'}">
             <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
@@ -55,6 +58,7 @@ export default {
     return {
       listOfEmployees: [],
       searchItem: '',
+      searchStatus: 0,
       fields: [
         { key: 'id', label: 'Código', sortable: true},
         { key: 'nome', label: 'Nome', sortable: true },
@@ -68,6 +72,7 @@ export default {
   methods: {
 
     getItem () {
+      this.clearReactiveData()	
       if (this.searchItem.length === 0) {
         this.getEmployeeList()
       } else {
@@ -79,6 +84,11 @@ export default {
       let response
       try {
         response = await RestConnection.get('funcionarios/consultar/funcionario')
+        if (response.data.conteudo.length > 0) {
+          this.listOfEmployees = response.data.conteudo
+        } else {
+          this.searchStatus = 400
+        }	
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
@@ -86,13 +96,17 @@ export default {
             return alert("Não foi possível buscar a lista de Funcionários.")
           }
       }
-      this.listOfEmployees = response.data.conteudo
     },
 
     async getEmployeeByName (searchItem) {
       let response
       try {
           response = await RestConnection.get('funcionarios/consultar/funcionario/nome/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+            this.listOfEmployees = response.data.conteudo
+          } else {
+            this.searchStatus = 400
+          }	
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
@@ -100,8 +114,12 @@ export default {
               return alert('Nenhum Funcionário com este nome encontrado.')
             }
         }
-        this.listOfEmployees = response.data.conteudo
-      }
+      },
+    
+    clearReactiveData() {
+      this.listOfEmployees = []
+      this.searchStatus = 0
+    }
   }
 }
 </script>

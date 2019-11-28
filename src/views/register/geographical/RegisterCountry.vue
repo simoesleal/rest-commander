@@ -48,12 +48,15 @@ import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
-  name: 'CrudPais',
+  name: 'CrudCountry',
   components: {
 		'page-title': PageTitle
   },
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedCountry: Object,
   },
   data() {

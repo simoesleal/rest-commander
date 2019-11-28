@@ -104,10 +104,11 @@
 						</b-form-row>								
 					</b-form-group>
 				</b-form>
-				<div class="mt-3 form-panel">
+				<div class="mt-3 form-panel table-responsive">
 						<table class="table table-bordeless">
 							<thead class="thead-dark">
 								<tr>
+									<th scoped="col">Ações</th>
 									<th scoped="col">#Parcela</th>
 									<th scoped="col">Código</th>
 									<th scoped="col">Valor</th>
@@ -115,31 +116,29 @@
 									<th scoped="col">Emissão</th>
 									<th scoped="col">Vencimento</th>
 									<th scoped="col">Situação</th>
-									<th scoped="col">Ações</th>
 								</tr>
 							</thead>
 							<tbody v-for="(parcela) in listaParcelas" :key="parcela.id">
 								<tr class="text-center">
-									<td>{{parcela.numeroParcela}}</td>
-									<td>{{parcela.codigo}}</td>
-									<td><v-money disabled id="valor-parcela" class="form-control text-center" type="text" required placeholder="Exemplo: R$ 1000.00" v-model="parcela.valorParcela" v-bind="money" number trim></v-money></td>
-									<td><v-money disabled id="valor-total" type="text" class="form-control text-center" required placeholder="Exemplo: R$ 1000.00" v-model="parcela.valorTotal" v-bind="money" number trim></v-money></td>
-									<td><the-mask disabled id="data-emissao" type="text" class="form-control text-center" v-model="parcela.dataEmissao" :mask="['####/##/##']" :masked="true" placeholder="Ex:dd/mm/aaaa" :required="true"/></td>
-									<td><the-mask disabled id="data-emissao" type="text" class="form-control text-center" v-model="parcela.dataVencimento" :mask="['####/##/##']" :masked="true" placeholder="Ex:dd/mm/aaaa" :required="true"/></td>
-									<td><b-form-input v-model="parcela.status" disabled id="parcela-status" class="form-control text-center" type="text"></b-form-input></td>
 									<td>
 										<router-link :to="{ name: 'DetalhesParcelaPagar', params: { actionMode:'edit', selectedInstallment: parcela }}">
-											<b-button variant="outline-info" class="mt-2 mx-auto"><i class="fas fa-pencil-alt"></i> Editar
-											</b-button>
+											<b-button variant="outline-info" class="btn-sm"><i class="fas fa-pencil-alt"></i></b-button>
 										</router-link>
 									</td>
+									<td>{{parcela.numeroParcela}}</td>
+									<td>{{parcela.codigo}}</td>
+									<td><v-money readonly id="valor-parcela" class="border-0" type="text" required placeholder="Exemplo: R$ 1000.00" v-model="parcela.valorParcela" v-bind="money" number trim></v-money></td>
+									<td><v-money readonly id="valor-total" type="text" class="border-0" required placeholder="Exemplo: R$ 1000.00" v-model="parcela.valorTotal" v-bind="money" number trim></v-money></td>
+									<td><the-mask readonly id="data-emissao" type="text" class="border-0" v-model="parcela.dataEmissao" :mask="['####/##/##']" :masked="true" placeholder="Ex:dd/mm/aaaa" :required="true"/></td>
+									<td><the-mask readonly id="data-emissao" type="text" class="border-0" v-model="parcela.dataVencimento" :mask="['####/##/##']" :masked="true" placeholder="Ex:dd/mm/aaaa" :required="true"/></td>
+									<td><input v-model="parcela.status" readonly id="parcela-status" class="border-0" type="text"/></td>
 								</tr>
 							</tbody>
 						</table>
 					</div>
 					<b-container>
 						<b-row class="mt-5">
-							<b-col class="d-flex justify-content-start">
+							<b-col class="d-flex justify-content-start btn-voltar">
 								<div @click="backOnePage">
 									<div><i class="fa fa-reply fa-2x m-r-5"></i></div>
 									<div class="text-uppercase font-300">Voltar</div>

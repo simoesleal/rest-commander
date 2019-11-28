@@ -16,7 +16,7 @@
 							<b-form-row>
 								<b-col cols="12">
 									<label>Código*</label>
-									<b-form-input v-model="codigoParcelamento" id="account-id" class="mb-3" type="text" placeholder="Exemplo: LUZ"></b-form-input>
+									<b-form-input v-model="codigoParcelamento" id="account-id" class="mb-3" type="text" placeholder="Exemplo: CLIENTE"></b-form-input>
 								</b-col>
 							</b-form-row>
 
@@ -310,6 +310,13 @@ export default {
 					this.dataVencimento = moment(this.dataVencimento).format('DD/MM/YYYY')
 				}
 			}
+		},
+		qtdParcelas() {
+			if (this.qtdParcelas <= 0) {
+				this.qtdParcelas = 1
+				alert (`A quantidade mínima de Parcelas é 1.`)
+				return false
+			}
 		}
 	},
 	
@@ -374,33 +381,8 @@ export default {
 
 		gerarParcelamento() {
 			this.limparParcelamento()
-			if (!this.codigoParcelamento || this.codigoParcelamento.length === 0) {
-				alert('O campo código da parcela é obrigatório')
-				return false
-			}
-			if (!this.dataEmissao || this.dataEmissao.length < 10 ) {
-				alert('O campo data de emissão da parcela é obrigatório')
-				return false
-			}
-			if (!this.dataVencimento || this.dataVencimento.length < 10) {
-				alert('O campo data de vencimento da parcela é obrigatório')
-				return false
-			}
-			if (!this.valorBruto || this.valorBruto.length === 0 || this.valorBruto < 0) {
-				alert('O campo valor Bruto é um campo é obrigatório.')
-				return false
-			}
-			if (!this.valorLiquido || this.valorLiquido.length === 0 || this.valorLiquido < 0) {
-				alert('O campo valor Liquido é um campo é obrigatório.')
-				return false
-			}			
-			if (!this.valorParcela || this.valorParcela.length === 0 || this.valorParcela < 0) {
-				alert('O campo valor da parcela da parcela é obrigatório.')
-				return false
-			} 			
-			if (this.qtdParcelas > 24 || this.qtdParcelas < 0) {
-				alert("Número máximo de parcelas excedido. O número máximo é de 24 parcelas.")
-			} else {
+			const validate = this.validadteForm()
+			if (validate) {
 				let dataControle = moment(this.dataVencimento, "DD-MM-YYYY").format('YYYY-MM-DD')
 				for (let i = 1; i <= this.qtdParcelas; i++) {
 					const payload = {
@@ -412,52 +394,55 @@ export default {
 					}
 					this.listaParcelas.push(payload)
 					dataControle = moment(dataControle).add(this.periodoDias, 'days').format('YYYY-MM-DD')
-				}
+				}					
 			}
 		},
 
 		async concluirParcelamento() {
 			this.alertValorTotal = false
-			if (this.valorTotalParcelas !== this.valorLiquido) {
-				this.valorPurgante = (parseFloat(this.valorLiquido) - parseFloat(this.valorTotalParcelas))
-				this.alertValorTotal = true
-				return false
-			} else {
-				let response, parameters
-				let installments = []
-				for (let i = 0; i < this.listaParcelas.length; i++) {
-					let installment = {
-					installmentNumber: this.listaParcelas[i].numeroParcela,
-					status: 'ABERTA',
-					installmentValue: this.listaParcelas[i].valorParcela,
-					issueDay: this.listaParcelas[i].emissao,
-					dueDay: this.listaParcelas[i].vencimento
+			const validate = this.validadteForm()
+			if (validate) {
+				if (this.valorTotalParcelas !== this.valorLiquido) {
+					this.valorPurgante = (parseFloat(this.valorLiquido) - parseFloat(this.valorTotalParcelas))
+					this.alertValorTotal = true
+					return false
+				} else {
+					let response, parameters
+					let installments = []
+					for (let i = 0; i < this.listaParcelas.length; i++) {
+						let installment = {
+						installmentNumber: this.listaParcelas[i].numeroParcela,
+						status: 'ABERTA',
+						installmentValue: this.listaParcelas[i].valorParcela,
+						issueDay: this.listaParcelas[i].emissao,
+						dueDay: this.listaParcelas[i].vencimento
+						}
+						installments.push(installment)
 					}
-					installments.push(installment)
+					parameters = {
+						identifier: this.codigoParcelamento, 
+						qtdInstallment: this.qtdParcelas,
+						totalValue: this.valorLiquido,
+						description: this.observacoes,
+						idCliente: this.customerSelected.value,
+						idContaBancaria: this.accountSelected.value,
+						idTipoDocumento: this.documentTypeSelected.value,
+						idMoeda: this.coinSelected.value,
+						Installment: installments
+					}
+					try {
+						response = await RestConnection.post('contas-a-receber/nova-conta-receber/', parameters)
+					} catch (exception) {
+						if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+							return alert(exception.response.data.mensagem)
+						} else {
+							return alert('Não foi possível criar esta conta a receber. Por favor, tente novamente.')
+						}
+					}				
+					this.alertValorTotal = false
+					alert(response.data.mensagem)
+					this.backOnePage()
 				}
-				parameters = {
-					identifier: this.codigoParcelamento, 
-					qtdInstallment: this.qtdParcelas,
-					totalValue: this.valorLiquido,
-					description: this.observacoes,
-					idCliente: this.customerSelected.value,
-					idContaBancaria: this.accountSelected.value,
-					idTipoDocumento: this.documentTypeSelected.value,
-					idMoeda: this.coinSelected.value,
-					Installment: installments
-				}
-				try {
-					response = await RestConnection.post('contas-a-receber/nova-conta-receber/', parameters)
-				} catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi possível criar esta conta a receber. Por favor, tente novamente.')
-          }
-				}				
-				this.alertValorTotal = false
-				alert(response.data.mensagem)
-				this.backOnePage()
 			}
 		},
 		
@@ -507,6 +492,54 @@ export default {
 			this.listaParcelas = []
 			this.valorPurgante = 0
 			this.alertValorTotal = false
+		},
+
+		validadteForm() {
+			if (!this.codigoParcelamento || this.codigoParcelamento.length === 0) {
+				alert('O campo código da parcela é obrigatório')
+				return false
+			}
+			if (!this.customerSelected) {
+				alert('O campo Cliente é obrigatório. Selecione um fornecedor.')
+				return false
+			}
+			if (!this.documentTypeSelected) {
+				alert('O campo Tipo do Documento é obrigatório. Selecione um tipo de documento.')
+				return false
+			}
+			if (!this.accountSelected) {
+				alert('O campo Conta Bancaria é obrigatório. Selecione uma conta bancaria.')
+				return false
+			}
+			if (!this.coinSelected) {
+				alert('O campo Moeda é obrigatório. Selecione uma moeda.')
+				return false
+			}
+			if (!this.dataEmissao || this.dataEmissao.length < 10 ) {
+				alert('O campo data de emissão da parcela é obrigatório')
+				return false
+			}
+			if (!this.dataVencimento || this.dataVencimento.length < 10) {
+				alert('O campo data de vencimento da parcela é obrigatório')
+				return false
+			}
+			if (!this.valorBruto || this.valorBruto.length === 0 || this.valorBruto < 0) {
+				alert('O campo valor Bruto é um campo é obrigatório.')
+				return false
+			}
+			if (!this.valorLiquido || this.valorLiquido.length === 0 || this.valorLiquido < 0) {
+				alert('O campo valor Liquido é um campo é obrigatório.')
+				return false
+			}			
+			if (!this.valorParcela || this.valorParcela.length === 0 || this.valorParcela < 0) {
+				alert('O campo valor da parcela da parcela é obrigatório.')
+				return false
+			} 			
+			if (this.qtdParcelas > 24 || this.qtdParcelas < 0) {
+				alert("Número máximo de parcelas excedido. O número máximo é de 24 parcelas.")
+				return false
+			}
+			return true
 		}
 	}
 }

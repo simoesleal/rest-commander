@@ -4,7 +4,7 @@
 			<b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
-            <page-title icon="fas fa-copy" main="Duplitacas a Pagar"></page-title> 
+            <page-title icon="fas fa-copy" main="Parcelas a Pagar"></page-title> 
           </b-col>
         </b-row>
 				<b-row class="justify-content-md-center mt-3">
@@ -62,6 +62,9 @@
 						</table>
 					</div>
 			</b-container>
+			<template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhuma Parcela a Pagar encontrada.</b-alert> 
+			</template>	
 		</div>
 	</div>
 </template>
@@ -84,6 +87,7 @@ export default {
 		return {
 			listaParcelas: [],
 			searchItem: '',
+			searchStatus: 0,
 			money: {
         decimal: ',',
         thousands: '.',
@@ -101,6 +105,7 @@ export default {
     },
 
 		async getItem() {
+			this.clearReactiveData()
 			if (this.searchItem.length === 0) {
         this.getInstallmentList()
       } else {
@@ -112,7 +117,11 @@ export default {
       let response
       try {
         response = await RestConnection.get('parcelas-a-pagar/consultar')
-				this.listaParcelas = response.data.conteudo
+				if (response.data.conteudo.length > 0) {
+					this.listaParcelas = response.data.conteudo
+				} else {
+					this.searchStatus = 400
+				}				
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
@@ -126,7 +135,11 @@ export default {
       let response
       try {
 					response = await RestConnection.get('parcelas-a-pagar/consultar/identificador/' + searchItem)
+					if (response.data.conteudo.length > 0) {
 					this.listaParcelas = response.data.conteudo
+				} else {
+					this.searchStatus = 400
+				}		
         } catch (exception) {
 					if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
 						return alert(exception.response.data.mensagem)
@@ -134,8 +147,11 @@ export default {
 						return alert('Nenhuma Parcela com este código encontrada.')
 					}
         }
-      }
-
+      },
+		clearReactiveData() {
+      this.listaParcelas = []
+      this.searchStatus = 0
+    }	
 	}
 
 }

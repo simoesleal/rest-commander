@@ -32,7 +32,10 @@
           </b-table>
         </div>
 			</b-container>
-			</div>
+      <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhuma Conta a Receber encontrada.</b-alert> 
+      </template>	
+    </div>
 		<router-view></router-view>
 	</div>
 </template>
@@ -51,6 +54,7 @@ export default {
 		return {
 			listOfAccountsReceivables: [],
 			searchItem: '',
+      searchStatus: 0,
 			fields: [
         { key: 'id', label: 'ID', sortable: true},
         { key: 'codigo', label: 'Código', sortable: true},
@@ -71,6 +75,7 @@ export default {
     },
 
     getItem () {
+      this.clearReactiveData()
       if (this.searchItem.length === 0) {
         this.getAccountReceivablesList()
       } else {
@@ -82,20 +87,29 @@ export default {
       let response
       try {
         response = await RestConnection.get('contas-a-receber/consultar/')
+        if (response.data.conteudo.length > 0) {
+          this.listOfAccountsReceivables = response.data.conteudo
+        } else {
+          this.searchStatus = 400
+        }	
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
             return alert("Não foi possível buscar a lista de Contas a Receber.")
           }
-      }
-      this.listOfAccountsReceivables = response.data.conteudo
+      }      
     },
 
     async getAccountReceivableByIdentifier (searchItem) {
       let response
       try {
           response = await RestConnection.get('contas-a-receber/consultar/identificador/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+          this.listOfAccountsReceivables = response.data.conteudo
+          } else {
+            this.searchStatus = 400
+          }	
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
@@ -103,8 +117,11 @@ export default {
               return alert('Nenhuma Conta a Receber com este código encontrado.')
             }
         }
-        this.listOfAccountsReceivables = response.data.conteudo
-      }
+      },
+    clearReactiveData() {
+      this.listOfAccountsReceivables = []
+      this.searchStatus = 0
+    }
   }	
 }
 </script>

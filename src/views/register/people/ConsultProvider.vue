@@ -31,6 +31,9 @@
             </template>
           </b-table>
         </div>
+        <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhum Fornecedor encontrado.</b-alert> 
+        </template>	
         <div class="d-flex justify-content-start m-3 mt-5">
           <router-link :to="{ name: 'CadastroPessoas'}">
             <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
@@ -55,6 +58,7 @@ export default {
 		return {
 			listOfProviders: [],
       searchItem: '',
+      searchStatus: 0,
 			fields: [
         { key: 'id', label: 'Código', sortable: true},
         { key: 'nomeFantasia', label: 'Nome Fantasia' },
@@ -68,6 +72,7 @@ export default {
   methods: {
 
     getItem () {
+      this.clearReactiveData()
       if (this.searchItem.length === 0) {
         this.getProvidersList()
       } else {
@@ -79,20 +84,29 @@ export default {
       let response
       try {
         response = await RestConnection.get('fornecedores/consultar/fornecedor')
+        if (response.data.conteudo.length > 0) {
+          this.listOfProviders = response.data.conteudo
+        } else {
+          this.searchStatus = 400
+        }	
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
             return alert("Não foi possível buscar a lista de Fornecedores.")
           }
-      }
-      this.listOfProviders = response.data.conteudo
+      }      
     },
 
     async getProviderByName (searchItem) {
       let response
       try {
           response = await RestConnection.get('fornecedores/consultar/fornecedor/razao-social/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+            this.listOfProviders = response.data.conteudo
+          } else {
+            this.searchStatus = 400
+          }	
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
@@ -100,8 +114,13 @@ export default {
               return alert('Nenhum Fornecedor com este nome encontrado.')
             }
         }
-        this.listOfProviders = response.data.conteudo
-      }
+      },
+
+    clearReactiveData() {
+      this.listOfProviders = []
+      this.searchStatus = 0
+    }		  
+	
   }
 
 }

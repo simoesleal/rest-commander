@@ -6,11 +6,11 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-							<label>Simbolo</label>
+							<label>Simbolo*</label>
 							<b-form-input id="coin" class="mb-3" v-model="coin.simbolo" required type="text" placeholder="Exemplo: R$"></b-form-input>
-              <label>Nome Moeda</label>
+              <label>Nome Moeda*</label>
 							<b-form-input id="coin" class="mb-3" v-model="coin.nomeMoeda" required type="text" placeholder="Exemplo: Real"></b-form-input>
-              <label>Nome Plural</label>
+              <label>Nome Plural*</label>
 							<b-form-input id="coin" class="mb-3" v-model="coin.nomeMoedaPlural" required type="text" placeholder="Exemplo: Real"></b-form-input>
           </b-form-group>
         </b-form>
@@ -47,7 +47,10 @@ export default {
 		'page-title': PageTitle
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedCoin: Object,
   },
   data() {

@@ -7,7 +7,7 @@
             id="informacoes-basicas"
             description="*Campos obrigatórios">
             <b-form-row>
-              <label>Produto</label>
+              <label>Produto*</label>
               <b-form-input id="produto-nome" class="mb-3" v-model="product.nomeProduto" required type="text" placeholder="Exemplo: Arroz"></b-form-input>
               <label>Detalhes</label>
               <b-form-input id="produto-detalhes" class="mb-3" v-model="product.descricaoProduto" required type="text" placeholder="Exemplo: Integral"></b-form-input>
@@ -84,15 +84,15 @@
 				description="*Campos obrigatórios">
           <b-form-row>
             <b-col cols="12">
-              <label>Preco de Compra</label>
+              <label>Preco de Compra*</label>
               <v-money id="preco-compra" type="text" class="mb-3 form-control" required placeholder="Exemplo: R$ 1000.00" v-model.number="product.precoCompra" v-bind="money"></v-money>
             </b-col>
             <b-col cols="12">
-              <label>Preco de Venda</label>
+              <label>Preco de Venda*</label>
               <v-money id="preco-venda" type="text" class="mb-3 form-control" required placeholder="Exemplo: R$ 1000.00" v-model.number="product.precoVenda" v-bind="money"></v-money>
             </b-col>
             <b-col cols="12">
-              <label>Preco de Custo</label>
+              <label>Preco de Custo*</label>
               <v-money id="preco-custo" type="text" class="mb-3 form-control" required placeholder="Exemplo: R$ 1000.00" v-model.number="product.precoCusto" v-bind="money"></v-money>
             </b-col>
           </b-form-row>
@@ -101,15 +101,15 @@
 				description="*Campos obrigatórios">
           <b-form-row>
             <b-col cols="12">
-              <label>Quantidade Atual</label>
+              <label>Quantidade Atual*</label>
 						  <b-form-input id="preco-compra" class="mb-3" v-model.number="product.qtdAtual" required type="number" placeholder="Exemplo: 15 "></b-form-input>
             </b-col>
             <b-col cols="12">
-              <label>Quantidade Máxima</label>
+              <label>Quantidade Máxima*</label>
 						  <b-form-input id="preco-compra" class="mb-3" v-model.number="product.qtdMax" required type="number" placeholder="Exemplo: 20 "></b-form-input>
             </b-col>
             <b-col cols="12">
-              <label>Quantidade Mínima</label>
+              <label>Quantidade Mínima*</label>
 						  <b-form-input id="preco-compra" class="mb-3" v-model.number="product.qtdMin" required type="number" placeholder="Exemplo: 5 "></b-form-input>
             </b-col>
           </b-form-row>
@@ -213,18 +213,24 @@ export default {
     selectedProductGroup() {
       if (this.selectedProductGroup) this.product.idGupoProduto = this.selectedProductGroup.value
       if (this.selectedProductGroup === null) {
+        this.productGroupList = []
+        this.selectedProductGroup = ''
         this.getProductGroupList()
       }
     },
     selectedUnit() {
       if (this.selectedUnit) this.product.idUnidade = this.selectedUnit.value
       if (this.selectedUnit === null) {
+        this.unitList = [],
+        this.selectedUnit = ''
         this.getUnitMeasurementList()
       }
     },
     selectedMenuGroup() {
       if (this.selectedMenuGroup) this.product.idGrupoCardapio = this.selectedMenuGroup.value
       if (this.selectedMenuGroup === null) {
+        this.menuGroupList = []
+        this.selectedMenuGroup = ''
         this.getMenuGroup()
       }
     },
@@ -290,62 +296,74 @@ export default {
     },    
 
     async saveRecord() {
-      let response
-      let parameters = {
-        name: this.product.nomeProduto,
-        description: this.product.descricaoProduto,
-        purchase_price: this.product.precoCompra,
-        sale_price: this.product.precoVenda,
-        cost_price: this.product.precoCusto,
-        current_quantity: this.product.qtdAtual,
-        max_quantity: this.product.qtdMax,
-        min_quantity: this.product.qtdMin,
-        status: true,
-        id_grupo_produto: this.selectedProductGroup.value,
-        id_unidade: this.selectedUnit.value,
-        id_grupo_cardapio: this.selectedMenuGroup.value
+      if (!this.selectedProductGroup.value) {
+        alert('O Grupo do Produto é um campo obrigatório. Por favor, selecione um grupo de produto.')
+      } else if (!this.selectedUnit.value) {
+        alert('A unidade de medida é um campo obrigatório. Por favor, selecione uma unidade de medida.')
+      } else {
+        let response
+        let parameters = {
+          name: this.product.nomeProduto,
+          description: this.product.descricaoProduto,
+          purchase_price: this.product.precoCompra,
+          sale_price: this.product.precoVenda,
+          cost_price: this.product.precoCusto,
+          current_quantity: this.product.qtdAtual,
+          max_quantity: this.product.qtdMax,
+          min_quantity: this.product.qtdMin,
+          status: true,
+          id_grupo_produto: this.selectedProductGroup.value,
+          id_unidade: this.selectedUnit.value,
+          id_grupo_cardapio: this.selectedMenuGroup.value
+        }
+        try {
+          response = await RestConnection.post('produtos/cadastrar/produto/', parameters)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Salvar este Produto.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()
       }
-      try {
-        response = await RestConnection.post('produtos/cadastrar/produto/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Salvar este Produto.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
     },
 
     async alterRecord() {
-      let response
-      let parameters = {
-        id: this.product.id,
-        name: this.product.nomeProduto,
-        description: this.product.descricaoProduto,
-        purchase_price: this.product.precoCompra,
-        sale_price: this.product.precoVenda,
-        cost_price: this.product.precoCusto,
-        current_quantity: this.product.qtdAtual,
-        max_quantity: this.product.qtdMax,
-        min_quantity: this.product.qtdMin,
-        status: true,
-        id_grupo_produto: this.selectedProductGroup.value,
-        id_unidade: this.selectedUnit.value,
-        id_grupo_cardapio: this.selectedMenuGroup.value
+      if (!this.selectedProductGroup.value) {
+        alert('O Grupo do Produto é um campo obrigatório. Por favor, selecione um grupo de produto.')
+      } else if (!this.selectedUnit.value) {
+        alert('A unidade de medida é um campo obrigatório. Por favor, selecione uma unidade de medida.')
+      } else {
+        let response
+        let parameters = {
+          id: this.product.id,
+          name: this.product.nomeProduto,
+          description: this.product.descricaoProduto,
+          purchase_price: this.product.precoCompra,
+          sale_price: this.product.precoVenda,
+          cost_price: this.product.precoCusto,
+          current_quantity: this.product.qtdAtual,
+          max_quantity: this.product.qtdMax,
+          min_quantity: this.product.qtdMin,
+          status: true,
+          id_grupo_produto: this.selectedProductGroup.value,
+          id_unidade: this.selectedUnit.value,
+          id_grupo_cardapio: this.selectedMenuGroup.value
+        }
+        try {
+          response = await RestConnection.put('produtos/atualizar/produto/', parameters)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Atualizar este produto.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()
       }
-      try {
-        response = await RestConnection.put('produtos/atualizar/produto/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Atualizar este produto.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
     },
 
     async deleteRecord() {
