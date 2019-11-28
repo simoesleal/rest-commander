@@ -583,6 +583,7 @@ export default {
 						dinheiroReal: this.dinheiro.real,
 						dinheiroDolar: this.dinheiro.dolar,
 						dinheiroPeso: this.dinheiro.peso,
+						dinheiroGuarani: this.dinheiro.guarani,
 						cartaoCredito: this.cartao.credito,
 						cartaoDebito: this.cartao.debito,
 						desconto: this.descontoValor,

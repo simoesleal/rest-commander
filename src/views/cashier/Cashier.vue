@@ -32,7 +32,7 @@
 									<th class="table-success" scope="row">Dinheiro (R$)</th>
 									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="caixa.fundoReal" v-bind="money"></v-money></td>
 									<td><v-money disabled placeholder="Exemplo: R$ 0.00" required v-model="caixa.fechamentosReal" v-bind="money"></v-money></td>
-									<td><v-money :value="parseFloat(caixa.fundoReal) + parseFloat(caixa.fechamentosReal)" disabled placeholder="Exemplo: R$ 0.00" required v-bind="money"></v-money></td>						
+									<td><v-money :value="parseFloat(caixa.fundoReal) + parseFloat(caixa.fechamentosReal)" disabled placeholder="Exemplo: R$ 0.00" required v-bind="money"></v-money></td>	
 									<td></td>
 								</tr>
 								<tr>
@@ -48,6 +48,13 @@
 									<td><v-money disabled placeholder="Exemplo: P$ 0.00" required v-model="caixa.fechamentosPeso" v-bind="moneyP$"></v-money></td>
 									<td><v-money :value="parseFloat(caixa.fundoPeso) + parseFloat(caixa.fechamentosPeso)" disabled placeholder="Exemplo: P$ 0.00" required v-bind="moneyP$"></v-money></td>	
 									<td><v-money :value="converteTotalPeso" disabled placeholder="Exemplo: R$ 0.00" required v-bind="money"></v-money></td>
+								</tr>
+								<tr>
+									<th class="table-success" scope="row">Guarani (G$)</th>
+									<td><v-money disabled placeholder="Exemplo: G$ 0.00" required v-model="caixa.fundoGuarani" v-bind="moneyG$"></v-money></td>
+									<td><v-money disabled placeholder="Exemplo: G$ 0.00" required v-model="caixa.fechamentosGuarani" v-bind="moneyG$"></v-money></td>
+									<td><v-money :value="parseFloat(caixa.fundoGuarani) + parseFloat(caixa.fechamentosGuarani)" disabled placeholder="Exemplo: G$ 0.00" required v-bind="moneyG$"></v-money></td>	
+									<td><v-money :value="converteTotalGuarani" disabled placeholder="Exemplo: R$ 0.00" required v-bind="money"></v-money></td>
 								</tr>
 								<tr>
 									<th class="bg-info" scope="row">Total à Vista</th>
@@ -140,6 +147,7 @@
 					</b-modal>
 				</div>
 			</div>
+			<!-- ABERTURA DE CAIXA -->
 			<div v-else>
 				<b-row class="mt-2">
 					<b-col cols="12" md="9">
@@ -185,7 +193,7 @@
 							</b-col>
 							<b-col cols="3">
 								<span>{{currentQuotation.gueraniQuotation.nomeMoeda}} {{currentQuotation.gueraniQuotation.simbolo}} </span>
-								<v-money type="text" required placeholder="Exemplo: G$ 0.00" v-model.number="currentQuotation.gueraniQuotation.cotacao" v-bind="moneyP$" trim></v-money>
+								<v-money type="text" required placeholder="Exemplo: G$ 0.00" v-model.number="currentQuotation.gueraniQuotation.cotacao" v-bind="moneyG$" trim></v-money>
 							</b-col>
 							<b-col class="mx-auto my-auto">							
 								<b-button block variant="outline-info" @click="updateQuotation"><i class="fas fa-calculator"></i> Atualização Cotações</b-button>
@@ -226,7 +234,19 @@
 									<v-money type="text" required placeholder="Exemplo: P$ 0.00" v-model.number="fundo.peso" v-bind="moneyP$" trim></v-money>
 								</b-col>
 								<b-col cols="3" class="mb-2">
-									<v-money type="text" required placeholder="Exemplo: R$ 0.00" :value="parseFloat(currentQuotation.pesoQuotation.cotacao) * parseFloat(fundo.peso)"  v-bind="money" trim></v-money>									
+									<v-money disabled type="text" required placeholder="Exemplo: R$ 0.00" :value="parseFloat(currentQuotation.pesoQuotation.cotacao) * parseFloat(fundo.peso)"  v-bind="money" trim></v-money>									
+								</b-col>
+							</b-row>
+							
+							<b-row>
+								<b-col cols="2">
+									<span>Guarani P$</span>
+								</b-col>
+								<b-col cols="3" class="mb-2">
+									<v-money type="text" required placeholder="Exemplo: G$ 0.00" v-model.number="fundo.guarani" v-bind="moneyG$" trim></v-money>
+								</b-col>
+								<b-col cols="3" class="mb-2">
+									<v-money disabled type="text" required placeholder="Exemplo: R$ 0.00" :value="parseFloat(fundo.guarani) / parseFloat(currentQuotation.gueraniQuotation.cotacao)"  v-bind="money" trim></v-money>
 								</b-col>
 							</b-row>
 							
@@ -291,9 +311,11 @@ export default {
 				fundoReal: 0,
 				fundoDolar: 0,
 				fundoPeso: 0,
+				fundoGuarani: 0,
 				fechamentosReal: 0,
 				fechamentosDolar: 0,
 				fechamentosPeso: 0,
+				fechamentosGuarani: 0,
 				fechamentosCartaoCred: 0,
 				fechamentosCartaoDeb: 0,
 				valor_total_fechamentos: 0,
@@ -309,7 +331,8 @@ export default {
 			fundo: {
 				real: 0,
 				dolar: 0,
-				peso: 0
+				peso: 0,
+				guarani: 0
 			},
 			quotationSelected: '',
 			quotationList: [],
@@ -370,27 +393,29 @@ export default {
 	computed: {
 		calculaTotalAVistaFundo() {
 			return parseFloat(this.caixa.fundoReal) + 
-				(parseFloat(this.caixa.fundoDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fundoPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))			
+				(parseFloat(this.caixa.fundoDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fundoPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))
+				+ (parseFloat(this.caixa.fundoGuarani) / parseFloat(this.currentQuotation.gueraniQuotation.cotacao))			
 		},
 		calculaTotalAVistaFechamentos() {
 			return parseFloat(this.caixa.fechamentosReal) + 
-				(parseFloat(this.caixa.fechamentosDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fechamentosPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))	
+				(parseFloat(this.caixa.fechamentosDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fechamentosPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))	+ (parseFloat(this.caixa.fechamentosGuarani) / parseFloat(this.currentQuotation.gueraniQuotation.cotacao))
 		},
 		calculaTotalAVista() {
 			return this.calculaTotalAVistaFundo + this.calculaTotalAVistaFechamentos
 		},
 		calculaTotalGeralFundo() {
 			this.totalGeralFundo = parseFloat(this.caixa.fundoReal) + 
-				(parseFloat(this.caixa.fundoDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fundoPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))				
-			return this.totalGeralFundo
+				(parseFloat(this.caixa.fundoDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.caixa.fundoPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao))
+				+ (parseFloat(this.caixa.fundoGuarani) / parseFloat(this.currentQuotation.gueraniQuotation.cotacao))
+				return this.totalGeralFundo
 		},
 		calculaTotalGeralFechamentos(){
 			this.totaGeralFechamento = parseFloat(this.caixa.fechamentosReal) + 
 				(parseFloat(this.caixa.fechamentosDolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + 
 				(parseFloat(this.caixa.fechamentosPeso) *  parseFloat(this.currentQuotation.pesoQuotation.cotacao))  + 
-				parseFloat(this.caixa.fechamentosCartaoCred) + parseFloat(this.caixa.fechamentosCartaoDeb)
-
-			return this.totaGeralFechamento
+				(parseFloat(this.caixa.fechamentosGuarani) /  parseFloat(this.currentQuotation.gueraniQuotation.cotacao))  + 
+				(parseFloat(this.caixa.fechamentosCartaoCred) + parseFloat(this.caixa.fechamentosCartaoDeb))
+			return parseFloat(this.totaGeralFechamento)
 		},
 		calculaTotalGeralTotal() {
 			this.geralTotal = this.calculaTotalGeralFundo + this.calculaTotalGeralFechamentos
@@ -408,8 +433,12 @@ export default {
 			const tatalFechamentosPeso =	parseFloat(this.caixa.fundoPeso) + parseFloat(this.caixa.fechamentosPeso)
 			return parseFloat(tatalFechamentosPeso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao)
 		},
+		converteTotalGuarani() {
+			const tatalFechamentosGuarani =	parseFloat(this.caixa.fundoGuarani) + parseFloat(this.caixa.fechamentosGuarani)
+			return parseFloat(tatalFechamentosGuarani) / parseFloat(this.currentQuotation.gueraniQuotation.cotacao)
+		},
 		calculaTotalFundo() {
-			const totalFundo = parseFloat(this.fundo.real) + parseFloat(this.fundo.dolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao) + parseFloat(this.fundo.peso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao)
+			const totalFundo = parseFloat(this.fundo.real) + (parseFloat(this.fundo.dolar) * parseFloat(this.currentQuotation.dolarQuotation.cotacao)) + (parseFloat(this.fundo.peso) * parseFloat(this.currentQuotation.pesoQuotation.cotacao)) + (parseFloat(this.fundo.guarani) / parseFloat(this.currentQuotation.gueraniQuotation.cotacao))
 			return totalFundo
 		}
 	},
@@ -447,6 +476,7 @@ export default {
 					this.caixa.fechamentosReal = parseFloat(this.caixa.fechamentosReal) + parseFloat(fechamentos[i].realbr)
 					this.caixa.fechamentosDolar = parseFloat(this.caixa.fechamentosDolar) + parseFloat(fechamentos[i].dolar)
 					this.caixa.fechamentosPeso = parseFloat(this.caixa.fechamentosPeso) + parseFloat(fechamentos[i].peso)
+					this.caixa.fechamentosGuarani = parseFloat(this.caixa.fechamentosGuarani) + parseFloat(fechamentos[i].guarani)
 					this.caixa.fechamentosCartaoCred = parseFloat(this.caixa.fechamentosCartaoCred) + parseFloat(fechamentos[i].cc)
 					this.caixa.fechamentosCartaoDeb = parseFloat(this.caixa.fechamentosCartaoDeb) + parseFloat(fechamentos[i].cb)
 				}
@@ -492,9 +522,11 @@ export default {
 					fundo_real: this.fundo.real,
 					fundo_dolar: this.fundo.dolar,
 					fundo_peso: this.fundo.peso,
+					fundo_guarani: this.fundo.guarani,
 					fechamentos_real: 0,
 					fechamentos_dolar: 0,
 					fechamentos_peso: 0,
+					fechamentos_guarani: 0,
 					fechamentos_cartao_cred: 0,
 					fechamentos_cartao_deb: 0,
 					valor_total_fechamentos: 0
@@ -531,6 +563,7 @@ export default {
 				fechamentos_real: this.caixa.fechamentosReal,
 				fechamentos_dolar: this.caixa.fechamentosDolar,
 				fechamentos_peso: this.caixa.fechamentosPeso,
+				fechamentos_guarani: this.caixa.fechamentosGuarani,
 				fechamentos_cartao_cred: this.caixa.fechamentosCartaoCred,
 				fechamentos_cartao_deb: this.caixa.fechamentosCartaoDeb,
 				valor_total_fechamentos: this.calculaTotalGeralTotal
