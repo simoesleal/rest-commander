@@ -60,13 +60,14 @@ const RegistertPaymentType = () => import(/* webpackChunkName: "register-financi
 const ConsultBankAccount = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/ConsultBankAccount')
 const RegistertBankAccount = () => import(/* webpackChunkName: "register-financial" */ '../views/register/financial/RegistertBankAccount')
 
+//Venda
 const TableMap = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableMap')
 const NewOrder = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/NewOrder')
 const TableDetails = () => import(/* webpackChunkName: "point-of-sale" */ '../views/pos/TableDetails')
-
 const Cashier = () => import(/* webpackChunkName: "point-of-sale" */ '../views/cashier/Cashier')
 const CloseClientAccount = () => import(/* webpackChunkName: "point-of-sale" */ '../views/cashier/CloseClientAccount')
 
+//Financeiro
 const AccountsPayables = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/AccountsPayables')
 const NewAccountPayable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/NewAccountPayable')
 const DetailsAccountPayable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/DetailsAccountPayable')
@@ -78,6 +79,8 @@ const DetailsAccountReceivable = () => import(/* webpackChunkName: "accounts" */
 const ConsultInstallmentReceivable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/ConsultInstallmentReceivable')
 const DetailsInstallmentReceivable = () => import(/* webpackChunkName: "accounts" */ '../views/accounts/DetailsInstallmentReceivable')
 
+//Estoque / Compra
+const NewPurchaseEntry = () => import(/* webpackChunkName: "storage" */ '../views/storage/NewPurchaseEntry')
 
 Vue.use(Router)
 
@@ -427,6 +430,11 @@ export default new Router({
           props: true
         },
       ]
+    },
+    {
+      path: 'estoque/nova-entrada-compra',
+      name: 'NovaEntradaCompra',
+      component: NewPurchaseEntry
     }],
   }],
 })

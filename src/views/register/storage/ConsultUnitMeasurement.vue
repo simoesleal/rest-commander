@@ -31,6 +31,9 @@
             </template>
           </b-table>
         </div>
+        <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhuma Uniade de Medida encontrada.</b-alert> 
+        </template>	
         <b-row>
            <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
             <div @click="backOnePage">
@@ -57,6 +60,7 @@ export default {
     return {
       listOfItens: [],
       searchItem: '',
+      searchStatus: 0,
       fields: [
         { key: 'id', label: 'Código', sortable: true},
         { key: 'nomeUnidade', label: 'Unidade', sortable: true },
@@ -72,6 +76,7 @@ export default {
     },
 
     getItem () {
+      this.clearReactiveData()
       if (this.searchItem.length === 0) {
         this.getUnitMeasurement()
       } else {
@@ -83,20 +88,29 @@ export default {
       let response
       try {
         response = await RestConnection.get('unidade-medida/consultar/')
+        if (response.data.conteudo.length > 0) {
+          this.listOfItens = response.data.conteudo
+        } else {
+          this.searchStatus = 400
+        }	
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
             return alert('Não foi possível buscar a lista de Unidade de Medidas.')
           }
-      }
-      this.listOfItens = response.data.conteudo
+      }      
     },
 
     async getUnitMeasurementByName (searchItem) {
       let response
       try {
           response = await RestConnection.get('unidade-medida/consultar/nome/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+          this.listOfItens = response.data.conteudo
+          } else {
+            this.searchStatus = 400
+          }	
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
@@ -104,7 +118,10 @@ export default {
               return alert('Nenhuma Unidade de Medida com este nome encontrado.')
             }
         }
-        this.listOfItens = response.data.conteudo 
+    },
+    clearReactiveData() {
+      this.listOfItens = []
+      this.searchStatus = 0
     }
   }
 }

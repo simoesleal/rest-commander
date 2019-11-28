@@ -6,8 +6,8 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-							<label>Documento</label>
-							<b-form-input id="tipo-documento" class="mb-3" v-model="documentType.tipoDocumento" required type="text" placeholder="Exemplo: R$"></b-form-input>
+							<label>Documento*</label>
+							<b-form-input id="tipo-documento" class="mb-3" v-model="documentType.tipoDocumento" required type="text" placeholder="Exemplo: Boleto"></b-form-input>
               <label>Descrição</label>
               <textarea id="informacoes-adicionais" name="informacoes-adicionais" class="form-control" maxlength="150" v-model="documentType.descricao"></textarea>
           </b-form-group>
@@ -45,7 +45,10 @@ export default {
 		'page-title': PageTitle
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedDocumentType: Object,
   },
   data() {

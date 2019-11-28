@@ -6,7 +6,7 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-              <label>Nome</label>
+              <label>Função*</label>
 							<b-form-input id="role-name" class="mb-3" v-model="role.nome" required type="text" placeholder="Exemplo: Garçom"></b-form-input>
               <label>Descrição</label>
 							<b-form-input id="role-description" class="mb-3" v-model="role.detalhes" required type="text" placeholder="Exemplo: Extra"></b-form-input>
@@ -45,7 +45,10 @@ export default {
 		'page-title': PageTitle
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedRole: Object,
   },
   data() {

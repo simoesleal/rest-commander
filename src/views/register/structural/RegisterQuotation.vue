@@ -103,8 +103,12 @@ export default {
     if(this.selectedQuotation) {
       this.quotation = this.selectedQuotation
       this.selectedCoin = {value: this.quotation.idMoeda, text: `${this.quotation.simbolo} - ${this.quotation.nomeMoeda}`}
+    } 
+    if (this.selectedQuotation === null) {
+        this.coinList = []
+        this.selectedCoin = ''
     }
-    this.getCoins();
+    this.getCoins()
   },
 
   watch: {
@@ -132,7 +136,6 @@ export default {
           } else {
             return alert("Não foi possível buscar a lista de Moedas.")
           }
-          this.backOnePage()
       }
     },
 

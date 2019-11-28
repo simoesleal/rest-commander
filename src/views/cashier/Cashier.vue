@@ -397,7 +397,7 @@ export default {
 			return this.geralTotal
 		},
 		calculaSaldoInicial() {
-			this.saldoInicial = parseInt(this.fundo.real, 10) + parseInt(this.fundo.dolar, 10) + parseInt(this.fundo.peso, 10)
+			this.saldoInicial = parseFloat(this.fundo.real) + parseFloat(this.fundo.dolar) + parseFloat(this.fundo.peso)
 			return this.saldoInicial
 		},
 		converteTotalDolar() {
@@ -483,34 +483,38 @@ export default {
 		},
 
 		async abrirNovoCaixa() {
-			let response
-			let parameters = {			
-				id_funcionario: this.employeeSelected.value,
-				saldo_inicial: this.calculaSaldoInicial,
-				saldo_final: 0,
-				fundo_real: this.fundo.real,
-				fundo_dolar: this.fundo.dolar,
-				fundo_peso: this.fundo.peso,
-				fechamentos_real: 0,
-				fechamentos_dolar: 0,
-				fechamentos_peso: 0,
-				fechamentos_cartao_cred: 0,
-				fechamentos_cartao_deb: 0,
-				valor_total_fechamentos: 0
+			if (this.employeeSelected) {
+				let response
+				let parameters = {			
+					id_funcionario: this.employeeSelected.value,
+					saldo_inicial: this.calculaTotalFundo,
+					saldo_final: 0,
+					fundo_real: this.fundo.real,
+					fundo_dolar: this.fundo.dolar,
+					fundo_peso: this.fundo.peso,
+					fechamentos_real: 0,
+					fechamentos_dolar: 0,
+					fechamentos_peso: 0,
+					fechamentos_cartao_cred: 0,
+					fechamentos_cartao_deb: 0,
+					valor_total_fechamentos: 0
+				}
+				try {
+					response = await RestConnection.post('caixa/cadastrar/', parameters)
+					if (response.data.status === 200) {
+						this.clearReactiveData()
+						this.getCurrentCashier()
+					}
+				} catch (exception) {
+					if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+						return alert(exception.response.data.mensagem)
+					} else {
+						return alert("Não foi possível abrir este caixa. Por favor, tente novamente")
+					}
+				}
+			} else {
+				alert('Selecione um funcinário para abrir o caixa!')
 			}
-			try {
-				response = await RestConnection.post('caixa/cadastrar/', parameters)
-				if (response.data.status === 200) {
-					this.clearReactiveData()
-					this.getCurrentCashier()
-				}
-			} catch (exception) {
-				if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-					return alert(exception.response.data.mensagem)
-				} else {
-					return alert("Não foi possível abrir este caixa. Por favor, tente novamente")
-				}
-		}
 		},
 
 		async fecharMesa() {

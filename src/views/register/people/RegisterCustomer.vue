@@ -11,7 +11,7 @@
 					<b-form-input id="customer-name" class="mb-3" v-model.trim="customer.sobrenome" required type="text" placeholder="Exemplo: Geni Machado"></b-form-input>
 					<b-form-row>
 						<b-col cols="12" sm="6">
-							<label>Documento*</label>
+							<label>Documento</label>
 							<b-form-input id="customer-docs" class="mb-3" v-model.trim="customer.docs" required type="text" placeholder="Exemplo: 111.111.111-11"></b-form-input>
 						</b-col>
 							<b-col cols="12" sm="2">
@@ -31,7 +31,7 @@
 				description="*Campos obrigatórios">
 				<b-form-row>
 					<b-col cols="12" sm="6">
-						<label>Telefone</label>
+						<label>Telefone*</label>
 						<the-mask id="customer-telefone" type="text" class="form-control mb-3" v-model.trim="customer.telefone" :mask="['+## (##) ####-####']" :masked="false" placeholder="Exemplo: +55 (45) 3025-1144" :required="true"/>
 					</b-col>
 					<b-col cols="12" sm="6">
@@ -49,21 +49,21 @@
 			<b-form-group
 				id="informacoes-endereco"
 				description="*Campos obrigatórios">
-					<label>Endereço</label>
+					<label>Endereço*</label>
 					<b-form-input id="customer-street" class="mb-3" v-model="customer.rua" type="text" placeholder="Exemplo: Rua dos Bobos"></b-form-input>
 					<b-form-row>
 						<b-col cols="12" sm="6">
-							<label>Número</label>
+							<label>Número*</label>
 							<b-form-input id="customer-number" class="mb-3" v-model="customer.numero" type="text" placeholder="Exemplo: 0000"></b-form-input>
 						</b-col>
 						<b-col cols="12" sm="6">
-							<label>Bairro</label>
+							<label>Bairro*</label>
 							<b-form-input id="customer-district" class="mb-3" v-model="customer.bairro" type="text" placeholder="Exemplo: Jardim Esmero"></b-form-input>
 						</b-col>
 					</b-form-row>
 					<b-form-row>
 						<b-col cols="12" sm="6">
-							<label>CEP</label>
+							<label>CEP*</label>
 							<the-mask id="customer-cep" type="text" class="form-control mb-3" v-model.trim="customer.cep" :mask="['#####-###']" :masked="false" placeholder="Exemplo: 00000-000" :required="true"/>
 						</b-col>
 						<b-col cols="12" sm="6">
@@ -71,7 +71,7 @@
 							<b-form-input id="customer-complement" class="mb-3" v-model="customer.complemento" type="text" placeholder="Exemplo: Casa"></b-form-input>
 						</b-col>
 					</b-form-row>
-					<label>País</label>
+					<label>País*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -93,7 +93,7 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<label>Estado</label>
+					<label>Estado*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -115,7 +115,7 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<label>Cidade</label>
+					<label>Cidade*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -247,6 +247,7 @@ export default {
 					this.citiesList = [],
 					this.getStates(this.countryId)
 				} else if (this.countrySelected === null) {
+					this.countryList = [],
 					this.ufSelected = null,
 					this.ufBrazilianStates = [],
 					this.citySelected = null,
@@ -255,6 +256,7 @@ export default {
 				}
 			} else {
 				if (this.countrySelected === null) {
+					this.countryList = [],
 					this.ufSelected = null,
 					this.ufBrazilianStates = [],
 					this.citySelected = null,
@@ -281,11 +283,13 @@ export default {
 					this.citiesList = [],
 					this.getCities(this.stateId)
 				} else if (this.ufSelected === null) {
+					this.ufBrazilianStates = [] 
 					this.citySelected = null,
 					this.citiesList = []
 				}
 			} else {
 				if (this.ufSelected === null) {
+					this.ufBrazilianStates = [] 
 					this.citySelected = null,
 					this.citiesList = []
 				} else {
@@ -376,57 +380,74 @@ export default {
 
     async saveRecord() {
      	let response, idAdress
-			idAdress = await this.saveNewAdress();
-			//Criar validação se o idAdress existe e se o status foi 200
-      let parameters = {
-				name: this.customer.nome,
-				lastName: this.customer.sobrenome,
-				sex: this.customer.sexo,
-				status: this.customer.status,
-				docs: this.customer.docs,
-				docType: this.customer.tipoDoc,
-				orgExp: this.customer.orgExp,
-				email: this.customer.email,
-				phone: this.customer.telefone,
-				cellphone: this.customer.celular,
-				preferences: this.customer.preferencias,			
-				id_endereco: idAdress,
-      }
-      try {
-        response = await RestConnection.post('clientes/cadastrar/cliente/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Salvar este Cliente.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
+			if (!this.customer.nome) {
+				alert(`Não identificamos o Nome do Cliente e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.customer.sobrenome) { 
+				alert(`Não identificamos o Sobrenome do Cliente e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.customer.sexo) {
+				alert(`Não identificamos o Sexo do Cliente e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.customer.telefone) {
+				alert(`Não identificamos o Telefone do Cliente e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else {
+				idAdress = await this.saveNewAdress();
+				if (idAdress) {
+					let parameters = {
+						name: this.customer.nome,
+						lastName: this.customer.sobrenome,
+						sex: this.customer.sexo,
+						status: this.customer.status,
+						docs: this.customer.docs,
+						docType: this.customer.tipoDoc,
+						orgExp: this.customer.orgExp,
+						email: this.customer.email,
+						phone: this.customer.telefone,
+						cellphone: this.customer.celular,
+						preferences: this.customer.preferencias,			
+						id_endereco: idAdress,
+					}
+					try {
+						response = await RestConnection.post('clientes/cadastrar/cliente/', parameters)
+					} catch (exception) {
+							if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+								return alert(exception.response.data.mensagem)
+							} else {
+								return alert('Não foi Salvar este Cliente.')
+							}
+					}
+					alert(response.data.mensagem)
+					this.backOnePage()
+				} else {
+					return
+				}
+			}
     },
 
 		async saveNewAdress() {
 			let response
-			let parameters = {
-					zipcode: this.customer.cep,
-					street: this.customer.rua,
-					number:  this.customer.numero,
-					block:  this.customer.bairro,
-					complement:  this.customer.complemento,
-					country: this.countrySelected.value,
-					state: this.ufSelected.value,
-					city: this.citySelected.value
-			 }
-			 try {
-        response = await RestConnection.post('enderecos/cadastrar/endereco/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi possível salvar o endereço do Cliente.')
-          }
-      }
-			return response.data.conteudo[0].id
+			if (this.countrySelected && this.countrySelected && this.citySelected) {
+				let parameters = {
+						zipcode: this.customer.cep,
+						street: this.customer.rua,
+						number:  this.customer.numero,
+						block:  this.customer.bairro,
+						complement:  this.customer.complemento,
+						country: this.countrySelected.value,
+						state: this.ufSelected.value,
+						city: this.citySelected.value
+				}
+				try {
+					response = await RestConnection.post('enderecos/cadastrar/endereco/', parameters)
+				} catch (exception) {
+						if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+							return alert(exception.response.data.mensagem)
+						} else {
+							return alert('Não foi possível salvar o endereço do Cliente.')
+						}
+				}
+				return response.data.conteudo[0].id
+			} else {
+				alert('Há informações obrigatórias no endereço não preenchidas! Por favor, preencha corretamente.')
+			}
 		},
 
     async alterRecord() {

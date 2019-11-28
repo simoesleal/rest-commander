@@ -1,6 +1,6 @@
 <template>
   <div>
-    <template>
+    <template v-if="this.$route.path === '/cadastro-estoque/cadastrar-grupo-produto'">
       <b-container>
         <b-row class="mt-2">
           <b-col cols="12" md="9">
@@ -52,7 +52,10 @@ export default {
 		'page-title': PageTitle
   },
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedProductGroup: Object,
   },
   data() {

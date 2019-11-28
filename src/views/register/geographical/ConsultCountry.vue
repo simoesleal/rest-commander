@@ -31,6 +31,9 @@
             </template>
           </b-table>
         </div>
+        <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhum País encontrado.</b-alert> 
+        </template>
         <b-row>
            <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
             <div @click="backOnePage">
@@ -50,7 +53,7 @@ import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
-  name: 'CrudPais',
+  name: 'ConsultCountry',
   components: {
 		'page-title': PageTitle
 	},
@@ -58,6 +61,7 @@ export default {
     return {
       listOfCountries: [],
       searchItem: '',
+      searchStatus: 0,
       fields: [
         { key: 'id', label: 'Código', sortable: true},
         { key: 'nomePt', label: 'País', sortable: true },
@@ -73,6 +77,7 @@ export default {
     },
 
     getItem () {
+      this.clearReactiveData()
       if (this.searchItem.length === 0) {
         this.getCountries()
       } else {
@@ -84,6 +89,13 @@ export default {
       let response
       try {
         response = await RestConnection.get('paises/consultar/pais')
+        if (response.data.status === 200) {
+          if (response.data.conteudo.length > 0) {
+            this.listOfCountries = response.data.conteudo
+          } else {
+            this.searchStatus = 400
+          }
+        }
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
@@ -91,13 +103,18 @@ export default {
             return alert('Não foi possível buscar a lista de Países.')
           }
       }
-      this.listOfCountries = response.data.conteudo
+      
     },
 
     async getCountriesByName (searchItem) {
       let response
       try {
           response = await RestConnection.get('paises/consultar/pais/descricao/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+            this.listOfCountries = response.data.conteudo
+          } else {
+            this.searchStatus = 400
+          }
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
@@ -105,7 +122,11 @@ export default {
               return alert('Nenhum País com este nome encontrado.')
             }
         }
-        this.listOfCountries = response.data.conteudo 
+    },
+
+    clearReactiveData() {
+      this.listOfCountries = []
+      this.searchStatus = 0
     }
   }
 }

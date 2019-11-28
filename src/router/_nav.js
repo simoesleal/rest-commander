@@ -263,12 +263,6 @@ const treeData = [{
 					url: 'ConsultarParcelaReceber'	}
 				}
 			]
-		},
-		{
-			text: 'Relatórios',
-			data: { 
-			icon: 'far fa-file-pdf',
-			url: 'relatorios'	}
 		}
 	]
 },
@@ -278,23 +272,17 @@ const treeData = [{
 	data: { icon: 'fas fa-warehouse', url:'Estoque' },
 	children: [
 		{
+			text: 'Entrada de Produtos',
+			data: { 
+			icon: 'fas fa-file-medical',
+			url: 'NovaEntradaCompra'	}
+		}
+		/* {
 			text: 'Movimentações de Estoque',
 			data: { 
 			icon: 'fas fa-people-carry',
 			url: 'movimentarEstoque'	}
-		},
-		{
-			text: 'Fechamento Mensal',
-			data: { 
-			icon: 'far fa-calendar-times	',
-			url: 'fechamentoEstoqueMensal'	}
-		},
-		{
-			text: 'Relatórios',
-			data: { 
-			icon: 'far fa-file-pdf',
-			url: 'relatorios'	}
-		}
+		}, */
 	]
 },
 

@@ -32,7 +32,7 @@
 						<the-mask id="employee-cpf" type="text" class="form-control mb-3" v-model.trim="employee.cpf" :mask="['###.###.###-##']" :masked="false" placeholder="Exemplo: 111.111.111-11" :required="true"/>
 					</b-col>
 					<b-col cols="12" sm="6">
-						<label>RG*</label>
+						<label>RG</label>
 						<b-form-input id="employee-rg" class="mb-3" v-model="employee.rg" required type="number" placeholder="Exemplo: 11.111.111-1"></b-form-input>
 					</b-col>
 				</b-form-row>					
@@ -63,7 +63,7 @@
 				</b-form-row>					
 				<b-form-row>
 					<b-col cols="12" sm="6">
-						<label>Telefone</label>
+						<label>Telefone*</label>
 						<the-mask id="employee-phone" type="text" class="form-control mb-3" v-model.trim="employee.telefone" :mask="['+## (##) ####-####']" :masked="false" placeholder="Exemplo: +55 (45) 3025-1144" :required="true"/>
 					</b-col>
 					<b-col cols="12" sm="6">
@@ -82,21 +82,21 @@
 			<b-form-group
 				id="informacoes-endereco"
 				description="*Campos obrigatórios">
-					<label>Endereço</label>
+					<label>Endereço*</label>
 					<b-form-input id="employee-street" class="mb-3" v-model="employee.rua" type="text" placeholder="Exemplo: Rua dos Bobos"></b-form-input>
 					<b-form-row>
 						<b-col cols="12" sm="6">
-							<label>Número</label>
+							<label>Número*</label>
 							<b-form-input id="employee-number" class="mb-3" v-model="employee.numero" type="text" placeholder="Exemplo: 0000"></b-form-input>
 						</b-col>
 						<b-col cols="12" sm="6">
-							<label>Bairro</label>
+							<label>Bairro*</label>
 							<b-form-input id="employee-district" class="mb-3" v-model="employee.bairro" type="text" placeholder="Exemplo: Jardim Esmero"></b-form-input>
 						</b-col>
 					</b-form-row>
 					<b-form-row>
 						<b-col cols="12" sm="6">
-							<label>CEP</label>
+							<label>CEP*</label>
 							<the-mask id="employee-cep" type="text" class="form-control mb-3" v-model.trim="employee.cep" :mask="['#####-###']" :masked="false" placeholder="Exemplo: 00000-000" :required="true"/>
 						</b-col>
 						<b-col cols="12" sm="6">
@@ -104,7 +104,7 @@
 							<b-form-input id="employee-complement" class="mb-3" v-model="employee.complemento" type="text" placeholder="Exemplo: Casa"></b-form-input>
 						</b-col>
 					</b-form-row>
-					<label>País</label>
+					<label>País*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -126,15 +126,7 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<!-- <b-input-group>
-						<b-form-select v-model="countrySelected" :options="countryList"></b-form-select>
-						<b-input-group-append>
-							<router-link :to="{ name: 'CadastrarPais', params: { actionMode:'save' }}">
-								<b-button variant="primary"><i class="fas fa-flag"></i></b-button>
-							</router-link>
-						</b-input-group-append>
-					</b-input-group> -->
-					<label>Estado</label>
+					<label>Estado*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -156,7 +148,7 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<label>Cidade</label>
+					<label>Cidade*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -178,14 +170,6 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<!-- <b-input-group>
-						<b-form-input id="employee-city" class="mb-3" v-model="employee.logradouro.city" type="text" placeholder="Exemplo: Foz do Iguaçu"></b-form-input>
-						<b-input-group-append>
-							<router-link :to="{ name: 'CadastrarCidade', params: { actionMode:'save' }}">
-								<b-button variant="primary"><i class="fas fa-city"></i></b-button>
-							</router-link>
-						</b-input-group-append>
-					</b-input-group> -->
 			</b-form-group>		
 		</b-form>
 
@@ -299,6 +283,7 @@ export default {
 					this.citiesList = [],
 					this.getStates(this.countryId)
 				} else if (this.countrySelected === null) {
+					this.countryList = [],
 					this.ufSelected = null,
 					this.ufBrazilianStates = [],
 					this.citySelected = null,
@@ -307,6 +292,7 @@ export default {
 				}
 			} else {
 				if (this.countrySelected === null) {
+					this.countryList = [],
 					this.ufSelected = null,
 					this.ufBrazilianStates = [],
 					this.citySelected = null,
@@ -443,33 +429,52 @@ export default {
 
     async saveRecord() {
      	let response, idAdress
-			idAdress = await this.saveNewAdress();
-			//Criar validação se o idAdress existe e se o status foi 200
-      let parameters = {
-				name: this.employee.nome,
-				lastName: this.employee.sobrenome,
-				birth: this.employee.dataNascimento,
-				login: this.employee.login,
-				password: this.employee.password,
-				status: this.employee.status,
-				cpf: this.employee.cpf,
-				email: this.employee.email,
-				phone: this.employee.telefone,
-				cellphone: this.employee.celular,
-				id_endereco: idAdress,
-				id_funcao: this.roleSelected.value				
-      }
-      try {
-        response = await RestConnection.post('funcionarios/cadastrar/funcionario/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Salvar este Funcionário.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
+			 if (!this.employee.nome) {
+				alert(`Não identificamos o Nome do Funcionário e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.employee.sobrenome) { 
+				alert(`Não identificamos o Sobrenome do Funcionário e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.employee.login) {
+				alert(`Não identificamos o Login do Funcionário e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.employee.cpf) {
+				alert(`Não identificamos o CPF do Funcionário e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.employee.dataNascimento) {
+				alert(`Não identificamos a data de nascimento do Funcionário e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.employee.telefone) {
+				alert(`Não identificamos o Telefone do Funcionário e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.roleSelected.value) {
+				alert(`Não identificamos a função do Funcionário e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else {
+				idAdress = await this.saveNewAdress();
+				if (idAdress) {
+					let parameters = {
+						name: this.employee.nome,
+						lastName: this.employee.sobrenome,
+						birth: this.employee.dataNascimento,
+						login: this.employee.login,
+						password: this.employee.password,
+						status: this.employee.status,
+						cpf: this.employee.cpf,
+						email: this.employee.email,
+						phone: this.employee.telefone,
+						cellphone: this.employee.celular,
+						id_endereco: idAdress,
+						id_funcao: this.roleSelected.value				
+					}
+					try {
+						response = await RestConnection.post('funcionarios/cadastrar/funcionario/', parameters)
+					} catch (exception) {
+							if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+								return alert(exception.response.data.mensagem)
+							} else {
+								return alert('Não foi Salvar este Funcionário.')
+							}
+					}
+					alert(response.data.mensagem)
+					this.backOnePage()
+				} else {
+					return
+				}
+			}
     },
 
 		async saveNewAdress() {

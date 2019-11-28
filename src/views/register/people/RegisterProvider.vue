@@ -7,18 +7,18 @@
 				description="*Campos obrigatórios">
 					<b-form-row>
 						<b-col cols="12" sm="8">
-							<label>CPF/CNPJ</label>
+							<label>CPF/CNPJ*</label>
 							<the-mask id="provider-cpfCnpj" type="text" class="form-control mb-3" v-model.trim="provider.cpfCnpj" :mask="['###.###.###-##', '##.###.###/####-##']" :masked="false" placeholder="Exemplo: 11.111.111/1111-11" :required="true"/>
 						</b-col>
 							<b-col cols="12" sm="4">
-							<label>Tipo de Fornecedor</label>
-							<b-form-select v-model="provider.typeProvider" :options="typeProvider"></b-form-select>
+							<label>Tipo de Fornecedor*</label>
+							<b-form-select v-model="provider.tipoFornecedor" :options="typeProvider"></b-form-select>
 						</b-col>
 					</b-form-row>
 					<b-form-row>
-						<label>Nome Fantasia</label>
+						<label>Nome Fantasia*</label>
 						<b-form-input id="provider-nomefantasia" class="mb-3" v-model="provider.nomeFantasia" required type="text" placeholder="Exemplo: Empresa Fantasia"></b-form-input>
-						<label>Razão Social</label>
+						<label>Razão Social*</label>
 						<b-form-input id="provider-razaoSocial" class="mb-3" v-model="provider.razaoSocial" required type="text" placeholder="Exemplo: Empresa Séria SA LTDE"></b-form-input>
 					</b-form-row>
 					<b-form-row>
@@ -63,21 +63,21 @@
 			<b-form-group
 				id="informacoes-endereco"
 				description="*Campos obrigatórios">
-					<label>Endereço</label>
+					<label>Endereço*</label>
 					<b-form-input id="provider-street" class="mb-3" v-model="provider.rua" type="text" placeholder="Exemplo: Rua dos Bobos"></b-form-input>
 					<b-form-row>
 						<b-col cols="12" sm="6">
-							<label>Número</label>
+							<label>Número*</label>
 							<b-form-input id="provider-number" class="mb-3" v-model="provider.numero" type="text" placeholder="Exemplo: 0000"></b-form-input>
 						</b-col>
 						<b-col cols="12" sm="6">
-							<label>Bairro</label>
+							<label>Bairro*</label>
 							<b-form-input id="provider-district" class="mb-3" v-model="provider.bairro" type="text" placeholder="Exemplo: Jardim Esmero"></b-form-input>
 						</b-col>
 					</b-form-row>
 					<b-form-row>
 						<b-col cols="12" sm="6">
-							<label>CEP</label>
+							<label>CEP*</label>
 							<the-mask id="provider-cep" type="text" class="form-control mb-3" v-model.trim="provider.cep" :mask="['#####-###']" :masked="false" placeholder="Exemplo: 00000-000" :required="true"/>
 						</b-col>
 						<b-col cols="12" sm="6">
@@ -85,7 +85,7 @@
 							<b-form-input id="provider-complement" class="mb-3" v-model="provider.complemento" type="text" placeholder="Exemplo: Casa"></b-form-input>
 						</b-col>
 					</b-form-row>
-					<label>País</label>
+					<label>País*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -107,7 +107,7 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<label>Estado</label>
+					<label>Estado*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -129,7 +129,7 @@
 							</router-link>
 						</b-col>  
 					</b-row>
-					<label>Cidade</label>
+					<label>Cidade*</label>
 					<b-row>
 						<b-col cols="11">
 							<v-select
@@ -201,7 +201,7 @@ export default {
 				id: 0,
 				idEndereco: 0,
 				status: false,
-				typeProvider: '',
+				tipoFornecedor: '',
 				cpfCnpj: '',
 				nomeFantasia: '',
 				razaoSocial: '',
@@ -261,6 +261,7 @@ export default {
 					this.citiesList = [],
 					this.getStates(this.countryId)
 				} else if (this.countrySelected === null) {
+					this.countryList = []
 					this.ufSelected = null,
 					this.ufBrazilianStates = [],
 					this.citySelected = null,
@@ -269,6 +270,7 @@ export default {
 				}
 			} else {
 				if (this.countrySelected === null) {
+					this.countryList = []
 					this.ufSelected = null,
 					this.ufBrazilianStates = [],
 					this.citySelected = null,
@@ -295,11 +297,13 @@ export default {
 					this.citiesList = [],
 					this.getCities(this.stateId)
 				} else if (this.ufSelected === null) {
+					this.ufBrazilianStates = []
 					this.citySelected = null,
 					this.citiesList = []
 				}
 			} else {
 				if (this.ufSelected === null) {
+					this.ufBrazilianStates = []
 					this.citySelected = null,
 					this.citiesList = []
 				} else {
@@ -385,55 +389,73 @@ export default {
 
     async saveRecord() {
      	let response, idAdress
-			idAdress = await this.saveNewAdress();
-			//Criar validação se o idAdress existe e se o status foi 200
-      let parameters = {
-				nome_fantasia: this.provider.nomeFantasia,
-				razao_social: this.provider.razaoSocial,
-				cpf_cnpj: this.provider.cpfCnpj,
-				insc_municipal: this.provider.inscMunicipal,
-				insc_estadual: this.provider.inscEstadual,
-				status: this.provider.status,
-				email: this.provider.email,
-				phone: this.provider.telefone,
-				cellphone: this.provider.celular,
-				id_endereco: idAdress,	
-      }
-      try {
-        response = await RestConnection.post('fornecedores/cadastrar/fornecedor/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Salvar este Fornecedor.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
+			if (!this.provider.cpfCnpj) {
+				alert(`Não identificamos o CPF ou CNPJ do Fornecedor e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else 	if (!this.provider.tipoFornecedor) { 
+				alert(`Não identificamos o Tipo do Fornecedor e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.provider.nomeFantasia) {
+				alert(`Não identificamos o Nome Fantasia do Fornecedor e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else if (!this.provider.razaoSocial) {
+				alert(`Não identificamos a Razão Social do Fornecedor e este é um campo obrigatório. Por favor, tente novamente.`)
+			} else {
+				idAdress = await this.saveNewAdress();
+				if (idAdress) {
+					let parameters = {
+						nome_fantasia: this.provider.nomeFantasia,
+						razao_social: this.provider.razaoSocial,
+						cpf_cnpj: this.provider.cpfCnpj,
+						insc_municipal: this.provider.inscMunicipal,
+						insc_estadual: this.provider.inscEstadual,
+						status: this.provider.status,
+						email: this.provider.email,
+						phone: this.provider.telefone,
+						cellphone: this.provider.celular,
+						id_endereco: idAdress,
+						tipo_fornecedor: this.provider.tipoFornecedor
+					}
+					try {
+						response = await RestConnection.post('fornecedores/cadastrar/fornecedor/', parameters)
+					} catch (exception) {
+							if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+								return alert(exception.response.data.mensagem)
+							} else {
+								return alert('Não foi Salvar este Fornecedor.')
+							}
+					}
+					alert(response.data.mensagem)
+					this.backOnePage()
+				} else {
+					return
+				}
+			} 
     },
 
 		async saveNewAdress() {
 			let response
-			let parameters = {
-					zipcode: this.provider.cep,
-					street: this.provider.rua,
-					number:  this.provider.numero,
-					block:  this.provider.bairro,
-					complement:  this.provider.complemento,
-					country: this.countrySelected.value,
-					state: this.ufSelected.value,
-					city: this.citySelected.value
-			 }
-			 try {
-        response = await RestConnection.post('enderecos/cadastrar/endereco/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi possível salvar o endereço do Fornecedor.')
-          }
-      }
-			return response.data.conteudo[0].id
+			if (this.countrySelected && this.countrySelected && this.citySelected) {
+				let parameters = {
+						zipcode: this.provider.cep,
+						street: this.provider.rua,
+						number:  this.provider.numero,
+						block:  this.provider.bairro,
+						complement:  this.provider.complemento,
+						country: this.countrySelected.value,
+						state: this.ufSelected.value,
+						city: this.citySelected.value,
+				}
+				try {
+					response = await RestConnection.post('enderecos/cadastrar/endereco/', parameters)
+				} catch (exception) {
+						if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+							return alert(exception.response.data.mensagem)
+						} else {
+							return alert('Não foi possível salvar o endereço do Fornecedor.')
+						}
+				}
+				return response.data.conteudo[0].id
+			} else {
+				alert('Há informações obrigatórias no endereço não preenchidas! Por favor, preencha corretamente.')
+			}
 		},
 
     async alterRecord() {
@@ -449,7 +471,8 @@ export default {
 				email: this.provider.email,
 				phone: this.provider.telefone,
 				cellphone: this.provider.celular,
-				id_endereco:  this.provider.idEndereco,				
+				id_endereco:  this.provider.idEndereco,
+				tipo_fornecedor: this.provider.tipoFornecedor			
       }
       try {
         response = await RestConnection.put('fornecedores/atualizar/fornecedor/', parameters)

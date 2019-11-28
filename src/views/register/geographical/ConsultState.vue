@@ -31,6 +31,9 @@
             </template>
           </b-table>
         </div>
+        <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhum Estado encontrado.</b-alert> 
+        </template>
         <b-row>
            <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
             <div @click="backOnePage">
@@ -50,7 +53,7 @@ import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
-  name: 'CrudEstado',
+  name: 'ConsultState',
   components: {
 		'page-title': PageTitle
 	},
@@ -58,6 +61,7 @@ export default {
     return {
       listOfStates: [],
       searchItem: '',
+      searchStatus: 0,
       fields: [
         { key: 'id', label: 'Código', sortable: true},
         { key: 'nome', label: 'Estado', sortable: true },
@@ -73,6 +77,7 @@ export default {
     },
     
     getItem () {
+      this.clearReactiveData()
       if (this.searchItem.length === 0) {
         this.getStates()
       } else {
@@ -84,20 +89,29 @@ export default {
       let response
       try {
         response = await RestConnection.get('estados/consultar/estado')
+        if (response.data.conteudo.length > 0) {
+            this.listOfStates = response.data.conteudo
+        } else {
+            this.searchStatus = 400
+        }				  
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
             return alert("Não foi possível buscar a lista de Estados.")
           }
-      }
-      this.listOfStates = response.data.conteudo
+      }      
     },
 
     async getStatesByName (searchItem) {
       let response
       try {
           response = await RestConnection.get('estados/consultar/estado/descricao/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+            this.listOfStates = response.data.conteudo
+          } else {
+              this.searchStatus = 400
+          }	
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
@@ -105,8 +119,12 @@ export default {
               return alert('Nenhum Estado com este nome encontrado.')
             }
         }
-        this.listOfStates = response.data.conteudo
-      }
+      },
+
+    clearReactiveData() {
+      this.listOfStates = []
+      this.searchStatus = 0
+    }		        
   }
 }
 

@@ -83,7 +83,7 @@
 				</b-form>
 				<b-container>
 					<b-row class="mt-5">
-						<b-col class="d-flex justify-content-start">
+						<b-col class="d-flex justify-content-start btn-voltar">
 							<div @click="backOnePage">
 								<div><i class="fa fa-reply fa-2x m-r-5"></i></div>
 								<div class="text-uppercase font-300">Voltar</div>

@@ -6,7 +6,7 @@
           <b-form-group
             id="informacoes-basicas"
             description="*Campos obrigatórios">
-							<label>Tipo do Pagamento</label>
+							<label>Tipo do Pagamento*</label>
 							<b-form-input id="tipo-pagamento" class="mb-3" v-model="tipoPagamento.forma" required type="text" placeholder="Exemplo: Crédito em Conta"></b-form-input>
           </b-form-group>
         </b-form>
@@ -43,7 +43,10 @@ export default {
 		'page-title': PageTitle
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedPaymentType: Object,
   },
   data() {

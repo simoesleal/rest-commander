@@ -31,6 +31,9 @@
             </template>
           </b-table>
         </div>
+        <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhuma Cidade encontrada.</b-alert> 
+        </template>
         <b-row>
            <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
             <div @click="backOnePage">
@@ -50,7 +53,7 @@ import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 
 export default {
-  name: 'CrudCidade',
+  name: 'ConsultCity',
   components: {
 		'page-title': PageTitle
 	},
@@ -58,6 +61,7 @@ export default {
     return {
       listOfCities: [],
       searchItem: '',
+      searchStatus: 0,
       fields: [
         { key: 'id', label: 'Código', sortable: true},
         { key: 'nomeCidade', label: 'Nome', sortable: true },
@@ -74,6 +78,7 @@ export default {
     },
 
     getItem () {
+      this.clearReactiveData()	
       if (this.searchItem.length === 0) {
         this.getCities()
       } else {
@@ -85,29 +90,42 @@ export default {
       let response
       try {
         response = await RestConnection.get('cidades/consultar/cidade')
+        if (response.data.conteudo.length > 0) {
+            this.listOfCities = response.data.conteudo
+          } else {
+            this.searchStatus = 400
+          }
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
             return alert("Não foi possível buscar a lista de Cidades.")
           }
-      }
-      this.listOfCities = response.data.conteudo
+      }      
     },
 
     async getCitiesByName (searchItem) {
       let response
       try {
           response = await RestConnection.get('cidades/consultar/cidade/descricao/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+            this.listOfCities = response.data.conteudo
+          } else {
+            this.searchStatus = 400
+          }	
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
             } else {
               return alert('Nenhuma Coidade com este nome encontrado.')
             }
-        }
-        this.listOfCities = response.data.conteudo
-      }
+        }        
+      },
+
+    clearReactiveData() {
+      this.listOfCities = []
+      this.searchStatus = 0
+    }
   }
 }
 

@@ -31,6 +31,9 @@
             </template>
           </b-table>
         </div>
+        <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhum Grupo de Cardápio encontrado.</b-alert> 
+        </template>	
         <b-row>
            <b-col cols="1" class="d-flex justify-content-start m-3 mt-5 btn-voltar">
             <div @click="backOnePage">
@@ -57,6 +60,7 @@ export default {
     return {
       listOfItens: [],
       searchItem: '',
+      searchStatus: 0,
       fields: [
         { key: 'id', label: 'Código', sortable: true},
         { key: 'nomeGrupo', label: 'Grupo', sortable: true },
@@ -71,6 +75,7 @@ export default {
     },
 
     getItem () {
+      this.clearReactiveData()	
       if (this.searchItem.length === 0) {
         this.getMenuGroup()
       } else {
@@ -82,20 +87,29 @@ export default {
       let response
       try {
         response = await RestConnection.get('grupos-cardapio/consultar/')
+        if (response.data.conteudo.length > 0) {
+          this.listOfItens = response.data.conteudo
+        } else {
+          this.searchStatus = 400
+        }
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
             return alert('Não foi possível buscar a lista de Grupos do cardápio.')
           }
-      }
-      this.listOfItens = response.data.conteudo
+      }      
     },
 
     async getMenuGroupByName (searchItem) {
       let response
       try {
           response = await RestConnection.get('grupos-cardapio/consultar/nome/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+          this.listOfItens = response.data.conteudo
+        } else {
+          this.searchStatus = 400
+        }
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
@@ -103,7 +117,11 @@ export default {
               return alert('Nenhum Grupo de Produto com este nome encontrado.')
             }
         }
-        this.listOfItens = response.data.conteudo 
+    },
+
+    clearReactiveData() {
+      this.listOfItens = []
+      this.searchStatus = 0
     }
   }
 }

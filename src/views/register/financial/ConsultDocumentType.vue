@@ -31,6 +31,9 @@
             </template>
           </b-table>
         </div>
+        <template v-if="searchStatus === 400">
+          <b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhum Tipo de Documento encontrado.</b-alert> 
+        </template>
         <div class="d-flex justify-content-start m-3 mt-5">
           <router-link :to="{ name: 'CadastroFinanceiro'}">
             <div><i class="fa fa-reply fa-2x m-r-5"></i></div>
@@ -55,6 +58,7 @@ export default {
 		return {
 			listOfDocumentType: [],
 			searchItem: '',
+      searchStatus: 0,
 			fields: [
 				{
 					key: 'id', label: 'Código', sortable: true
@@ -71,6 +75,7 @@ export default {
 	},
 	methods: {
     getItem () {
+      this.clearReactiveData()
       if (this.searchItem.length === 0) {
         this.getTypeDocument()
       } else {
@@ -82,20 +87,29 @@ export default {
       let response
       try {
         response = await RestConnection.get('tipo-documento/consultar/')
+        if (response.data.conteudo.length > 0) {
+          this.listOfDocumentType = response.data.conteudo
+        } else {
+          this.searchStatus = 400
+        }	
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
             return alert("Não foi possível buscar a lista de Tipos de Documentos.")
           }
-      }
-      this.listOfDocumentType = response.data.conteudo
+      }     
     },
 
     async getTypeDocumentByName (searchItem) {
       let response
       try {
           response = await RestConnection.get('tipo-documento/consultar/nome/' + searchItem)
+          if (response.data.conteudo.length > 0) {
+          this.listOfDocumentType = response.data.conteudo
+        } else {
+          this.searchStatus = 400
+        }	
         } catch (exception) {
             if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
               return alert(exception.response.data.mensagem)
@@ -103,8 +117,12 @@ export default {
               return alert('Nenhum Tipo de Documento com este nome encontrado.')
             }
         }
-        this.listOfDocumentType = response.data.conteudo
-      }
+      },
+
+    clearReactiveData() {
+      this.listOfDocumentType = []
+      this.searchStatus = 0
+    }	
 	}
 
 }

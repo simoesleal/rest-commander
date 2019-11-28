@@ -68,12 +68,15 @@
 import { RestConnection } from '../../../rest/rest.connection'
 import PageTitle from '../../../components/template/PageTitle'
 export default {
-  name: 'CrudEstado',
+  name: 'CrudState',
   components: {
 		'page-title': PageTitle,
 	},
   props: {
-    actionMode: String,
+    actionMode: {
+      type: String,
+      default: 'save'
+    },
     selectedState: Object,
   },
   data() {
@@ -109,6 +112,8 @@ export default {
     countrySelected() {
       if (this.countrySelected) this.state.paisId = this.countrySelected.value
       if (this.countrySelected === null) {
+        this.countryList = []
+        this.countrySelected = ''
         this.getInfos()
       }
     }
@@ -135,45 +140,53 @@ export default {
 
     async saveRecord() {
       let response
-      let parameters = {
-        name: this.state.nome,
-        uf: this.state.uf,
-        ibge: 0,
-        pais: this.state.paisId
+      if (!this.countrySelected) {
+        alert('Não identificamos nenhum País selecionado e este é um campo obrigatório. Por favor, tente novamente.')
+      } else {
+        let parameters = {
+          name: this.state.nome,
+          uf: this.state.uf,
+          ibge: 0,
+          pais: this.countrySelected.value
+        }
+        try {
+          response = await RestConnection.post('estados/cadastrar/estado/', parameters)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Salvar este Estado.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()
       }
-      try {
-        response = await RestConnection.post('estados/cadastrar/estado/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Salvar este Estado.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
     },
 
     async alterRecord() {
       let response
-      let parameters = {
-        id: this.state.id,
-        name: this.state.nome,
-        uf: this.state.uf,
-        ibge: 0,
-        pais: this.state.paisId
+      if (!this.countrySelected) {
+        alert('Não identificamos nenhum País selecionado e este é um campo obrigatório. Por favor, tente novamente.')
+      } else {
+        let parameters = {
+          id: this.state.id,
+          name: this.state.nome,
+          uf: this.state.uf,
+          ibge: 0,
+          pais: this.countrySelected.value
+        }
+        try {
+          response = await RestConnection.put('estados/atualizar/estado/', parameters)
+        } catch (exception) {
+            if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+              return alert(exception.response.data.mensagem)
+            } else {
+              return alert('Não foi possível Atualizar este Estado.')
+            }
+        }
+        alert(response.data.mensagem)
+        this.backOnePage()
       }
-      try {
-        response = await RestConnection.put('estados/atualizar/estado/', parameters)
-      } catch (exception) {
-          if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-            return alert(exception.response.data.mensagem)
-          } else {
-            return alert('Não foi Atualizar este Estado.')
-          }
-      }
-      alert(response.data.mensagem)
-      this.backOnePage()
     },
 
     async deleteRecord() {

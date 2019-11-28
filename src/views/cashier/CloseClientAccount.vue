@@ -572,35 +572,39 @@ export default {
 		},
 
 		async closeClientAccount() {
-			let response
-			let parameters = {
-				p_id_conta_cliente: this.idContaCliente,
-				p_id_mesa: this.idMesa,
-				json_fechamento: [ {
-					idCaixa: this.idCaixa,
-					idFormaPagamento: this.formaPagamentoSelected.value,
-					dinheiroReal: this.dinheiro.real,
-					dinheiroDolar: this.dinheiro.dolar,
-					dinheiroPeso: this.dinheiro.peso,
-					cartaoCredito: this.cartao.credito,
-					cartaoDebito: this.cartao.debito,
-					desconto: this.descontoValor,
-					troco: this.totalTroco,
-					valorTotal: this.valorPago
-				} ]
-			}
-			try {
-				response = await RestConnection.post('fechamento/novo-fechamento/', parameters)
-				if (response.data.status === 200) {
-					alert('Mesa fechada com sucesso!')
-					this.$router.push({ name: 'Caixa', params: {flagGetCaixa: true} })
+			if (this.formaPagamentoSelected) {
+				let response
+				let parameters = {
+					p_id_conta_cliente: this.idContaCliente,
+					p_id_mesa: this.idMesa,
+					json_fechamento: [ {
+						idCaixa: this.idCaixa,
+						idFormaPagamento: this.formaPagamentoSelected.value,
+						dinheiroReal: this.dinheiro.real,
+						dinheiroDolar: this.dinheiro.dolar,
+						dinheiroPeso: this.dinheiro.peso,
+						cartaoCredito: this.cartao.credito,
+						cartaoDebito: this.cartao.debito,
+						desconto: this.descontoValor,
+						troco: this.totalTroco,
+						valorTotal: this.valorPago
+					} ]
 				}
-			} catch (exception) {
-				if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
-					return alert(exception.response.data.mensagem)
-				} else {
-					return alert('Não foi Fechar esta mesa. Por favor, tente novamente.')
-				}  				
+				try {
+					response = await RestConnection.post('fechamento/novo-fechamento/', parameters)
+					if (response.data.status === 200) {
+						alert('Mesa fechada com sucesso!')
+						this.$router.push({ name: 'Caixa', params: {flagGetCaixa: true} })
+					}
+				} catch (exception) {
+					if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
+						return alert(exception.response.data.mensagem)
+					} else {
+						return alert('Não foi possível Fechar esta mesa. Por favor, tente novamente.')
+					}  				
+				}
+			} else {
+				alert('Selecione a forma de pagamento!')
 			}
 		},
 

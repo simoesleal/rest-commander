@@ -11,7 +11,7 @@
           <b-form-group
             id="selected-table"
             description="*Campos obrigatórios">             
-						<label>Mesa</label>
+						<label>Mesa*</label>
             <b-row>
               <b-col cols="12">
                 <v-select
@@ -255,7 +255,7 @@ export default {
         this.itensPedido.push(productOrder)
         this.clearProductOrder()
       } else {
-        alert('Selecione um produto!')
+        alert('Selecione ao menos um produto!')
       }
     },
 

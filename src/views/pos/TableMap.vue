@@ -29,6 +29,9 @@
 					</b-col>
 				</b-row>
 			<hr>
+			<template v-if="searchStatus === 400">
+				<b-alert class="mt-3 w-75 alert-link" variant="warning" show dismissible>Nenhuma Mesa encontrada.</b-alert> 
+			</template>	
 		</b-container>
 	</div>
 </template>
@@ -45,6 +48,7 @@ export default {
 	data() {
 		return {
 			listOfTables: [],
+			searchStatus: 0,
 		}
 	},
 	mounted() {
@@ -52,18 +56,28 @@ export default {
 	},
 	methods: {
 		async getTables () {
+			this.clearReactiveData()	
       let response
       try {
         response = await RestConnection.get('mesas/consultar/mesa')
+				if (response.data.conteudo.length > 0) {
+					this.listOfTables = response.data.conteudo
+				} else {
+					this.searchStatus = 400
+				}	
       } catch (exception) {
           if (exception && exception.response && exception.response.data &&   exception.response.data.mensagem) {
             return alert(exception.response.data.mensagem)
           } else {
             return alert("Não foi possível buscar a lista de Mesas.")
           }
-      }
-      this.listOfTables = response.data.conteudo
+      }      
     },
+
+		clearReactiveData() {
+      this.listOfTables = []
+      this.searchStatus = 0
+    }	
 	}
 }
 </script>
