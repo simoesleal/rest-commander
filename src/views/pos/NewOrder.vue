@@ -268,7 +268,7 @@ export default {
         let response
         let parameters = {
           idMesa: this.tableSelected.value,
-          idFuncionario: 1,
+          idFuncionario: 9999,
           idContaCliente: this.customerAccountSelected.id,
           produtos: this.itensPedido
         }     

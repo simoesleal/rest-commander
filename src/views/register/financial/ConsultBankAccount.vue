@@ -18,7 +18,7 @@
           </b-col>
           <b-col cols="12" md="2">
             <router-link :to="{ name: 'CadastrarContaBancaria', params: { actionMode:'save' }}">
-              <b-button variant="primary"><i class="fas fa-plus"></i> Novo Banco</b-button>
+              <b-button variant="primary"><i class="fas fa-plus"></i> Novo</b-button>
             </router-link>
           </b-col>
         </b-row>

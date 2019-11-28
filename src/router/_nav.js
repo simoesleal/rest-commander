@@ -153,19 +153,21 @@ const treeData = [{
 					icon: 'fas fa-weight-hanging',
 					url: 'ConsultarUnidadeMedida'
 				}
-			}, {
+			}, 
+			{
+				text: 'Grupo Menu',
+				data: { 
+				icon: 'fas fa-bars',
+				url: 'ConsultarGrupoCardapio'	}
+			},
+			{
 				text: 'Produtos',
 				data: { 
 					icon: 'fas fa-hamburger',
 					url: 'ConsultarProdutos'	
 				}
 			},
-				{
-					text: 'Grupo Menu',
-					data: { 
-					icon: 'fas fa-bars',
-					url: 'ConsultarGrupoCardapio'	}
-				}
+			
 			/* {
 				text: 'Insumos',
 				data: { 
@@ -206,7 +208,7 @@ const treeData = [{
 			url: 'Caixa'	}
 		},
 		{
-			text: 'Mesas',
+			text: 'Mapa Mesas',
 			data: { 
 			icon: 'fab fa-buromobelexperte',
 			url: 'MapaMesas'	}
@@ -231,13 +233,13 @@ const treeData = [{
 			url: 'ContasPagar' },
 			children: [
 				{
-					text: 'Nova Duplicata a Pagar',
+					text: 'Nova Conta a Pagar',
 					data: { 
 					icon: 'fas fa-copy',
 					url: 'NovaContaPagar'	}
 				},
 				{
-					text: 'Duplicatas a Pagar',
+					text: 'Parcelas a Pagar',
 					data: { 
 					icon: 'fas fa-copy',
 					url: 'ConsultarParcelaPagar'	}
@@ -251,13 +253,13 @@ const treeData = [{
 			url: 'ContasReceber'},
 			children: [
 				{
-					text: 'Nova Duplicata a Receber',
+					text: 'Nova Conta a Receber',
 					data: { 
 					icon: 'fas fa-copy',
 					url: 'NovaContaReceber'	}
 				},
 				{
-					text: 'Duplicatas  a Receber',
+					text: 'Parcelas a Receber',
 					data: { 
 					icon: 'fas fa-copy',
 					url: 'ConsultarParcelaReceber'	}

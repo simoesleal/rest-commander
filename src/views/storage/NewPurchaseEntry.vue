@@ -80,7 +80,7 @@
 						<h1 class="h3 mr-5">Selecione os Produto</h1>
 					</b-col>
 					<b-col>
-						<template v-if="listOfProviders.length > 0">
+						<template v-if="listOfProducts.length > 0">
 							<div class="d-flex justify-content-end">
 								<router-link :to="{ name: 'CadastrarProduto', params: { actionMode:'save' }}">
 										<b-button class="btn-sm" variant="outline-dark"><i class="fas fa-hamburger"></i> Cadastrar Produto</b-button>

@@ -28,7 +28,7 @@
                   </router-link>
                 </b-col>  
               </b-row>
-              <label>Cotação</label>
+              <label>Cotação*</label>
               <v-money id="quotation" type="text" class="form-control " required placeholder="Exemplo: 4.00" v-model.number="quotation.cotacao" v-bind="money"></v-money>
           </b-form-group>
         </b-form>
